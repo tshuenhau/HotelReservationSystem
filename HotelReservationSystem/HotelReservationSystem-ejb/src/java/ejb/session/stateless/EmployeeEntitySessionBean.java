@@ -17,7 +17,7 @@ import javax.persistence.Query;
  * @author chenx
  */
 @Stateless
-public class EmployeeEntitySessionBean implements EmployeeEntitySessionBeanRemote, EmployeeEntitySessionBeanLocal {
+public class EmployeeEntitySessionBean implements EmployeesEntitySessionBeanRemote, EmployeeEntitySessionBeanLocal {
 
     @PersistenceContext(unitName = "HotelReservationSystem-ejbPU")
     private EntityManager em;
