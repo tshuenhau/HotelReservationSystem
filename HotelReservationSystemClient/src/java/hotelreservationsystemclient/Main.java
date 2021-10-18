@@ -6,7 +6,9 @@
 package hotelreservationsystemclient;
 
 import ejb.session.stateless.EmployeeEntitySessionBeanRemote;
+import ejb.session.stateless.HotelRoomsEntitySessionBeanRemote;
 import entity.Employees;
+import entity.HotelRooms;
 import java.util.List;
 import javax.ejb.EJB;
 
@@ -17,8 +19,10 @@ import javax.ejb.EJB;
 public class Main {
 
     @EJB
+    private static HotelRoomsEntitySessionBeanRemote hotelRoomsEntitySessionBeanRemote;
+
+    @EJB
     private static EmployeeEntitySessionBeanRemote employeeEntitySessionBeanRemote;
-    
     
     /**
      * @param args the command line arguments
@@ -27,9 +31,14 @@ public class Main {
         // TODO code application logic here
         
         List<Employees> employees = employeeEntitySessionBeanRemote.retrieveAllEmployees();
-        
+        List<HotelRooms> hotelRooms = hotelRoomsEntitySessionBeanRemote.retrieveAllHotelRooms();
+
         for(Employees employee:employees) {
-            System.out.println("Employee: username" + employee.getUsername());
+            System.out.println("Employee username: " + employee.getUsername());
+        }
+        
+        for(HotelRooms h: hotelRooms){
+            System.out.println("Hotel Room ID: " + h.getHotelRoomID());
         }
     }
     

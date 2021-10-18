@@ -6,7 +6,9 @@
 package ejb.session.singleton;
 
 import ejb.session.stateless.EmployeeEntitySessionBeanLocal;
+import ejb.session.stateless.HotelRoomsEntitySessionBeanLocal;
 import entity.Employees;
+import entity.HotelRooms;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.ejb.Singleton;
@@ -25,6 +27,9 @@ import javax.persistence.PersistenceContext;
 public class DataInitSessionBean {
 
     @EJB
+    private HotelRoomsEntitySessionBeanLocal hotelRoomsEntitySessionBeanLocal;
+
+    @EJB
     private EmployeeEntitySessionBeanLocal employeeEntitySessionBeanLocal;
 
     @PersistenceContext(unitName = "HotelReservationSystem-ejbPU")
@@ -38,9 +43,20 @@ public class DataInitSessionBean {
     
     @PostConstruct
     public void postConstruct() {
-        employeeEntitySessionBeanLocal.createNewEmployee(new Employees("employee1", "Sales Manager", "123"));
-        employeeEntitySessionBeanLocal.createNewEmployee(new Employees("employee2", "Sales Manager", "123"));
-        employeeEntitySessionBeanLocal.createNewEmployee(new Employees("employee3", "Sales Manager", "123"));
+        /*
+        if(em.find(Employees.class, "employees1") == null){
+            employeeEntitySessionBeanLocal.createNewEmployee(new Employees("employee1", "Sales Manager", "123"));
+            employeeEntitySessionBeanLocal.createNewEmployee(new Employees("employee2", "Sales Manager", "123"));
+            employeeEntitySessionBeanLocal.createNewEmployee(new Employees("employee3", "Sales Manager", "123"));
+        }
+
+        
+            hotelRoomsEntitySessionBeanLocal.createNewHotelRoom(new HotelRooms(1l, "Sales Manager", false));
+            hotelRoomsEntitySessionBeanLocal.createNewHotelRoom(new HotelRooms(2l, "Sales Manager", false));
+            hotelRoomsEntitySessionBeanLocal.createNewHotelRoom(new HotelRooms(3l, "Sales Manager", false));
+                */
+
+  
     }
     
 }
