@@ -5,12 +5,12 @@
  */
 package hotelreservationsystemclient;
 
-import ejb.session.stateless.EmployeeEntitySessionBeanRemote;
 import ejb.session.stateless.HotelRoomsEntitySessionBeanRemote;
 import entity.Employees;
 import entity.HotelRooms;
 import java.util.List;
 import javax.ejb.EJB;
+import ejb.session.stateless.EmployeesEntitySessionBeanRemote;
 
 /**
  *
@@ -22,7 +22,7 @@ public class Main {
     private static HotelRoomsEntitySessionBeanRemote hotelRoomsEntitySessionBeanRemote;
 
     @EJB
-    private static EmployeeEntitySessionBeanRemote employeeEntitySessionBeanRemote;
+    private static EmployeesEntitySessionBeanRemote employeeEntitySessionBeanRemote;
     
     /**
      * @param args the command line arguments
