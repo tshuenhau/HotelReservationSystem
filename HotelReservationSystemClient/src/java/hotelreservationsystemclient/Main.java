@@ -11,12 +11,17 @@ import entity.HotelRooms;
 import java.util.List;
 import javax.ejb.EJB;
 import ejb.session.stateless.EmployeesEntitySessionBeanRemote;
+import ejb.session.stateless.RatesEntitySessionBeanRemote;
+import entity.Rates;
 
 /**
  *
  * @author chenx
  */
 public class Main {
+
+    @EJB
+    private static RatesEntitySessionBeanRemote ratesEntitySessionBeanRemote;
 
     @EJB
     private static HotelRoomsEntitySessionBeanRemote hotelRoomsEntitySessionBeanRemote;
@@ -32,13 +37,18 @@ public class Main {
         
         List<Employees> employees = employeeEntitySessionBeanRemote.retrieveAllEmployees();
         List<HotelRooms> hotelRooms = hotelRoomsEntitySessionBeanRemote.retrieveAllHotelRooms();
-
+        List<Rates> rates = ratesEntitySessionBeanRemote.retrieveAllRates();
+        
         for(Employees employee:employees) {
             System.out.println("Employee username: " + employee.getUsername());
         }
         
         for(HotelRooms h: hotelRooms){
             System.out.println("Hotel Room ID: " + h.getHotelRoomID());
+        }
+        
+        for(Rates r: rates){
+            System.out.println("Rate ID: " + r.getRateID() + "Rate Type: " + r.getRateType());
         }
     }
     

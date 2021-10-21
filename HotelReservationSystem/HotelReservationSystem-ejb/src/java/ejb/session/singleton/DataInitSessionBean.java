@@ -7,8 +7,8 @@ package ejb.session.singleton;
 
 import ejb.session.stateless.EmployeeEntitySessionBeanLocal;
 import ejb.session.stateless.HotelRoomsEntitySessionBeanLocal;
-import entity.Employees;
-import entity.HotelRooms;
+import ejb.session.stateless.RatesEntitySessionBeanLocal;
+import entity.Rates;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.ejb.Singleton;
@@ -25,6 +25,9 @@ import javax.persistence.PersistenceContext;
 @LocalBean
 @Startup
 public class DataInitSessionBean {
+
+    @EJB
+    private RatesEntitySessionBeanLocal ratesEntitySessionBeanLocal;
 
     @EJB
     private HotelRoomsEntitySessionBeanLocal hotelRoomsEntitySessionBeanLocal;
@@ -52,11 +55,17 @@ public class DataInitSessionBean {
         }
         
         
-            hotelRoomsEntitySessionBeanLocal.createNewHotelRoom(new HotelRooms(1l, "Sales Manager", false));
-            hotelRoomsEntitySessionBeanLocal.createNewHotelRoom(new HotelRooms(2l, "Sales Manager", false));
-            hotelRoomsEntitySessionBeanLocal.createNewHotelRoom(new HotelRooms(3l, "Sales Manager", false));
-                
-            */
+        hotelRoomsEntitySessionBeanLocal.createNewHotelRoom(new HotelRooms(1l, "Sales Manager", false));
+        hotelRoomsEntitySessionBeanLocal.createNewHotelRoom(new HotelRooms(2l, "Sales Manager", false));
+        hotelRoomsEntitySessionBeanLocal.createNewHotelRoom(new HotelRooms(3l, "Sales Manager", false));
+
+        ratesEntitySessionBeanLocal.createNewRate(new Rates("Deluxe Room","Published", 5));
+        ratesEntitySessionBeanLocal.createNewRate(new Rates("Deluxe Room","Published", 9));
+        ratesEntitySessionBeanLocal.createNewRate(new Rates("Deluxe Room","Published", 1));
+        */
+        
+     
+
   
     }
     
