@@ -5,6 +5,7 @@
  */
 package hotelreservationsystemclient;
 
+import ejb.session.stateless.CustomersEntitySessionBeanRemote;
 import ejb.session.stateless.HotelRoomsEntitySessionBeanRemote;
 import entity.Employees;
 import entity.HotelRooms;
@@ -12,13 +13,22 @@ import java.util.List;
 import javax.ejb.EJB;
 import ejb.session.stateless.EmployeesEntitySessionBeanRemote;
 import ejb.session.stateless.RatesEntitySessionBeanRemote;
+import ejb.session.stateless.ReservationsEntitySessionBeanRemote;
+import entity.Customers;
 import entity.Rates;
+import entity.Reservations;
 
 /**
  *
  * @author chenx
  */
 public class Main {
+
+    @EJB
+    private static ReservationsEntitySessionBeanRemote reservationsEntitySessionBeanRemote;
+
+    @EJB
+    private static CustomersEntitySessionBeanRemote customersEntitySessionBeanRemote;
 
     @EJB
     private static RatesEntitySessionBeanRemote ratesEntitySessionBeanRemote;
@@ -38,6 +48,9 @@ public class Main {
         List<Employees> employees = employeeEntitySessionBeanRemote.retrieveAllEmployees();
         List<HotelRooms> hotelRooms = hotelRoomsEntitySessionBeanRemote.retrieveAllHotelRooms();
         List<Rates> rates = ratesEntitySessionBeanRemote.retrieveAllRates();
+        List<Customers> customers = customersEntitySessionBeanRemote.retrieveAllCustomers();
+        List<Reservations> reservations = reservationsEntitySessionBeanRemote.retrieveAllReservations();
+
         
         for(Employees employee:employees) {
             System.out.println("Employee username: " + employee.getUsername());
@@ -49,6 +62,15 @@ public class Main {
         
         for(Rates r: rates){
             System.out.println("Rate ID: " + r.getRateID() + "Rate Type: " + r.getRateType());
+        }
+        
+        for(Customers c: customers){
+            System.out.println("passportNum: " + c.getPassportNum());
+        }
+        
+        for(Reservations r: reservations) {
+                 System.out.println("reservationID: " + r.getReservationID());
+       
         }
     }
     

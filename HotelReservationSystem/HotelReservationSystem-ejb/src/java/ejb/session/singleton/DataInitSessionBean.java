@@ -5,10 +5,14 @@
  */
 package ejb.session.singleton;
 
+import ejb.session.stateless.CustomersEntitySessionBeanLocal;
 import ejb.session.stateless.EmployeeEntitySessionBeanLocal;
 import ejb.session.stateless.HotelRoomsEntitySessionBeanLocal;
 import ejb.session.stateless.RatesEntitySessionBeanLocal;
-import entity.Rates;
+import ejb.session.stateless.ReservationsEntitySessionBeanLocal;
+import entity.Customers;
+import entity.Reservations;
+import java.util.Date;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.ejb.Singleton;
@@ -25,6 +29,12 @@ import javax.persistence.PersistenceContext;
 @LocalBean
 @Startup
 public class DataInitSessionBean {
+
+    @EJB
+    private ReservationsEntitySessionBeanLocal reservationsEntitySessionBeanLocal;
+
+    @EJB
+    private CustomersEntitySessionBeanLocal customersEntitySessionBeanLocal;
 
     @EJB
     private RatesEntitySessionBeanLocal ratesEntitySessionBeanLocal;
@@ -59,14 +69,24 @@ public class DataInitSessionBean {
         hotelRoomsEntitySessionBeanLocal.createNewHotelRoom(new HotelRooms(2l, "Sales Manager", false));
         hotelRoomsEntitySessionBeanLocal.createNewHotelRoom(new HotelRooms(3l, "Sales Manager", false));
 
-        ratesEntitySessionBeanLocal.createNewRate(new Rates("Deluxe Room","Published", 5));
-        ratesEntitySessionBeanLocal.createNewRate(new Rates("Deluxe Room","Published", 9));
-        ratesEntitySessionBeanLocal.createNewRate(new Rates("Deluxe Room","Published", 1));
+        
         */
         
      
-
+        //ratesEntitySessionBeanLocal.createNewRate(new Rates("Deluxe Room","Published", 5));
+        //ratesEntitySessionBeanLocal.createNewRate(new Rates("Deluxe Room","Published", 9));
+        //ratesEntitySessionBeanLocal.createNewRate(new Rates("Deluxe Room","Published", 1));
   
+//        Customers c1= new Customers(1l,"hello");
+//        Customers c2= new Customers(2l,"hello2");
+
+//        customersEntitySessionBeanLocal.createNewCustomer(c1);
+//        customersEntitySessionBeanLocal.createNewCustomer(c2);
+
+        //reservationsEntitySessionBeanLocal.createNewReservation(new Reservations(c1, "Deluxe Room", new Date(), new Date()));
+        
+        //    public Reservations(Customers reservedBy, String roomType, Date startDate, Date endDate) {
+
     }
     
 }
