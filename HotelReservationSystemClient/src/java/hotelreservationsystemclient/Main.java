@@ -64,7 +64,6 @@ public class Main {
             System.out.println("Rate ID: " + r.getRateID() + "Rate Type: " + r.getRateType());
         }
         
-        /*
         for(Customers c: customers){
             System.out.println("Customer passport: " + c.getPassportNum() + "Password: " + c.getPassword());
         }
@@ -72,7 +71,6 @@ public class Main {
         for(Reservations r: reservations){
             System.out.println("Reservation ID: " + r.getReservationID() + "Room Type: " + r.getRoomType());
         }
-        */
     }
     
 }

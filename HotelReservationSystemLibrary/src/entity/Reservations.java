@@ -6,14 +6,15 @@
 package entity;
 
 import java.io.Serializable;
+import java.lang.ProcessBuilder.Redirect.Type;
 import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.Temporal;
 
 /**
  *
@@ -28,17 +29,16 @@ public class Reservations implements Serializable {
     private Long reservationID;
     
     @ManyToOne(optional = false)
-    private Customers reservedBy;
+    @JoinColumn(nullable = false)
+    private Integer customerID;
     
     @Column(columnDefinition = "VARCHAR(60) CHECK (roomType IN ('Deluxe Room', 'Premier Room', 'Family Room', 'Junior Suite', 'Grand Suite')))")
     private String roomType;
     
     @Column(nullable=false)
-    @Temporal(javax.persistence.TemporalType.DATE)
     private Date startDate;
     
     @Column(nullable=false)
-    @Temporal(javax.persistence.TemporalType.DATE)
     private Date endDate;
     
     @Column(nullable=false)
@@ -50,8 +50,8 @@ public class Reservations implements Serializable {
     public Reservations() {
     }
 
-    public Reservations(Customers reservedBy, String roomType, Date startDate, Date endDate, Boolean isAllocated, Integer allocatedRoom) {
-        this.reservedBy = reservedBy;
+    public Reservations(Integer customerID, String roomType, Date startDate, Date endDate, Boolean isAllocated, Integer allocatedRoom) {
+        this.customerID = customerID;
         this.roomType = roomType;
         this.startDate = startDate;
         this.endDate = endDate;
@@ -94,17 +94,17 @@ public class Reservations implements Serializable {
     }
 
     /**
-     * @return the reservedBy
+     * @return the customerID
      */
-    public Customers getReservedBy() {
-        return reservedBy;
+    public Integer getCustomerID() {
+        return customerID;
     }
 
     /**
-     * @param reservedBy the reservedBy to set
+     * @param customerID the customerID to set
      */
-    public void setReservedBy(Customers reservedBy) {
-        this.reservedBy = reservedBy;
+    public void setCustomerID(Integer customerID) {
+        this.customerID = customerID;
     }
 
     /**

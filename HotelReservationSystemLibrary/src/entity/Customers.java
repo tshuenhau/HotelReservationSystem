@@ -6,8 +6,6 @@
 package entity;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -21,7 +19,6 @@ import javax.persistence.OneToMany;
 public class Customers implements Serializable {
 
 
-
     private static final long serialVersionUID = 1L;
     @Id
     private Long passportNum;
@@ -29,17 +26,16 @@ public class Customers implements Serializable {
     @Column(nullable = false)
     private String password;
     
-    @OneToMany(mappedBy = "reservedBy")
-    private List<Reservations> reservations;
+    @OneToMany(mappedBy = "customerID")
+    private Long reservationID;
 
     public Customers() {
-        this.reservations = new ArrayList<>();
     }
 
-    public Customers(Long passportNum, String password) {
-        this();
+    public Customers(Long passportNum, String password, Long reservationID) {
         this.passportNum = passportNum;
         this.password = password;
+        this.reservationID = reservationID;
     }
 
     
@@ -90,18 +86,18 @@ public class Customers implements Serializable {
         this.password = password;
     }
     
-
+    
     /**
-     * @return the reservations
+     * @return the reservationID
      */
-    public List<Reservations> getReservations() {
-        return reservations;
+    public Long getReservationID() {
+        return reservationID;
     }
 
     /**
-     * @param reservations the reservations to set
+     * @param reservationID the reservationID to set
      */
-    public void setReservations(List<Reservations> reservations) {
-        this.reservations = reservations;
+    public void setReservationID(Long reservationID) {
+        this.reservationID = reservationID;
     }
 }
