@@ -5,10 +5,12 @@
  */
 package ejb.session.singleton;
 
+import ejb.session.stateless.CustomersEntitySessionBeanLocal;
 import ejb.session.stateless.EmployeeEntitySessionBeanLocal;
 import ejb.session.stateless.HotelRoomsEntitySessionBeanLocal;
 import ejb.session.stateless.RatesEntitySessionBeanLocal;
-import entity.Rates;
+import ejb.session.stateless.ReservationsEntitySessionBeanLocal;
+import java.util.Date;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.ejb.Singleton;
@@ -16,6 +18,7 @@ import javax.ejb.LocalBean;
 import javax.ejb.Startup;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+
 
 /**
  *
@@ -27,6 +30,12 @@ import javax.persistence.PersistenceContext;
 public class DataInitSessionBean {
 
     @EJB
+    private CustomersEntitySessionBeanLocal customersEntitySessionBeanLocal;
+
+    @EJB
+    private ReservationsEntitySessionBeanLocal reservationsEntitySessionBeanLocal;
+
+    @EJB
     private RatesEntitySessionBeanLocal ratesEntitySessionBeanLocal;
 
     @EJB
@@ -34,11 +43,9 @@ public class DataInitSessionBean {
 
     @EJB
     private EmployeeEntitySessionBeanLocal employeeEntitySessionBeanLocal;
-
+    
     @PersistenceContext(unitName = "HotelReservationSystem-ejbPU")
     private EntityManager em;
-
-    
 
     
     // Add business logic below. (Right-click in editor and choose
@@ -58,13 +65,16 @@ public class DataInitSessionBean {
         hotelRoomsEntitySessionBeanLocal.createNewHotelRoom(new HotelRooms(1l, "Sales Manager", false));
         hotelRoomsEntitySessionBeanLocal.createNewHotelRoom(new HotelRooms(2l, "Sales Manager", false));
         hotelRoomsEntitySessionBeanLocal.createNewHotelRoom(new HotelRooms(3l, "Sales Manager", false));
-
+        
         ratesEntitySessionBeanLocal.createNewRate(new Rates("Deluxe Room","Published", 5));
         ratesEntitySessionBeanLocal.createNewRate(new Rates("Deluxe Room","Published", 9));
         ratesEntitySessionBeanLocal.createNewRate(new Rates("Deluxe Room","Published", 1));
+        
         */
         
-     
+        customersEntitySessionBeanLocal.createNewCustomer(new Customers(1, '123', 2));
+        
+        reservationsEntitySessionBeanLocal.createNewReservations(new Reservations(1, 1, new Date(), new Date(), false, 1));
 
   
     }
