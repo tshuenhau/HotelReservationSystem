@@ -30,10 +30,11 @@ import javax.persistence.PersistenceContext;
 public class DataInitSessionBean {
 
     @EJB
-    private CustomersEntitySessionBeanLocal customersEntitySessionBeanLocal;
+    private ReservationsEntitySessionBeanLocal reservationsEntitySessionBeanLocal;
 
     @EJB
-    private ReservationsEntitySessionBeanLocal reservationsEntitySessionBeanLocal;
+    private CustomersEntitySessionBeanLocal customersEntitySessionBeanLocal;
+
 
     @EJB
     private RatesEntitySessionBeanLocal ratesEntitySessionBeanLocal;
@@ -70,13 +71,14 @@ public class DataInitSessionBean {
         ratesEntitySessionBeanLocal.createNewRate(new Rates("Deluxe Room","Published", 9));
         ratesEntitySessionBeanLocal.createNewRate(new Rates("Deluxe Room","Published", 1));
         
+        
+        
+        
+        customersEntitySessionBeanLocal.createNewCustomer(new Customers(123l, "123"));
+        reservationsEntitySessionBeanLocal.createNewReservation(new Reservations(new Customers(1l, "123")), "Deluxe Room", new Date(), new Date(), false, 2);
+
         */
         
-        customersEntitySessionBeanLocal.createNewCustomer(new Customers(1, '123', 2));
-        
-        reservationsEntitySessionBeanLocal.createNewReservations(new Reservations(1, 1, new Date(), new Date(), false, 1));
-
-  
     }
     
 }

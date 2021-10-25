@@ -5,8 +5,8 @@
     <class>entity.Employees</class>
     <class>entity.HotelRooms</class>
     <class>entity.Rates</class>
-    <class>entity.Reservations</class>
     <class>entity.Customers</class>
+    <class>entity.Reservations</class>
     <exclude-unlisted-classes>true</exclude-unlisted-classes>
     <properties>
       <property name="javax.persistence.schema-generation.database.action" value="create"/>
