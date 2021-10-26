@@ -5,24 +5,23 @@
  */
 package hotelreservationsystemclient;
 
+import ejb.session.stateful.HotelReservationSessionBeanRemote;
 import ejb.session.stateless.CustomersEntitySessionBeanRemote;
 import ejb.session.stateless.HotelRoomsEntitySessionBeanRemote;
-import entity.Employees;
-import entity.HotelRooms;
-import java.util.List;
 import javax.ejb.EJB;
 import ejb.session.stateless.EmployeesEntitySessionBeanRemote;
 import ejb.session.stateless.RatesEntitySessionBeanRemote;
 import ejb.session.stateless.ReservationsEntitySessionBeanRemote;
-import entity.Customers;
-import entity.Rates;
-import entity.Reservations;
+import java.util.Scanner;
 
 /**
  *
  * @author chenx
  */
 public class Main {
+
+    @EJB
+    private static HotelReservationSessionBeanRemote hotelReservationSessionBeanRemote;
 
     @EJB
     private static ReservationsEntitySessionBeanRemote reservationsEntitySessionBeanRemote;
@@ -44,34 +43,36 @@ public class Main {
      */
     public static void main(String[] args) {
         // TODO code application logic here
+        ManagementClient managementClient = new ManagementClient(reservationsEntitySessionBeanRemote,customersEntitySessionBeanRemote,ratesEntitySessionBeanRemote,hotelRoomsEntitySessionBeanRemote,employeeEntitySessionBeanRemote);
+        ReservationClient reservationClient = new ReservationClient(hotelReservationSessionBeanRemote);
         
-        List<Employees> employees = employeeEntitySessionBeanRemote.retrieveAllEmployees();
-        List<HotelRooms> hotelRooms = hotelRoomsEntitySessionBeanRemote.retrieveAllHotelRooms();
-        List<Rates> rates = ratesEntitySessionBeanRemote.retrieveAllRates();
-        List<Customers> customers = customersEntitySessionBeanRemote.retrieveAllCustomers();
-        List<Reservations> reservations = reservationsEntitySessionBeanRemote.retrieveAllReservations();
+        Scanner scanner = new Scanner(System.in);
+        Integer response = 0;
+        
+        while(true){
+            System.out.println("*** Welcome to Holiday Reservation System ***\n");
+            
+                       
+            System.out.println("1: Management Client");
+            System.out.println("2: Reservation Client\n");
+            
+            response = 0;
+            while(response < 1 || response > 2){
+                response = scanner.nextInt();
+                if(response == 1){
+                managementClient.runApp();
+                }
+                else if(response == 2){
+                reservationClient.runApp();
+                }
 
-        
-        for(Employees employee:employees) {
-            System.out.println("Employee username: " + employee.getUsername());
+            }
+
+
+
         }
         
-        for(HotelRooms h: hotelRooms){
-            System.out.println("Hotel Room ID: " + h.getHotelRoomID());
-        }
-        
-        for(Rates r: rates){
-            System.out.println("Rate ID: " + r.getRateID() + "Rate Type: " + r.getRateType());
-        }
-        
-        for(Customers c: customers){
-            System.out.println("passportNum: " + c.getPassportNum());
-        }
-        
-        for(Reservations r: reservations) {
-                 System.out.println("reservationID: " + r.getReservationID());
-       
-        }
+
     }
     
 }

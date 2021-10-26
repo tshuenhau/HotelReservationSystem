@@ -24,8 +24,7 @@ public class ReservationsEntitySessionBean implements ReservationsEntitySessionB
 
     @Override
     public List<Reservations> retrieveAllReservations() {
-        Query query = em.createQuery("Select e FROM Reservations e");
-        
+        Query query = em.createQuery("Select e FROM Reservations e");   
         return query.getResultList();
     }
     
