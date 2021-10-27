@@ -6,11 +6,11 @@
 package hotelreservationsystemclient;
 
 import ejb.session.stateful.HotelReservationSessionBeanRemote;
-import entity.HotelRooms;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -97,11 +97,11 @@ public class ReservationClient {
             System.out.println("*** Showing available rooms for: " + outputDateFormat.format(checkInDate) + " to " + outputDateFormat.format(checkOutDate) + "***\n");
             
             System.out.printf("%8s%22s   %s\n", "Seq. No.", "Date/Time", "Itinerary");
-            List<HotelRooms> hotelRooms = hotelReservationSessionBeanRemote.searchHotelRooms(checkInDate,checkOutDate);
+            Map<String,List<Integer>> availability = hotelReservationSessionBeanRemote.searchHotelRooms(checkInDate,checkOutDate);
             
-            for(HotelRooms hotelRoom: hotelRooms){
-                System.out.println("Hotel Room ID: " + hotelRoom.getHotelRoomID());
-            }
+            availability.entrySet().forEach(rooms -> {
+                System.out.println(rooms);
+             });
 
         }
         catch(ParseException ex)

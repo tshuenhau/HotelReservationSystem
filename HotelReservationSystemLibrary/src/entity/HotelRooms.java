@@ -30,8 +30,7 @@ public class HotelRooms implements Serializable {
     @Column(nullable = false)
     private Boolean status;
 
-    public HotelRooms(Long hotelRoomID, String rmType, Boolean status) {
-        this.hotelRoomID = hotelRoomID;
+    public HotelRooms(String rmType, Boolean status) {
         this.rmType = rmType;
         this.status = status;
     }

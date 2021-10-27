@@ -56,7 +56,14 @@ public class DataInitSessionBean {
     
     @PostConstruct
     public void postConstruct() {
-        
+//                hotelRoomsEntitySessionBeanLocal.createNewHotelRoom(new HotelRooms("Deluxe Room", false));
+//                hotelRoomsEntitySessionBeanLocal.createNewHotelRoom(new HotelRooms("Deluxe Room", false));
+//                hotelRoomsEntitySessionBeanLocal.createNewHotelRoom(new HotelRooms("Premier Room", false));
+//                hotelRoomsEntitySessionBeanLocal.createNewHotelRoom(new HotelRooms("Premier Room", false));
+//                hotelRoomsEntitySessionBeanLocal.createNewHotelRoom(new HotelRooms("Premier Room", false));
+//                hotelRoomsEntitySessionBeanLocal.createNewHotelRoom(new HotelRooms("Family Room", false));
+//                hotelRoomsEntitySessionBeanLocal.createNewHotelRoom(new HotelRooms("Grand Suite", true));
+
         /*
         if(em.find(Employees.class, "employees1") == null){
             employeeEntitySessionBeanLocal.createNewEmployee(new Employees("employee1", "Sales Manager", "123"));
@@ -87,6 +94,8 @@ public class DataInitSessionBean {
         
         //    public Reservations(Customers reservedBy, String roomType, Date startDate, Date endDate) {
 
+        //Customers c1= new Customers(1l,"hello");
+        //reservationsEntitySessionBeanLocal.createNewReservation(new Reservations(c1, "Deluxe Room", new Date(1111,11,11), new Date(1111,11,11)));
     }
     
 }
