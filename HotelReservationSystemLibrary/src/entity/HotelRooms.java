@@ -24,7 +24,7 @@ public class HotelRooms implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long hotelRoomID;
     
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "VARCHAR(60) CHECK (rmType IN ('Deluxe Room', 'Premier Room', 'Family Room', 'Junior Suite', 'Grand Suite'))")
     private String rmType;
     
     @Column(nullable = false)

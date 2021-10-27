@@ -97,10 +97,10 @@ public class ReservationClient {
             System.out.println("*** Showing available rooms for: " + outputDateFormat.format(checkInDate) + " to " + outputDateFormat.format(checkOutDate) + "***\n");
             
             System.out.printf("%8s%22s   %s\n", "Seq. No.", "Date/Time", "Itinerary");
-            Map<String,List<Integer>> availability = hotelReservationSessionBeanRemote.searchHotelRooms(checkInDate,checkOutDate);
+            Map<String, List<Integer>> availability = hotelReservationSessionBeanRemote.searchHotelRooms(checkInDate,checkOutDate);
             
             availability.entrySet().forEach(rooms -> {
-                System.out.println(rooms);
+                System.out.println(rooms.getKey() + "      " + rooms.getValue().get(0) + "    " + rooms.getValue().get(1));
              });
 
         }

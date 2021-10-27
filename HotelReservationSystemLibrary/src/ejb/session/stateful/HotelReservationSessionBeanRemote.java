@@ -20,6 +20,6 @@ public interface HotelReservationSessionBeanRemote {
 
     public void remove();
     
-    public Map<String,List<Integer>> searchHotelRooms(Date checkInDate, Date checkOutDate);
+    public Map<String, List<Integer>> searchHotelRooms(Date checkInDate, Date checkOutDate);
     
 }

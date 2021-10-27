@@ -12,6 +12,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Temporal;
 
 /**
  *
@@ -35,9 +36,11 @@ public class Rates implements Serializable {
     private Integer price;
     
     @Column(nullable = true)
+    @Temporal(javax.persistence.TemporalType.DATE)    
     private Date startDate=null;
     
     @Column(nullable = true)
+    @Temporal(javax.persistence.TemporalType.DATE)    
     private Date endDate=null;
 
     public Rates(String roomType, String rateType, Integer price) {
