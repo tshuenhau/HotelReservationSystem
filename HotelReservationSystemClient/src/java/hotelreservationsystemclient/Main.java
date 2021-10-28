@@ -54,25 +54,30 @@ public class Main {
             
                        
             System.out.println("1: Management Client");
-            System.out.println("2: Reservation Client\n");
+            System.out.println("2: Reservation Client");
+            System.out.println("3: Exit\n");
             
             response = 0;
-            while(response < 1 || response > 2){
+            while(response < 1 || response > 3){
+                System.out.print("> ");
                 response = scanner.nextInt();
                 if(response == 1){
-                managementClient.runApp();
+                    managementClient.runApp();
                 }
                 else if(response == 2){
-                reservationClient.runApp();
+                    reservationClient.runApp();
                 }
-
+                else if (response == 3){
+                    break;
+                }
+                else {
+                    System.out.println("Invalid option, please try again!\n");
+                }
             }
-
-
-
+            if (response == 3){
+                System.out.println("Thanks for using our services!");
+                break;
+            }
         }
-        
-
     }
-    
 }

@@ -11,6 +11,7 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import util.exception.InvalidLoginCredentialException;
 
 /**
  *
@@ -37,5 +38,19 @@ public class EmployeeEntitySessionBean implements EmployeesEntitySessionBeanRemo
         em.persist(newEmployee);
         
         return newEmployee.getUsername();
+    }
+    
+    public Employees login(String username, String password) throws InvalidLoginCredentialException {
+        List<Employees> employees = retrieveAllEmployees();
+        
+        for(Employees employee:employees)
+        {
+            if(employee.getUsername().equals(username) && employee.getPassword().equals(password))
+            {
+                return employee;
+            }
+        }
+        
+        throw new InvalidLoginCredentialException("Invalid login credential");
     }
 }

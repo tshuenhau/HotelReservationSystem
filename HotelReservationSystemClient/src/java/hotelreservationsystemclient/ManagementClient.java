@@ -10,13 +10,9 @@ import ejb.session.stateless.EmployeesEntitySessionBeanRemote;
 import ejb.session.stateless.HotelRoomsEntitySessionBeanRemote;
 import ejb.session.stateless.RatesEntitySessionBeanRemote;
 import ejb.session.stateless.ReservationsEntitySessionBeanRemote;
-import entity.Customers;
 import entity.Employees;
-import entity.HotelRooms;
-import entity.Rates;
-import entity.Reservations;
-import java.util.List;
-import javax.ejb.EJB;
+import java.util.Scanner;
+import util.exception.InvalidLoginCredentialException;
 
 /**
  *
@@ -32,44 +28,92 @@ public class ManagementClient {
 
     private HotelRoomsEntitySessionBeanRemote hotelRoomsEntitySessionBeanRemote;
 
-    private EmployeesEntitySessionBeanRemote employeeEntitySessionBeanRemote;
+    private EmployeesEntitySessionBeanRemote employeesEntitySessionBeanRemote;
+    
+    private Employees currentEmployee;
+    
+    
+    public ManagementClient() {
+        this.currentEmployee = null;
+    }
 
     public ManagementClient(ReservationsEntitySessionBeanRemote reservationsEntitySessionBeanRemote, CustomersEntitySessionBeanRemote customersEntitySessionBeanRemote, RatesEntitySessionBeanRemote ratesEntitySessionBeanRemote, HotelRoomsEntitySessionBeanRemote hotelRoomsEntitySessionBeanRemote, EmployeesEntitySessionBeanRemote employeeEntitySessionBeanRemote) {
         this.reservationsEntitySessionBeanRemote = reservationsEntitySessionBeanRemote;
         this.customersEntitySessionBeanRemote = customersEntitySessionBeanRemote;
         this.ratesEntitySessionBeanRemote = ratesEntitySessionBeanRemote;
         this.hotelRoomsEntitySessionBeanRemote = hotelRoomsEntitySessionBeanRemote;
-        this.employeeEntitySessionBeanRemote = employeeEntitySessionBeanRemote;
+        this.employeesEntitySessionBeanRemote = employeeEntitySessionBeanRemote;
     }
     
-    
     public void runApp(){
-        List<Employees> employees = employeeEntitySessionBeanRemote.retrieveAllEmployees();
-        List<HotelRooms> hotelRooms = hotelRoomsEntitySessionBeanRemote.retrieveAllHotelRooms();
-        List<Rates> rates = ratesEntitySessionBeanRemote.retrieveAllRates();
-        List<Customers> customers = customersEntitySessionBeanRemote.retrieveAllCustomers();
-        List<Reservations> reservations = reservationsEntitySessionBeanRemote.retrieveAllReservations();
+        Scanner scanner = new Scanner(System.in);
 
-        
-        for(Employees employee:employees) {
-            System.out.println("Employee username: " + employee.getUsername());
+        Integer response = 0;
+
+        while(true){
+            System.out.println("*** Welcome to Holiday Management Client ***\n");
+                        
+            if(currentEmployee != null){
+                System.out.println("You are currently logged in as " + currentEmployee.getUsername() + "\n");
+            }
+            else {            
+                System.out.println("1: Login");
+            }
+            
+            System.out.println("2: Exit\n");
+            
+            response = 0;
+
+            while(response < 1 || response > 2){                
+                System.out.print("> ");
+                response = scanner.nextInt();
+                if(response == 1 ){
+                    if(currentEmployee == null){
+                        try {
+                            doLogin();
+                            System.out.println("Login successful as " + currentEmployee.getUsername() + "!\n");                                                
+                        }
+                        catch(InvalidLoginCredentialException ex){
+                            System.out.println("Invalid login credential: " + ex.getMessage() + "\n");
+                        }
+                    }
+                    else {
+                        System.out.println("You are already login as " + currentEmployee.getUsername() + "\n");
+                    }
+                }
+                else if(response == 2 ){
+                    //DO REGISTER STUFF
+                }
+                else if (response == 3){
+                    //
+                }
+            }
+            
+            if(response == 2){
+                System.out.println("Exited Reservation Client\n");
+                break;
+            }
         }
-        
-        for(HotelRooms h: hotelRooms){
-            System.out.println("Hotel Room ID: " + h.getHotelRoomID());
-        }
-        
-        for(Rates r: rates){
-            System.out.println("Rate ID: " + r.getRateID() + "Rate Type: " + r.getRateType());
-        }
-        
-        for(Customers c: customers){
-            System.out.println("passportNum: " + c.getPassportNum());
-        }
-        
-        for(Reservations r: reservations) {
-                 System.out.println("reservationID: " + r.getReservationID());
-       
-        }
+    }
+    
+        private void doLogin() throws InvalidLoginCredentialException {
+            Scanner scanner = new Scanner(System.in);
+            String email = "";
+            String password = "";
+
+            System.out.println("*** Holiday Reservation System :: Login ***\n");
+            System.out.print("Enter email> ");
+            email = scanner.nextLine().trim();
+            System.out.print("Enter password> ");
+            password = scanner.nextLine().trim();
+
+            if(email.length() > 0 && password.length() > 0)
+            {
+                currentEmployee = employeesEntitySessionBeanRemote.login(email, password);
+            }
+            else
+            {
+                throw new InvalidLoginCredentialException("Missing login credential!");
+            }
     }
 }

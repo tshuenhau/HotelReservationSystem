@@ -50,10 +50,10 @@ public class ReservationClient {
             System.out.println("1: Login (NOT YET IMPLEMENTED)");
             System.out.println("2: Register (NOT YET IMPLEMENTED)");
             System.out.println("3: Search Hotel Room");
-
             System.out.println("4: Exit\n");
 
-            while(response < 1 || response > 4){
+            while(response < 1 || response > 4){                
+                System.out.print("> ");
                 response = scanner.nextInt();
                 if(response == 1 ){
                     //DO LOGIN STUFF
@@ -69,12 +69,11 @@ public class ReservationClient {
 
             }
             
-            if(response == 4)
-            {
+            if(response == 4){
+                System.out.println("Exited Reservation Client\n");
                 break;
             }
         }
-        
     }
     
     private void doSearchRoom(){
