@@ -65,6 +65,7 @@ public class ReservationClient {
                 else if (response == 3)
                 {
                     doSearchRoom();
+                    doReserveRoom();
                 }
 
             }
@@ -76,6 +77,51 @@ public class ReservationClient {
         }
     }
     
+    private void doReserveRoom(){
+        
+        //MAYBE DO TYPE IN ROOM NAME + QUANTITY
+        Scanner scanner = new Scanner(System.in);
+
+        int response = 0;
+        while(true){
+            System.out.println("*** Holiday Reservation System :: Reserve Hotel Room ***\n");
+            
+            response = 0;
+            System.out.println("1: Reserve Deluxe Room");
+            System.out.println("2: Reserve Premier Room");
+            System.out.println("3: Reserve Family Room");
+            System.out.println("4: Reserve Grand Suite");
+            System.out.println("5: Reserve Junior Suite");
+
+            System.out.println("6: Exit\n");
+
+            while(response < 1 || response > 6){                
+                System.out.print("> ");
+                response = scanner.nextInt();
+                if(response == 1 ){
+                    //DO LOGIN STUFF
+                }
+                
+                else if(response == 2 ){
+                    //DO REGISTER STUFF
+                }
+                else if (response == 3)
+                {
+         
+                }
+
+            }
+            
+            if(response == 6){
+                System.out.println("Exited Reservation Menu\n");
+                break;
+            }
+        }
+        while(true){
+
+        }
+
+    }
     private void doSearchRoom(){
         
          try{
@@ -95,11 +141,13 @@ public class ReservationClient {
             
             System.out.println("*** Showing available rooms for: " + outputDateFormat.format(checkInDate) + " to " + outputDateFormat.format(checkOutDate) + "***\n");
             
-            System.out.printf("%8s%22s   %s\n", "Seq. No.", "Date/Time", "Itinerary");
+            System.out.printf("%8s%22s   %s\n", "Room Type", "Availability ", "Price");
             Map<String, List<Integer>> availability = hotelReservationSessionBeanRemote.searchHotelRooms(checkInDate,checkOutDate);
             
             availability.entrySet().forEach(rooms -> {
-                System.out.println(rooms.getKey() + "      " + rooms.getValue().get(0) + "    " + rooms.getValue().get(1));
+                System.out.printf("%8s%15s           %s\n", rooms.getKey() , rooms.getValue().get(0), rooms.getValue().get(1));
+
+                //System.out.println(rooms.getKey() + "      " + rooms.getValue().get(0) + "    " + rooms.getValue().get(1));
              });
 
         }

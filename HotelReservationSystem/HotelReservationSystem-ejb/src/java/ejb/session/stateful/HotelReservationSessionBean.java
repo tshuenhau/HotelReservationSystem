@@ -11,10 +11,12 @@ import ejb.session.stateless.ReservationsEntitySessionBeanLocal;
 import entity.HotelRooms;
 import entity.Rates;
 import entity.Reservations;
-import java.time.temporal.ChronoUnit;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -38,10 +40,9 @@ public class HotelReservationSessionBean implements HotelReservationSessionBeanR
 
     @EJB
     private HotelRoomsEntitySessionBeanLocal hotelRoomsEntitySessionBeanLocal;
-    
+    SimpleDateFormat outputDateFormat = new SimpleDateFormat("dd/MM/yyyy");//"dd/MM/yyyy hh:mm a"
     Date checkInDate;
     Date checkOutDate;
-    Integer dayCount;
     private List<Rates> rates;
     private Map<String,List<Integer>> availability = new HashMap();
     private Map<String,List<Integer>> rooms = new HashMap();//room type -- availability -- cost
@@ -67,11 +68,11 @@ public class HotelReservationSessionBean implements HotelReservationSessionBeanR
     public Map<String, List<Integer>> searchHotelRooms(Date checkInDate, Date checkOutDate){
         this.checkInDate = checkInDate;
         this.checkOutDate = checkOutDate;
-        availability.put("Deluxe Room", Arrays.asList(0,0,12));
-        availability.put("Premier Room", Arrays.asList(0,0,12));
-        availability.put("Family Room", Arrays.asList(0,0,12));
-        availability.put("Junior Suite", Arrays.asList(0,0,10));
-        availability.put("Grand Suite", Arrays.asList(0,0,10));
+        availability.put("Deluxe Room", Arrays.asList(0,0,0));
+        availability.put("Premier Room", Arrays.asList(0,0,0));
+        availability.put("Family Room", Arrays.asList(0,0,0));
+        availability.put("Junior Suite", Arrays.asList(0,0,0));
+        availability.put("Grand Suite", Arrays.asList(0,0,0));
 
         List<HotelRooms> allHotelRooms = hotelRoomsEntitySessionBeanLocal.retrieveAllHotelRooms();
         
@@ -134,29 +135,127 @@ public class HotelReservationSessionBean implements HotelReservationSessionBeanR
     }
     
     private void doCalculateCost(){
-        System.out.println("Calculate  ");
-
+        System.out.println("Calculating Rates...");
         rates = ratesEntitySessionBeanLocal.retrieveAllRates();
         List<Rates> relaventRates = new ArrayList();
         for(Rates r : rates) {
 //                    System.out.println("Iterating...  ");
-
-            if(r.getRateType() == "Normal"){
+            if(r.getRateType().equals("Normal")){
+//                System.out.println("Normal...  ");
+//                System.out.println(r);
                 relaventRates.add(r);
             }
-            else if(r.getRateType().equals("Peak") && r.getStartDate() != null && r.getEndDate() != null){
-                                    System.out.println("Peak...  ");
+            else if((r.getRateType().equals("Peak") || r.getRateType().equals("Promo") ) && r.getStartDate() != null && r.getEndDate() != null){
+                //System.out.println("Peak/Promo...  ");
+                relaventRates.add(r);
+            }
+        }
+        
+        for(Rates r : relaventRates){
+            System.out.println(r);
+        }
+        
+        GregorianCalendar gcal = new GregorianCalendar();
+        gcal.setTime(checkInDate);
+        //System.out.println("Calendar");
+        //System.out.println(outputDateFormat.format(checkInDate));
 
-                if(r.getStartDate().compareTo(checkOutDate) <= 0 && r.getEndDate().compareTo(checkInDate) >= 0){
-                    if(r.getStartDate().compareTo(checkInDate) >= 0 && r.getEndDate().compareTo(checkOutDate) <=0){
-                        //get time range from
-                        Long time = ChronoUnit.DAYS.between(r.getStartDate().toInstant(),r.getEndDate().toInstant());
-                        System.out.println("DAYS  " + time);
+        while(!gcal.getTime().after(checkOutDate)){
+            //System.out.println(cStart);
+            Date d  = gcal.getTime();
+            if(d.equals(checkOutDate)){break;}
+            System.out.println(outputDateFormat.format(d));
+            //need to call sort first. need way to get promo first
+            List<Rates> promoRates = new ArrayList<>();
+            List<Rates> peakRates = new ArrayList<>();
+            List<Rates> normalRates = new ArrayList<>();
+            List<Rates> publishedRates = new ArrayList<>();
+
+            for(Rates r: relaventRates){
+                if(r.getRateType().equals("Promo")){
+                    promoRates.add(r);
+                }
+                else if(r.getRateType().equals("Peak")){
+                    peakRates.add(r);
+                }    
+                else if(r.getRateType().equals("Normal")){
+                    normalRates.add(r);
+                }     
+                else if(r.getRateType().equals("Published")){
+                    publishedRates.add(r);
+                }     
+            }
+            
+        
+            
+            for(Map.Entry room : rooms.entrySet()){
+                Boolean prioritySet = false;
+                for(Rates r: promoRates){
+                    if(room.getKey().equals(r.getRoomType())){
+                        if(r.getRateType().equals("Promo") && r.getStartDate() != null && r.getEndDate()!= null){ // also need to check if this date is within the range
+                            if(isWithinRange(d, r.getStartDate(),r.getEndDate())){
+                            //Map<String, List<Integer>> result = new HashMap<String, List<Integer>>();
+                                List<Integer> temp = (List<Integer>) room.getValue();
+                                System.out.println(temp.toString());
+                                temp.set(1,temp.get(1) + r.getPrice());
+                                System.out.println("this date " + outputDateFormat.format(d) + " using rate " + r.toString());
+                                rooms.put(r.getRoomType(), temp);
+                                prioritySet = true;
+                                break;
+                            }
+                        }
+                       
+                        
+                    }
+                }
+                
+                if(prioritySet != true) {
+                    for(Rates r : peakRates){
+                        if(room.getKey().equals(r.getRoomType())){
+                            if(r.getRateType().equals("Peak") && r.getStartDate() != null && r.getEndDate()!= null){ // also need to check if this date is within the range
+                                if(isWithinRange(d, r.getStartDate(),r.getEndDate())){
+                                //Map<String, List<Integer>> result = new HashMap<String, List<Integer>>();
+                                    List<Integer> temp = (List<Integer>) room.getValue();
+                                    System.out.println(temp.toString());
+                                    temp.set(1,temp.get(1) + r.getPrice());
+                                    System.out.println("this date " + outputDateFormat.format(d) + " using rate " + r.toString());
+                                    rooms.put(r.getRoomType(), temp);
+                                    prioritySet = true;
+                                    break;
+                                }
+                            }                
+                        }
+
+                    }
+                }
+                if(prioritySet != true) {
+                    for(Rates r : normalRates){
+                        if(room.getKey().equals(r.getRoomType())){
+                            if(r.getRateType().equals("Normal")){ 
+                                List<Integer> temp = (List<Integer>) room.getValue();
+                                System.out.println(temp.toString());
+                                temp.set(1,temp.get(1) + r.getPrice());
+                                System.out.println("this date " + outputDateFormat.format(d) + " using rate " + r.toString());
+                                rooms.put(r.getRoomType(), temp);
+                                prioritySet = true;
+                                break;
+                                
+                            }                
+                        }
+
                     }
                 }
             }
+            
+            gcal.add(Calendar.DAY_OF_MONTH,1);
         }
+        //Loop through each date and check if date present in promo, then peak, else normal
+//        for(LocalDate date = checkInDate.toInstant().(); date.isBefore(checkOutDate.toInstant()); date = date.plusDays(1)){
+//        
+//        }
     }
     
- 
+    public boolean isWithinRange(Date date, Date startDate, Date endDate){
+        return !(date.before(startDate) || date.after(endDate));
+    }
 }
