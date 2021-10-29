@@ -303,6 +303,9 @@ public class HotelReservationSessionBean implements HotelReservationSessionBeanR
     }
     
     public List<Reservations> confirmReservations(){
+        for(Reservations r: reservations){
+            reservationsEntitySessionBeanLocal.createNewReservation(r);
+        }
     
         return reservations;
     }

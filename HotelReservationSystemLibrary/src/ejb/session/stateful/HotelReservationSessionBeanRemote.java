@@ -27,5 +27,7 @@ public interface HotelReservationSessionBeanRemote {
     public List<Reservations> addReservation (String roomType, Integer quantity) throws InvalidRoomTypeException, InvalidRoomQuantityException;
 
     public boolean isWithinRange(Date date, Date startDate, Date endDate);
+
+    public List<Reservations> confirmReservations();
     
 }

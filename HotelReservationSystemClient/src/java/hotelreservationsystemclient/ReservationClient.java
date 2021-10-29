@@ -120,6 +120,8 @@ public class ReservationClient {
                     System.out.println("2: Cancel");
                     reserveResponse = scanner.nextInt();
                     if(reserveResponse == 1){
+                        
+                        hotelReservationSessionBeanRemote.confirmReservations();
                         System.out.println("Confirmed\n");
 
                     }
