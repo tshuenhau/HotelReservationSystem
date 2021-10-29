@@ -51,7 +51,7 @@ public class HotelReservationSessionBean implements HotelReservationSessionBeanR
     List<Rates> peakRates = new ArrayList<>();
     List<Rates> normalRates = new ArrayList<>();
     List<Rates> publishedRates = new ArrayList<>();
-    private Map<String,List<Integer>> availability = new HashMap();
+    //private Map<String,List<Integer>> availability = new HashMap();
     private Map<String,List<Integer>> rooms = new HashMap();//room type -- availability -- cost
     
     List<Reservations> reservations = new ArrayList<>();
@@ -66,9 +66,8 @@ public class HotelReservationSessionBean implements HotelReservationSessionBeanR
     @PreDestroy
     public void preDestroy()
     {
-        if(availability != null || rooms != null)
+        if(rooms != null)
         {
-            availability.clear();
             rooms.clear();
         }
     }
@@ -77,27 +76,35 @@ public class HotelReservationSessionBean implements HotelReservationSessionBeanR
     public Map<String, List<Integer>> searchHotelRooms(Date checkInDate, Date checkOutDate){
         this.checkInDate = checkInDate;
         this.checkOutDate = checkOutDate;
-        availability.put("Deluxe Room", Arrays.asList(0,0,0));
-        availability.put("Premier Room", Arrays.asList(0,0,0));
-        availability.put("Family Room", Arrays.asList(0,0,0));
-        availability.put("Junior Suite", Arrays.asList(0,0,0));
-        availability.put("Grand Suite", Arrays.asList(0,0,0));
+//        availability.put("Deluxe Room", Arrays.asList(0,0,0));
+//        availability.put("Premier Room", Arrays.asList(0,0,0));
+//        availability.put("Family Room", Arrays.asList(0,0,0));
+//        availability.put("Junior Suite", Arrays.asList(0,0,0));
+//        availability.put("Grand Suite", Arrays.asList(0,0,0));
+        
+        rooms.put("Deluxe Room", Arrays.asList(0,0,0));
+        rooms.put("Premier Room", Arrays.asList(0,0,0));
+        rooms.put("Family Room", Arrays.asList(0,0,0));
+        rooms.put("Junior Suite", Arrays.asList(0,0,0));
+        rooms.put("Grand Suite", Arrays.asList(0,0,0));     
 
         List<HotelRooms> allHotelRooms = hotelRoomsEntitySessionBeanLocal.retrieveAllHotelRooms();
         
         for(HotelRooms hotelRoom : allHotelRooms){
-            if(hotelRoom.getStatus() == false){continue;}
+            if(hotelRoom.getStatus() == false){
+                System.out.println("False");
+                continue;}
             List<Integer> currList = new ArrayList<Integer>();
 
-            if(availability.containsKey(hotelRoom.getRmType())){
-                currList = availability.get(hotelRoom.getRmType());
+            if(rooms.containsKey(hotelRoom.getRmType())){
+                currList = rooms.get(hotelRoom.getRmType());
             }
             List<Integer> newList = new ArrayList<Integer>();
             newList.add(currList.get(0) + 1);
             newList.add(currList.get(1));
-            newList.add(currList.get(2));
+            //newList.add(currList.get(2));
 
-            availability.put(hotelRoom.getRmType(), newList);
+            rooms.put(hotelRoom.getRmType(), newList);
         }
         List<Reservations> allReservations = reservationsEntitySessionBeanLocal.retrieveAllReservations();
         List<Reservations> toRemove = new ArrayList<Reservations>();
@@ -113,33 +120,33 @@ public class HotelReservationSessionBean implements HotelReservationSessionBeanR
         
         for(Reservations reservation : allReservations){
             List<Integer> currList = new ArrayList<Integer>();
-            if(availability.containsKey(reservation.getRoomType())){
-                currList = availability.get(reservation.getRoomType());
+            if(rooms.containsKey(reservation.getRoomType())){
+                currList = rooms.get(reservation.getRoomType());
             }
             List<Integer> newList = new ArrayList<Integer>();
-            newList.add(currList.get(0));
-            newList.add(currList.get(1) + 1);
-            newList.add(currList.get(2));
+            newList.add(currList.get(0)-1);
+            newList.add(currList.get(1));
+            //newList.add(currList.get(2));
 
             
          
-            availability.put(reservation.getRoomType(), newList);
+            rooms.put(reservation.getRoomType(), newList);
         }
         
-        Map<String, List<Integer>> result = new HashMap<String, List<Integer>>();
-        
-        availability.entrySet().forEach(_item -> {
-            System.out.println(_item);
-            int count = _item.getValue().get(0)-_item.getValue().get(1);
-            List<Integer> temp = new ArrayList<Integer>();
-            temp.add(count);
-            temp.add(_item.getValue().get(2));
-            result.put(_item.getKey(), temp);
-        });
-        rooms = result;
+//        Map<String, List<Integer>> result = new HashMap<String, List<Integer>>();
+//        
+//        availability.entrySet().forEach(_item -> {
+//            System.out.println(_item);
+//            int count = _item.getValue().get(0)-_item.getValue().get(1);
+//            List<Integer> temp = new ArrayList<Integer>();
+//            temp.add(count);
+//            temp.add(_item.getValue().get(2));
+//            result.put(_item.getKey(), temp);
+//        });
+//        rooms = result;
         doCalculateCost();
    
-        return result; //! REMEMBER TO CHANGE THIS
+        return rooms; 
     
     }
     
@@ -269,25 +276,24 @@ public class HotelReservationSessionBean implements HotelReservationSessionBeanR
     
     @Override
     public List<Reservations> addReservation(String roomType, Integer quantity) throws InvalidRoomTypeException, InvalidRoomQuantityException{
-        if(availability.containsKey(roomType)){
-            if(availability.get(roomType).get(0) >= quantity){
+        if(rooms.containsKey(roomType)){
+            if(rooms.get(roomType).get(0) >= quantity){
                List<Integer> newList = new ArrayList<>();
-               Integer qty = availability.get(roomType).get(0);
+               Integer qty = rooms.get(roomType).get(0);
                 //need to update quantity also
                 for(int i = 0; i < quantity; i++){
-                    Reservations newReservation = new Reservations(new Customers(1l,"wd"), roomType, checkInDate, checkOutDate);              
+                    Reservations newReservation = new Reservations(new Customers(1l,"wd"), roomType, checkInDate, checkOutDate,(float)rooms.get(roomType).get(1));              
                     reservations.add(newReservation);
                     qty -=1; 
 
                 }
                 newList.add(qty);
-                newList.add(availability.get(roomType).get(1));
-                newList.add(availability.get(roomType).get(2));
-                availability.put(roomType, newList);
+                newList.add(rooms.get(roomType).get(1));
+                rooms.put(roomType, newList);
 
             }
             else {
-                throw new InvalidRoomQuantityException("Invalid Quantity for " + roomType + " Only " + availability.get(roomType).get(0) + " rooms available");
+                throw new InvalidRoomQuantityException("Invalid Quantity for " + roomType + " Only " + rooms.get(roomType).get(0) + " rooms available");
 
                 //throw invalid quantity
             }
@@ -309,4 +315,27 @@ public class HotelReservationSessionBean implements HotelReservationSessionBeanR
     
         return reservations;
     }
+    
+    public Integer getTotalCost(){
+        int cost = 0;
+        for(Reservations r: reservations){
+            cost += r.getCost();
+        }
+    
+        return cost;
+    } 
+    
+    public Map<String, Integer> getRoomQuantities(){ // ROom Type --- Quantity
+        Map<String, Integer> result = new HashMap<String, Integer>();
+        for(Reservations r: reservations){
+            if(result.containsKey(r.getRoomType())){
+                result.put(r.getRoomType(), result.get(r.getRoomType()) + 1);
+            }
+            else{
+                result.put(r.getRoomType(), 1);
+            }
+        }
+        return result;
+    }
+
 }

@@ -29,5 +29,9 @@ public interface HotelReservationSessionBeanRemote {
     public boolean isWithinRange(Date date, Date startDate, Date endDate);
 
     public List<Reservations> confirmReservations();
+
+    public Map<String, Integer> getRoomQuantities();
+
+    public Integer getTotalCost();
     
 }

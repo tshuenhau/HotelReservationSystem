@@ -6,13 +6,13 @@
 package entity;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
 
@@ -41,6 +41,10 @@ public class Reservations implements Serializable {
     @Column(nullable=false)
     @Temporal(javax.persistence.TemporalType.DATE)
     private Date endDate;
+    
+    
+    @Column(nullable=false)
+    private Float cost = 0f;
 
 
     @Column(nullable=true)
@@ -49,11 +53,12 @@ public class Reservations implements Serializable {
     public Reservations() {
     }
 
-    public Reservations(Customers reservedBy, String roomType, Date startDate, Date endDate) {
+    public Reservations(Customers reservedBy, String roomType, Date startDate, Date endDate, Float cost) {
         this.reservedBy = reservedBy;
         this.roomType = roomType;
         this.startDate = startDate;
         this.endDate = endDate;
+        this.cost = cost;
     }
     
     public Long getReservationID() {
@@ -158,6 +163,20 @@ public class Reservations implements Serializable {
      */
     public void setAllocatedRoom(Integer allocatedRoom) {
         this.allocatedRoom = allocatedRoom;
+    }
+
+    /**
+     * @return the cost
+     */
+    public Float getCost() {
+        return cost;
+    }
+
+    /**
+     * @param cost the cost to set
+     */
+    public void setCost(Float cost) {
+        this.cost = cost;
     }
     
 }
