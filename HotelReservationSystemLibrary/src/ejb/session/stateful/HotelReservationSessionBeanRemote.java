@@ -5,11 +5,13 @@
  */
 package ejb.session.stateful;
 
-import entity.HotelRooms;
+import entity.Reservations;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import javax.ejb.Remote;
+import util.exception.InvalidRoomQuantityException;
+import util.exception.InvalidRoomTypeException;
 
 /**
  *
@@ -21,5 +23,9 @@ public interface HotelReservationSessionBeanRemote {
     public void remove();
     
     public Map<String, List<Integer>> searchHotelRooms(Date checkInDate, Date checkOutDate);
+
+    public List<Reservations> addReservation (String roomType, Integer quantity) throws InvalidRoomTypeException, InvalidRoomQuantityException;
+
+    public boolean isWithinRange(Date date, Date startDate, Date endDate);
     
 }

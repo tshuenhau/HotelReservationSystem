@@ -28,11 +28,13 @@ public class HotelRooms implements Serializable {
     private String rmType;
     
     @Column(nullable = false)
-    private Boolean status;
+    private Boolean status = true;
+    
+    @Column(nullable = false)
+    private Boolean isAllocated = false;
 
-    public HotelRooms(String rmType, Boolean status) {
+    public HotelRooms(String rmType) {
         this.rmType = rmType;
-        this.status = status;
     }
 
     public HotelRooms() {
@@ -97,6 +99,20 @@ public class HotelRooms implements Serializable {
      */
     public void setStatus(Boolean status) {
         this.status = status;
+    }
+
+    /**
+     * @return the isAllocated
+     */
+    public Boolean getIsAllocated() {
+        return isAllocated;
+    }
+
+    /**
+     * @param isAllocated the isAllocated to set
+     */
+    public void setIsAllocated(Boolean isAllocated) {
+        this.isAllocated = isAllocated;
     }
     
 }

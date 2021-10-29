@@ -42,8 +42,6 @@ public class Reservations implements Serializable {
     @Temporal(javax.persistence.TemporalType.DATE)
     private Date endDate;
 
-    @Column(nullable=false)
-    private Boolean isAllocated = false;
 
     @Column(nullable=true)
     private Integer allocatedRoom;
@@ -147,19 +145,6 @@ public class Reservations implements Serializable {
         this.endDate = endDate;
     }
 
-    /**
-     * @return the isAllocated
-     */
-    public Boolean getIsAllocated() {
-        return isAllocated;
-    }
-
-    /**
-     * @param isAllocated the isAllocated to set
-     */
-    public void setIsAllocated(Boolean isAllocated) {
-        this.isAllocated = isAllocated;
-    }
 
     /**
      * @return the allocatedRoom

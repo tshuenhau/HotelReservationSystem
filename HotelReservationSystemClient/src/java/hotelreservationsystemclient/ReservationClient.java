@@ -6,8 +6,10 @@
 package hotelreservationsystemclient;
 
 import ejb.session.stateful.HotelReservationSessionBeanRemote;
+import entity.Reservations;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -17,6 +19,8 @@ import java.util.logging.Logger;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+import util.exception.InvalidRoomQuantityException;
+import util.exception.InvalidRoomTypeException;
 
 /**
  *
@@ -65,7 +69,6 @@ public class ReservationClient {
                 else if (response == 3)
                 {
                     doSearchRoom();
-                    doReserveRoom();
                 }
 
             }
@@ -78,52 +81,92 @@ public class ReservationClient {
     }
     
     private void doReserveRoom(){
-        
+        try{
         //MAYBE DO TYPE IN ROOM NAME + QUANTITY
-        Scanner scanner = new Scanner(System.in);
+            Scanner scanner = new Scanner(System.in);
 
-        int response = 0;
-        while(true){
-            System.out.println("*** Holiday Reservation System :: Reserve Hotel Room ***\n");
+            Integer response = 0;
+            String roomType = "";
+            List<Reservations> reservations = new ArrayList<>();
+            Integer quantity = 0;
             
-            response = 0;
-            System.out.println("1: Reserve Deluxe Room");
-            System.out.println("2: Reserve Premier Room");
-            System.out.println("3: Reserve Family Room");
-            System.out.println("4: Reserve Grand Suite");
-            System.out.println("5: Reserve Junior Suite");
+                System.out.println("*** Holiday Reservation System :: Reserve Hotel Room ***\n");
+                while(response < 1 || response > 3){
+                response = 1;
+                while(response == 1 ){
+                    System.out.print("Please enter hotel room type> ");
+                    roomType = scanner.nextLine();
+                    System.out.print("Please enter quantity> ");
+                    quantity = scanner.nextInt();
+                    scanner.nextLine();
+                    reservations = hotelReservationSessionBeanRemote.addReservation(roomType, quantity);
+                    System.out.println("1: Add more rooms");
+                    System.out.println("2: Confirm");
+                    System.out.println("3: Cancel");
+                    response = 0;
+                    while(response < 1 || response > 3){
+                        System.out.print("> ");
+                        response = scanner.nextInt();
+                        scanner.nextLine();
+                         if(response == 2){
+                    System.out.println("Confirm the following reservations?\n");
+                    if(reservations != null){
+                        for(Reservations r: reservations){
+                            System.out.println(r.getReservationID() + " " + r.getRoomType());
+                        }
+                    }
+                    int reserveResponse = 0;
+                    System.out.println("1: Confirm");
+                    System.out.println("2: Cancel");
+                    reserveResponse = scanner.nextInt();
+                    if(reserveResponse == 1){
+                        System.out.println("Confirmed\n");
 
-            System.out.println("6: Exit\n");
-
-            while(response < 1 || response > 6){                
-                System.out.print("> ");
-                response = scanner.nextInt();
-                if(response == 1 ){
-                    //DO LOGIN STUFF
-                }
-                
-                else if(response == 2 ){
-                    //DO REGISTER STUFF
-                }
-                else if (response == 3)
-                {
-         
+                    }
+                    else if(reserveResponse == 2){
+                        System.out.println("Cancelled\n");
+                        break;
+                    }
                 }
 
-            }
-            
-            if(response == 6){
-                System.out.println("Exited Reservation Menu\n");
-                break;
+                if(response == 3){
+                    System.out.println("Exited Reservation Function\n");
+                    break;
+                }
+                        
+                    }
+
+                }
+               
             }
         }
-        while(true){
-
+        catch(InvalidRoomTypeException | InvalidRoomQuantityException ex){
+            System.out.println(ex.getMessage());
+            handleReservationExceptions();
         }
 
     }
-    private void doSearchRoom(){
+    
+    private void handleReservationExceptions(){
+        //MAYBE DO TYPE IN ROOM NAME + QUANTITY
+        Scanner scanner = new Scanner(System.in);
+
+        Integer response = 0;
+        System.out.println("1: Try Again");
+        System.out.println("2: Exit");  
+        while(response < 1 || response > 2){
+            System.out.print("> ");
+            response = scanner.nextInt();
+            if(response == 1){
+                doReserveRoom();
+            }
+        }
+
         
+
+    }
+    
+    private void doSearchRoom(){
          try{
             Scanner scanner = new Scanner(System.in);
             Integer response = 0;
@@ -149,7 +192,17 @@ public class ReservationClient {
 
                 //System.out.println(rooms.getKey() + "      " + rooms.getValue().get(0) + "    " + rooms.getValue().get(1));
              });
-
+            System.out.println("Reserve Room?\n");
+            System.out.println("1: Reserve Room");
+            System.out.println("2: Exit");
+            while(response < 1 || response > 2){
+                System.out.print("> ");
+                response = scanner.nextInt();
+                if(response == 1){
+                    doReserveRoom();
+                }
+            }
+ 
         }
         catch(ParseException ex)
         {

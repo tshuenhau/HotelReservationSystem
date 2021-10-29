@@ -81,13 +81,13 @@ public class DataInitSessionBean {
 //        ratesEntitySessionBeanLocal.createNewRate(new Rates("Grand Suite","Promo", 13));
 
         
-//                hotelRoomsEntitySessionBeanLocal.createNewHotelRoom(new HotelRooms("Deluxe Room", false));
-//                hotelRoomsEntitySessionBeanLocal.createNewHotelRoom(new HotelRooms("Deluxe Room", false));
-//                hotelRoomsEntitySessionBeanLocal.createNewHotelRoom(new HotelRooms("Premier Room", false));
-//                hotelRoomsEntitySessionBeanLocal.createNewHotelRoom(new HotelRooms("Premier Room", false));
-//                hotelRoomsEntitySessionBeanLocal.createNewHotelRoom(new HotelRooms("Premier Room", false));
-//                hotelRoomsEntitySessionBeanLocal.createNewHotelRoom(new HotelRooms("Family Room", false));
-//                hotelRoomsEntitySessionBeanLocal.createNewHotelRoom(new HotelRooms("Grand Suite", true));
+//                hotelRoomsEntitySessionBeanLocal.createNewHotelRoom(new HotelRooms("Deluxe Room"));
+//                hotelRoomsEntitySessionBeanLocal.createNewHotelRoom(new HotelRooms("Deluxe Room"));
+//                hotelRoomsEntitySessionBeanLocal.createNewHotelRoom(new HotelRooms("Premier Room"));
+//                hotelRoomsEntitySessionBeanLocal.createNewHotelRoom(new HotelRooms("Premier Room"));
+//                hotelRoomsEntitySessionBeanLocal.createNewHotelRoom(new HotelRooms("Premier Room"));
+//                hotelRoomsEntitySessionBeanLocal.createNewHotelRoom(new HotelRooms("Family Room"));
+//                hotelRoomsEntitySessionBeanLocal.createNewHotelRoom(new HotelRooms("Grand Suite"));
 
         /*
         if(em.find(Employees.class, "employees1") == null){

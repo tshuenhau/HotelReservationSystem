@@ -8,6 +8,7 @@ package ejb.session.stateful;
 import ejb.session.stateless.HotelRoomsEntitySessionBeanLocal;
 import ejb.session.stateless.RatesEntitySessionBeanLocal;
 import ejb.session.stateless.ReservationsEntitySessionBeanLocal;
+import entity.Customers;
 import entity.HotelRooms;
 import entity.Rates;
 import entity.Reservations;
@@ -24,6 +25,8 @@ import javax.annotation.PreDestroy;
 import javax.ejb.EJB;
 import javax.ejb.Remove;
 import javax.ejb.Stateful;
+import util.exception.InvalidRoomQuantityException;
+import util.exception.InvalidRoomTypeException;
 
 /**
  *
@@ -43,9 +46,15 @@ public class HotelReservationSessionBean implements HotelReservationSessionBeanR
     SimpleDateFormat outputDateFormat = new SimpleDateFormat("dd/MM/yyyy");//"dd/MM/yyyy hh:mm a"
     Date checkInDate;
     Date checkOutDate;
-    private List<Rates> rates;
+    //private List<Rates> relaventRates;
+    List<Rates> promoRates = new ArrayList<>();
+    List<Rates> peakRates = new ArrayList<>();
+    List<Rates> normalRates = new ArrayList<>();
+    List<Rates> publishedRates = new ArrayList<>();
     private Map<String,List<Integer>> availability = new HashMap();
     private Map<String,List<Integer>> rooms = new HashMap();//room type -- availability -- cost
+    
+    List<Reservations> reservations = new ArrayList<>();
 
     
     @Remove
@@ -90,9 +99,9 @@ public class HotelReservationSessionBean implements HotelReservationSessionBeanR
 
             availability.put(hotelRoom.getRmType(), newList);
         }
-        List<Reservations> reservations = reservationsEntitySessionBeanLocal.retrieveAllReservations();
+        List<Reservations> allReservations = reservationsEntitySessionBeanLocal.retrieveAllReservations();
         List<Reservations> toRemove = new ArrayList<Reservations>();
-        for(Reservations r: reservations){
+        for(Reservations r: allReservations){
             if(r.getStartDate().compareTo(checkOutDate) >= 0){
                 toRemove.add(r);
             }
@@ -100,9 +109,9 @@ public class HotelReservationSessionBean implements HotelReservationSessionBeanR
                 toRemove.add(r);
             }
         }
-        reservations.removeAll(toRemove);
+        allReservations.removeAll(toRemove);
         
-        for(Reservations reservation : reservations){
+        for(Reservations reservation : allReservations){
             List<Integer> currList = new ArrayList<Integer>();
             if(availability.containsKey(reservation.getRoomType())){
                 currList = availability.get(reservation.getRoomType());
@@ -136,7 +145,7 @@ public class HotelReservationSessionBean implements HotelReservationSessionBeanR
     
     private void doCalculateCost(){
         System.out.println("Calculating Rates...");
-        rates = ratesEntitySessionBeanLocal.retrieveAllRates();
+        List<Rates> rates = ratesEntitySessionBeanLocal.retrieveAllRates();
         List<Rates> relaventRates = new ArrayList();
         for(Rates r : rates) {
 //                    System.out.println("Iterating...  ");
@@ -166,10 +175,10 @@ public class HotelReservationSessionBean implements HotelReservationSessionBeanR
             if(d.equals(checkOutDate)){break;}
             System.out.println(outputDateFormat.format(d));
             //need to call sort first. need way to get promo first
-            List<Rates> promoRates = new ArrayList<>();
-            List<Rates> peakRates = new ArrayList<>();
-            List<Rates> normalRates = new ArrayList<>();
-            List<Rates> publishedRates = new ArrayList<>();
+            promoRates = new ArrayList<>();
+            peakRates = new ArrayList<>();
+            normalRates = new ArrayList<>();
+            publishedRates = new ArrayList<>();
 
             for(Rates r: relaventRates){
                 if(r.getRateType().equals("Promo")){
@@ -185,9 +194,7 @@ public class HotelReservationSessionBean implements HotelReservationSessionBeanR
                     publishedRates.add(r);
                 }     
             }
-            
-        
-            
+              
             for(Map.Entry room : rooms.entrySet()){
                 Boolean prioritySet = false;
                 for(Rates r: promoRates){
@@ -255,7 +262,48 @@ public class HotelReservationSessionBean implements HotelReservationSessionBeanR
 //        }
     }
     
+    @Override
     public boolean isWithinRange(Date date, Date startDate, Date endDate){
         return !(date.before(startDate) || date.after(endDate));
+    }
+    
+    @Override
+    public List<Reservations> addReservation(String roomType, Integer quantity) throws InvalidRoomTypeException, InvalidRoomQuantityException{
+        if(availability.containsKey(roomType)){
+            if(availability.get(roomType).get(0) >= quantity){
+               List<Integer> newList = new ArrayList<>();
+               Integer qty = availability.get(roomType).get(0);
+                //need to update quantity also
+                for(int i = 0; i < quantity; i++){
+                    Reservations newReservation = new Reservations(new Customers(1l,"wd"), roomType, checkInDate, checkOutDate);              
+                    reservations.add(newReservation);
+                    qty -=1; 
+
+                }
+                newList.add(qty);
+                newList.add(availability.get(roomType).get(1));
+                newList.add(availability.get(roomType).get(2));
+                availability.put(roomType, newList);
+
+            }
+            else {
+                throw new InvalidRoomQuantityException("Invalid Quantity for " + roomType + " Only " + availability.get(roomType).get(0) + " rooms available");
+
+                //throw invalid quantity
+            }
+
+        }
+        else{
+            throw new InvalidRoomTypeException("Invalid Room Type: " + roomType);
+            //System.out.println("INVALID ROOMTYPE");
+            //throw invalid roomtype
+        }
+        
+        return reservations;
+    }
+    
+    public List<Reservations> confirmReservations(){
+    
+        return reservations;
     }
 }
