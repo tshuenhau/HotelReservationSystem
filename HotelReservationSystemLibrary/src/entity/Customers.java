@@ -21,7 +21,7 @@ import javax.persistence.OneToMany;
  */
 @Entity
 public class Customers implements Serializable {
-
+    
     private static final long serialVersionUID = 1L;
     @Id
     private Long passportNum;
@@ -29,12 +29,21 @@ public class Customers implements Serializable {
     @Column(nullable = false)
     private String password;
     
+    @Column(nullable = false)
+    private Boolean isPartner;
+    
     @OneToMany(mappedBy="reservedBy")
     private List<Reservations> reservations = new ArrayList<Reservations>(); 
 
     public Customers(Long passportNum, String password) {
         this.passportNum = passportNum;
         this.password = password;
+    }
+    
+    public Customers(Long passportNum, String password, Boolean isPartner) {
+        this.passportNum = passportNum;
+        this.password = password;
+        this.isPartner = isPartner;
     }
 
     public Customers() {
@@ -47,6 +56,20 @@ public class Customers implements Serializable {
 
     public void setPassportNum(Long passportNum) {
         this.passportNum = passportNum;
+    }
+    
+    /**
+     * @return the password
+     */
+    public String getPassword() {
+        return password;
+    }
+
+    /**
+     * @param password the password to set
+     */
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     @Override
@@ -72,6 +95,20 @@ public class Customers implements Serializable {
     @Override
     public String toString() {
         return "entity.Customers[ id=" + passportNum + " ]";
+    }
+
+    /**
+     * @return the isPartner
+     */
+    public Boolean getIsPartner() {
+        return isPartner;
+    }
+
+    /**
+     * @param isPartner the isPartner to set
+     */
+    public void setIsPartner(Boolean isPartner) {
+        this.isPartner = isPartner;
     }
     
 }

@@ -22,7 +22,7 @@ public class Employees implements Serializable {
     @Id
     private String username;
     
-    @Column(columnDefinition = "VARCHAR(60) CHECK (employeeType IN ('System Admin', 'Operations Manager', 'Sales Manager', 'Guest Relation Officer'))")
+    @Column(columnDefinition = "VARCHAR(60) CHECK (employeeType IN ('System Administrator', 'Operations Manager', 'Sales Manager', 'Guest Relation Officer'))")
     private String employeeType;
 
     @Column(nullable=false)
