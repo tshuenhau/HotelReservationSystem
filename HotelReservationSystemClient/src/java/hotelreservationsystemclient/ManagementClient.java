@@ -128,6 +128,9 @@ public class ManagementClient {
             System.out.println("*** Hotel Reservation System Management Client ***\n");
             System.out.println("You are login as " + currentEmployee.getUsername() + " with " + currentEmployee.getEmployeeType() + " rights\n");
             System.out.println("1: System Administration");
+            //System.out.println("2: Operation Manager");
+            //System.out.println("3: Sales Manager");
+            //System.out.println("4: Guest Relation Officer");
             System.out.println("2: Logout\n");
             response = 0;
             
@@ -145,6 +148,7 @@ public class ManagementClient {
                     }
                 }
                 else if (response == 2){
+                    currentEmployee = null;
                     break;
                 }
                 else {
