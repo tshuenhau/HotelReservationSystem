@@ -32,6 +32,7 @@ public class ManagementClient {
     private EmployeesEntitySessionBeanRemote employeesEntitySessionBeanRemote;
     
     private SystemAdministrationModule systemAdministrationModule; 
+    private OperationManagerModule operationManagerModule; 
     
     private Employees currentEmployee;
     
@@ -75,8 +76,20 @@ public class ManagementClient {
                         try {
                             doLogin();
                             System.out.println("Login successful as " + currentEmployee.getUsername() + "!\n");
-                            systemAdministrationModule = new SystemAdministrationModule(employeesEntitySessionBeanRemote, currentEmployee);
-                            menuMain();
+                            if (currentEmployee.getEmployeeType().equals("System Administrator")){
+                                systemAdministrationModule = new SystemAdministrationModule(employeesEntitySessionBeanRemote, currentEmployee);
+                                menuMainSystemAdmin();
+                            }
+                            else if (currentEmployee.getEmployeeType().equals("Operation Manager")){
+                                operationManagerModule = new OperationManagerModule(employeesEntitySessionBeanRemote, currentEmployee);
+                                menuMainOperationManager();
+                            }
+                            else if (currentEmployee.getEmployeeType().equals("Sales Manager")){
+                                //
+                            }
+                            else if (currentEmployee.getEmployeeType().equals("Guest Relation Officer")){
+                                //
+                            }
                         }
                         catch(InvalidLoginCredentialException ex){
                             System.out.println("Invalid login credential: " + ex.getMessage() + "\n");
@@ -120,7 +133,7 @@ public class ManagementClient {
             }
         }
         
-        private void menuMain(){
+        private void menuMainSystemAdmin(){
         Scanner scanner = new Scanner(System.in);
         Integer response = 0;
         
@@ -128,9 +141,6 @@ public class ManagementClient {
             System.out.println("*** Hotel Reservation System Management Client ***\n");
             System.out.println("You are login as " + currentEmployee.getUsername() + " with " + currentEmployee.getEmployeeType() + " rights\n");
             System.out.println("1: System Administration");
-            //System.out.println("2: Operation Manager");
-            //System.out.println("3: Sales Manager");
-            //System.out.println("4: Guest Relation Officer");
             System.out.println("2: Logout\n");
             response = 0;
             
@@ -142,6 +152,45 @@ public class ManagementClient {
                 if(response == 1){
                     try {
                         systemAdministrationModule.menuSystemAdministration();
+                    }
+                    catch (InvalidAccessRightException ex){
+                        System.out.println("Invalid option, please try again!: " + ex.getMessage() + "\n");
+                    }
+                }
+                else if (response == 2){
+                    currentEmployee = null;
+                    break;
+                }
+                else {
+                    System.out.println("Invalid option, please try again!\n");                
+                }
+            }
+            
+            if(response == 2){
+                break;
+            }
+        }
+    }
+        
+    private void menuMainOperationManager(){
+        Scanner scanner = new Scanner(System.in);
+        Integer response = 0;
+        
+        while(true){
+            System.out.println("*** Hotel Reservation System Management Client ***\n");
+            System.out.println("You are login as " + currentEmployee.getUsername() + " with " + currentEmployee.getEmployeeType() + " rights\n");
+            System.out.println("1: Operation Management");
+            System.out.println("2: Logout\n");
+            response = 0;
+            
+            while(response < 1 || response > 2){
+                System.out.print("> ");
+
+                response = scanner.nextInt();
+                
+                if(response == 1){
+                    try {
+                        operationManagerModule.menuOperationManager();
                     }
                     catch (InvalidAccessRightException ex){
                         System.out.println("Invalid option, please try again!: " + ex.getMessage() + "\n");

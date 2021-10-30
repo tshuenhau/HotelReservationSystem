@@ -8,37 +8,36 @@ import util.exception.InvalidAccessRightException;
 
 
 
-public class SystemAdministrationModule {
+public class OperationManagerModule {
     private EmployeesEntitySessionBeanRemote employeesEntitySessionBeanRemote;
     
     private Employees currentEmployee;
 
     
-    public SystemAdministrationModule(){
+    public OperationManagerModule(){
     }
 
-    public SystemAdministrationModule(EmployeesEntitySessionBeanRemote employeesEntitySessionBeanRemote, Employees currentEmployee) {
+    public OperationManagerModule(EmployeesEntitySessionBeanRemote employeesEntitySessionBeanRemote, Employees currentEmployee) {
         this.employeesEntitySessionBeanRemote = employeesEntitySessionBeanRemote;
         this.currentEmployee = currentEmployee;
     }
     
     
     
-    public void menuSystemAdministration() throws InvalidAccessRightException {
-        if(!currentEmployee.getEmployeeType().equals("System Administrator")){
-            throw new InvalidAccessRightException("You don't have System Administrator rights to access the system administration module.");
+    public void menuOperationManager() throws InvalidAccessRightException {
+        if(!currentEmployee.getEmployeeType().equals("Operation Manager")){
+            throw new InvalidAccessRightException("You don't have Operation Manager rights to access the system administration module.");
         }
         
         Scanner scanner = new Scanner(System.in);
         Integer response = 0;
         
         while(true){
-            System.out.println("*** Hotel Reservation System Management Client :: System Administration ***\n");
-            System.out.println("1: Create New Employee");
-            System.out.println("2: View All Employees");
-            System.out.println("-----------------------");
-            System.out.println("3: Create New Partner");
-            System.out.println("4: View All Partners");
+            System.out.println("*** Hotel Reservation System Management Client :: Operation Manager ***\n");
+            System.out.println("1: Create New Room Type");
+            System.out.println("2: Update New Room Type");
+            System.out.println("3: Delete Room Type");
+            System.out.println("4: View All Room Types");
             System.out.println("-----------------------");
             System.out.println("5: Back\n");
             response = 0;
@@ -49,10 +48,10 @@ public class SystemAdministrationModule {
                 response = scanner.nextInt();
 
                 if(response == 1){
-                    doCreateNewEmployee();
+                    //doCreateNewEmployee();
                 }
                 else if(response == 2){
-                    doViewAllEmployees();
+                    //doViewAllEmployees();
                 }
                 else if(response == 3){
                     //create partner
@@ -75,7 +74,7 @@ public class SystemAdministrationModule {
     }
     
     
-    
+    /*
     private void doCreateNewEmployee(){
         Scanner scanner = new Scanner(System.in);
         Employees newEmployee = new Employees();
@@ -132,4 +131,5 @@ public class SystemAdministrationModule {
         System.out.print("Press any key to continue...> ");
         scanner.nextLine();
     }
+*/
 }
