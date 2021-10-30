@@ -123,7 +123,7 @@ public class DataInitSessionBean {
         //Customers c1= new Customers(1l,"hello");
         //reservationsEntitySessionBeanLocal.createNewReservation(new Reservations(c1, "Deluxe Room", new Date(1111,11,11), new Date(1111,11,11)));
         
-        employeeEntitySessionBeanLocal.createNewEmployee(new Employees("employee4", "System Administrator", "123"));
+        //employeeEntitySessionBeanLocal.createNewEmployee(new Employees("employee4", "System Administrator", "123"));
     }
     
 }

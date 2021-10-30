@@ -3,6 +3,7 @@ package hotelreservationsystemclient;
 import entity.Employees;
 import java.util.Scanner;
 import ejb.session.stateless.EmployeesEntitySessionBeanRemote;
+import java.util.List;
 import util.exception.InvalidAccessRightException;
 
 
@@ -34,7 +35,7 @@ public class SystemAdministrationModule {
         while(true){
             System.out.println("*** Hotel Reservation System Management Client :: System Administration ***\n");
             System.out.println("1: Create New Employee");
-            System.out.println("2: View All Staffs");
+            System.out.println("2: View All Employees");
             System.out.println("-----------------------");
             System.out.println("3: Create New Partner");
             System.out.println("4: View All Partners");
@@ -48,10 +49,10 @@ public class SystemAdministrationModule {
                 response = scanner.nextInt();
 
                 if(response == 1){
-                    doCreateNewStaff();
+                    doCreateNewEmployee();
                 }
                 else if(response == 2){
-                    //doViewStaffDetails();
+                    doViewAllEmployees();
                 }
                 else if(response == 3){
                     //create partner
@@ -75,7 +76,7 @@ public class SystemAdministrationModule {
     
     
     
-    private void doCreateNewStaff(){
+    private void doCreateNewEmployee(){
         Scanner scanner = new Scanner(System.in);
         Employees newEmployee = new Employees();
         
@@ -115,147 +116,17 @@ public class SystemAdministrationModule {
         String newEmployeeUsername = employeesEntitySessionBeanRemote.createNewEmployee(newEmployee);
         System.out.println("New employee created successfully!: " + newEmployeeUsername + "\n");
     }
-    
-    
-    /*
-    private void doViewStaffDetails()
-    {
+   
+    private void doViewAllEmployees(){
         Scanner scanner = new Scanner(System.in);
-        Integer response = 0;
         
-        System.out.println("*** POS System :: System Administration :: View Staff Details ***\n");
-        System.out.print("Enter Staff ID> ");
-        Long staffId = scanner.nextLong();
+        System.out.println("*** Hotel Reservation Management Client System :: System Administration :: View All Employees ***\n");
         
-        try
-        {
-            StaffEntity staffEntity = staffEntitySessionBeanRemote.retrieveStaffByStaffId(staffId);
-            System.out.printf("%8s%20s%20s%15s%20s%20s\n", "Staff ID", "First Name", "Last Name", "Access Right", "Username", "Password");
-            System.out.printf("%8s%20s%20s%15s%20s%20s\n", staffEntity.getStaffId().toString(), staffEntity.getFirstName(), staffEntity.getLastName(), staffEntity.getAccessRightEnum().toString(), staffEntity.getUsername(), staffEntity.getPassword());         
-            System.out.println("------------------------");
-            System.out.println("1: Update Staff");
-            System.out.println("2: Delete Staff");
-            System.out.println("3: Back\n");
-            System.out.print("> ");
-            response = scanner.nextInt();
+        List<Employees> employees = employeesEntitySessionBeanRemote.retrieveAllEmployees();
+        System.out.printf("%8s%20s%20s\n", "Username", "Employee Type", "Password");
 
-            if(response == 1)
-            {
-                doUpdateStaff(staffEntity);
-            }
-            else if(response == 2)
-            {
-                doDeleteStaff(staffEntity);
-            }
-        }
-        catch(EntityManagerException | StaffNotFoundException ex)
-        {
-            System.out.println("An error has occurred while retrieving staff: " + ex.getMessage() + "\n");
-        }
-    }
-    
-    
-    private void doUpdateStaff(StaffEntity staffEntity)
-    {
-        Scanner scanner = new Scanner(System.in);        
-        String input;
-        
-        System.out.println("*** POS System :: System Administration :: View Staff Details :: Update Staff ***\n");
-        System.out.print("Enter First Name (blank if no change)> ");
-        input = scanner.nextLine().trim();
-        if(input.length() > 0)
-        {
-            staffEntity.setFirstName(input);
-        }
-                
-        System.out.print("Enter Last Name (blank if no change)> ");
-        input = scanner.nextLine().trim();
-        if(input.length() > 0)
-        {
-            staffEntity.setLastName(input);
-        }
-        
-        while(true)
-        {
-            System.out.print("Select Access Right (0: No Change, 1: Cashier, 2: Manager)> ");
-            Integer accessRightInt = scanner.nextInt();
-            
-            if(accessRightInt >= 1 && accessRightInt <= 2)
-            {
-                staffEntity.setAccessRightEnum(AccessRightEnum.values()[accessRightInt-1]);
-                break;
-            }
-            else if (accessRightInt == 0)
-            {
-                break;
-            }
-            else
-            {
-                System.out.println("Invalid option, please try again!\n");
-            }
-        }
-        
-        try
-        {
-            staffEntitySessionBeanRemote.updateStaff(staffEntity);
-            System.out.println("Staff updated successfully!\n");
-        }
-        catch (EntityManagerException ex) 
-        {
-            System.out.println("An error has occurred while updating the staff: " + ex.getMessage() + "\n");
-        }
-    }
-    
-    
-    
-    private void doDeleteStaff(StaffEntity staffEntity)
-    {
-        Scanner scanner = new Scanner(System.in);        
-        String input;
-        
-        System.out.println("*** POS System :: System Administration :: View Staff Details :: Delete Staff ***\n");
-        System.out.printf("Confirm Delete Staff %s %s (Staff ID: %d) (Enter 'Y' to Delete)> ", staffEntity.getFirstName(), staffEntity.getLastName(), staffEntity.getStaffId());
-        input = scanner.nextLine().trim();
-        
-        if(input.equals("Y"))
-        {
-            try
-            {
-                staffEntitySessionBeanRemote.deleteStaff(staffEntity);
-                System.out.println("Staff deleted successfully!\n");
-            }
-            catch (EntityManagerException ex) 
-            {
-                System.out.println("An error has occurred while deleting the staff: " + ex.getMessage() + "\n");
-            }
-        }
-        else
-        {
-            System.out.println("Staff NOT deleted!\n");
-        }
-    }
-    
-    
-    
-    private void doViewAllStaffs()
-    {
-        Scanner scanner = new Scanner(System.in);
-        
-        System.out.println("*** POS System :: System Administration :: View All Staffs ***\n");
-        
-        try
-        {
-            List<StaffEntity> staffEntities = staffEntitySessionBeanRemote.retrieveAllStaffs();
-            System.out.printf("%8s%20s%20s%15s%20s%20s\n", "Staff ID", "First Name", "Last Name", "Access Right", "Username", "Password");
-            
-            for(StaffEntity staffEntity:staffEntities)
-            {
-                System.out.printf("%8s%20s%20s%15s%20s%20s\n", staffEntity.getStaffId().toString(), staffEntity.getFirstName(), staffEntity.getLastName(), staffEntity.getAccessRightEnum().toString(), staffEntity.getUsername(), staffEntity.getPassword());
-            }
-        }
-        catch(EntityManagerException ex)
-        {
-            System.out.println("An error has occurred while retrieving all staffs: " + ex.getMessage() + "\n");
+        for (Employees employee : employees) {
+            System.out.printf("%8s%20s%20s\n", employee.getUsername(), employee.getEmployeeType(), employee.getPassword());
         }
         
         System.out.print("Press any key to continue...> ");
@@ -263,7 +134,7 @@ public class SystemAdministrationModule {
     }
     
     
-    
+    /*
     private void doCreateNewProduct()
     {
         Scanner scanner = new Scanner(System.in);
