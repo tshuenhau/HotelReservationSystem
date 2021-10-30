@@ -123,10 +123,10 @@ public class SystemAdministrationModule {
         System.out.println("*** Hotel Reservation Management Client System :: System Administration :: View All Employees ***\n");
         
         List<Employees> employees = employeesEntitySessionBeanRemote.retrieveAllEmployees();
-        System.out.printf("%8s%20s%20s\n", "Username", "Employee Type", "Password");
+        System.out.printf("%s%30s%20s\n", "Username", "Employee Type", "Password");
 
         for (Employees employee : employees) {
-            System.out.printf("%8s%20s%20s\n", employee.getUsername(), employee.getEmployeeType(), employee.getPassword());
+            System.out.printf("%s%30s%20s\n", employee.getUsername(), employee.getEmployeeType(), employee.getPassword());
         }
         
         System.out.print("Press any key to continue...> ");
