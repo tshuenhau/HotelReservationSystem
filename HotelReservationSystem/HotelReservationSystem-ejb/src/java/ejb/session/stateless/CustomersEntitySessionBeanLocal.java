@@ -9,6 +9,7 @@ import entity.Customers;
 import entity.Employees;
 import java.util.List;
 import javax.ejb.Local;
+import util.exception.InvalidLoginCredentialException;
 
 /**
  *
@@ -20,5 +21,8 @@ public interface CustomersEntitySessionBeanLocal {
     public List<Customers> retrieveAllCustomers();
 
     public Long createNewCustomer(Customers newCustomer);
+
+
+    public Customers login(Long passportNumber, String password) throws InvalidLoginCredentialException;
     
 }

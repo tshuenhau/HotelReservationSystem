@@ -6,12 +6,12 @@
 package ejb.session.stateless;
 
 import entity.Customers;
-import entity.Employees;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import util.exception.InvalidLoginCredentialException;
 
 /**
  *
@@ -37,7 +37,21 @@ public class CustomersEntitySessionBean implements CustomersEntitySessionBeanRem
         return newCustomer.getPassportNum();
     }
     
+    @Override
+    public Customers login(Long passportNumber, String password) throws InvalidLoginCredentialException {
+        List<Customers> customers = retrieveAllCustomers();
+        
+        for(Customers customer:customers)
+        {
+            System.out.println(customer.getPassportNum());
+            if(customer.getPassportNum().equals(passportNumber) && customer.getPassword().equals(password))
+            {
+                return customer;
+            }
+        }
+        
+        throw new InvalidLoginCredentialException("Invalid login credential");
+    }
 
-    // Add business logic below. (Right-click in editor and choose
-    // "Insert Code > Add Business Method")
+
 }

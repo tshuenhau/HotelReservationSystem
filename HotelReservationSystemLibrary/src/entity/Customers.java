@@ -38,6 +38,7 @@ public class Customers implements Serializable {
     public Customers(Long passportNum, String password) {
         this.passportNum = passportNum;
         this.password = password;
+        this.isPartner = false;
     }
     
     public Customers(Long passportNum, String password, Boolean isPartner) {

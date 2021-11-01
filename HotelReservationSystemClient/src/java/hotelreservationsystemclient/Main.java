@@ -44,7 +44,7 @@ public class Main {
     public static void main(String[] args) {
         // TODO code application logic here
         ManagementClient managementClient = new ManagementClient(reservationsEntitySessionBeanRemote,customersEntitySessionBeanRemote,ratesEntitySessionBeanRemote,hotelRoomsEntitySessionBeanRemote,employeeEntitySessionBeanRemote);
-        ReservationClient reservationClient = new ReservationClient(hotelReservationSessionBeanRemote);
+        ReservationClient reservationClient = new ReservationClient(hotelReservationSessionBeanRemote, customersEntitySessionBeanRemote);
         
         Scanner scanner = new Scanner(System.in);
         Integer response = 0;

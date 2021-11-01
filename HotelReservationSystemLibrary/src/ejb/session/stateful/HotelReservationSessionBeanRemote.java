@@ -5,6 +5,7 @@
  */
 package ejb.session.stateful;
 
+import entity.Customers;
 import entity.Reservations;
 import java.util.Date;
 import java.util.List;
@@ -33,5 +34,9 @@ public interface HotelReservationSessionBeanRemote {
     public Map<String, Integer> getRoomQuantities();
 
     public Integer getTotalCost();
+
+    public void login(Customers customer);
+
+    public Map<String, List<Integer>> walkInSearchHotelRooms(Date checkInDate, Date checkOutDate);
     
 }

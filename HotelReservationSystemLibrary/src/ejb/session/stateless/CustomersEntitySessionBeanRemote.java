@@ -9,6 +9,7 @@ import entity.Customers;
 import entity.Employees;
 import java.util.List;
 import javax.ejb.Remote;
+import util.exception.InvalidLoginCredentialException;
 
 /**
  *
@@ -17,6 +18,7 @@ import javax.ejb.Remote;
 @Remote
 public interface CustomersEntitySessionBeanRemote {
     public List<Customers> retrieveAllCustomers();
+    public Customers login(Long passportNumber, String password) throws InvalidLoginCredentialException;
 
     public Long createNewCustomer(Customers newCustomer);
 }

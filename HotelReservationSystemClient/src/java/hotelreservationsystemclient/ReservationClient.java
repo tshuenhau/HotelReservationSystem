@@ -6,6 +6,8 @@
 package hotelreservationsystemclient;
 
 import ejb.session.stateful.HotelReservationSessionBeanRemote;
+import ejb.session.stateless.CustomersEntitySessionBeanRemote;
+import entity.Customers;
 import entity.Reservations;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -19,6 +21,7 @@ import java.util.logging.Logger;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+import util.exception.InvalidLoginCredentialException;
 import util.exception.InvalidRoomQuantityException;
 import util.exception.InvalidRoomTypeException;
 
@@ -29,12 +32,16 @@ import util.exception.InvalidRoomTypeException;
 public class ReservationClient {
 
     private HotelReservationSessionBeanRemote hotelReservationSessionBeanRemote;
+    private CustomersEntitySessionBeanRemote customersEntitySessionBeanRemote;
+
+    private Customers currentCustomer;
 
     public ReservationClient() {
     }
 
-    public ReservationClient(HotelReservationSessionBeanRemote hotelReservationSessionBeanRemote) {
+    public ReservationClient(HotelReservationSessionBeanRemote hotelReservationSessionBeanRemote, CustomersEntitySessionBeanRemote customersEntitySessionBeanRemote) {
         this.hotelReservationSessionBeanRemote = hotelReservationSessionBeanRemote;
+        this.customersEntitySessionBeanRemote = customersEntitySessionBeanRemote;
     }
 
     public void runApp() {
@@ -55,7 +62,18 @@ public class ReservationClient {
                 System.out.print("> ");
                 response = scanner.nextInt();
                 if (response == 1) {
-                    //DO LOGIN STUFF
+                    if (currentCustomer == null) {
+                        try {
+                            doLogin();
+                            System.out.println("Login successful as " + currentCustomer.getPassportNum() + "!\n");
+
+                        } catch (InvalidLoginCredentialException ex) {
+                            System.out.println("Invalid login credential: " + ex.getMessage() + "\n");
+
+                        }
+                    } else {
+                        System.out.println("You are already login as " + currentCustomer.getPassportNum() + "\n");
+                    }
                 }
 
                 if (response == 2) {
@@ -102,17 +120,17 @@ public class ReservationClient {
                         response = scanner.nextInt();
                         scanner.nextLine();
                         if (response == 2) {
-                            Map<String,Integer> quantities = hotelReservationSessionBeanRemote.getRoomQuantities();
+                            Map<String, Integer> quantities = hotelReservationSessionBeanRemote.getRoomQuantities();
                             Integer totalCost = hotelReservationSessionBeanRemote.getTotalCost();
-                            
+
                             System.out.println("Confirm the following reservations?\n");
-                            
+
                             quantities.forEach(
-                                    (key,value) -> System.out.println(key + " X " + value)
+                                    (key, value) -> System.out.println(key + " X " + value)
                             );
-                            
+
                             System.out.println("Total Cost: $" + totalCost);
-                            
+
 //                            if (reservations != null) {
 //                                for (Reservations r : reservations) {
 //                                    System.out.println(r.getReservationID() + " " + r.getRoomType());
@@ -167,6 +185,26 @@ public class ReservationClient {
 
     }
 
+    private void doLogin() throws InvalidLoginCredentialException {
+        Scanner scanner = new Scanner(System.in);
+        Long passportNumber = 0l;
+        String password = "";
+
+        System.out.println("*** Holiday Reservation System :: Login ***\n");
+        System.out.print("Enter passport number> ");
+        passportNumber = scanner.nextLong();
+        scanner.nextLine();
+        System.out.print("Enter password> ");
+        password = scanner.nextLine().trim();
+
+        if (passportNumber > 0 && password.length() > 0) {
+            currentCustomer = customersEntitySessionBeanRemote.login(passportNumber, password);
+            hotelReservationSessionBeanRemote.login(currentCustomer);
+        } else {
+            throw new InvalidLoginCredentialException("Missing login credential!");
+        }
+    }
+
     private void doSearchRoom() {
         try {
             Scanner scanner = new Scanner(System.in);
@@ -208,16 +246,6 @@ public class ReservationClient {
             System.out.println("Invalid date input!\n");
         }
 
-    }
-
-    private HotelReservationSessionBeanRemote lookupHotelReservationSessionBeanRemote() {
-        try {
-            Context c = new InitialContext();
-            return (HotelReservationSessionBeanRemote) c.lookup("java:comp/env/HotelReservationSessionBeanRemote");
-        } catch (NamingException ne) {
-            Logger.getLogger(getClass().getName()).log(Level.SEVERE, "exception caught", ne);
-            throw new RuntimeException(ne);
-        }
     }
 
 }

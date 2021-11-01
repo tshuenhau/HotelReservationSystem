@@ -10,8 +10,7 @@ import ejb.session.stateless.EmployeeEntitySessionBeanLocal;
 import ejb.session.stateless.HotelRoomsEntitySessionBeanLocal;
 import ejb.session.stateless.RatesEntitySessionBeanLocal;
 import ejb.session.stateless.ReservationsEntitySessionBeanLocal;
-import entity.Rates;
-import entity.Employees;
+import entity.HotelRooms;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.ejb.Singleton;
@@ -112,7 +111,7 @@ public class DataInitSessionBean {
   
 //        Customers c1= new Customers(1l,"hello");
 //        Customers c2= new Customers(2l,"hello2");
-
+//
 //        customersEntitySessionBeanLocal.createNewCustomer(c1);
 //        customersEntitySessionBeanLocal.createNewCustomer(c2);
 
@@ -123,7 +122,7 @@ public class DataInitSessionBean {
         //Customers c1= new Customers(1l,"hello");
         //reservationsEntitySessionBeanLocal.createNewReservation(new Reservations(c1, "Deluxe Room", new Date(1111,11,11), new Date(1111,11,11)));
         
-        employeeEntitySessionBeanLocal.createNewEmployee(new Employees("employee1", "System Administrator", "123"));
+        //employeeEntitySessionBeanLocal.createNewEmployee(new Employees("employee1", "System Administrator", "123"));
     }
     
 }
