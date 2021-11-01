@@ -5,6 +5,7 @@
  */
 package ejb.session.stateless;
 
+import entity.Customers;
 import entity.Reservations;
 import java.util.List;
 import javax.ejb.Stateless;
@@ -25,6 +26,12 @@ public class ReservationsEntitySessionBean implements ReservationsEntitySessionB
     @Override
     public List<Reservations> retrieveAllReservations() {
         Query query = em.createQuery("Select e FROM Reservations e");   
+        return query.getResultList();
+    }
+    
+    @Override
+    public List<Reservations> retrieveReserationsOfCustomer(Customers customer){
+        Query query = em.createQuery("Select e FROM Reservations e WHERE e.reservedBy = :value", Reservations.class).setParameter("value", customer);
         return query.getResultList();
     }
     

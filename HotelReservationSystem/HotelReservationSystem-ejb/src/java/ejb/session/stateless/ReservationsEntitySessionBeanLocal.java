@@ -5,6 +5,7 @@
  */
 package ejb.session.stateless;
 
+import entity.Customers;
 import entity.Reservations;
 import java.util.List;
 import javax.ejb.Local;
@@ -19,5 +20,7 @@ public interface ReservationsEntitySessionBeanLocal {
     public List<Reservations> retrieveAllReservations();
 
     public Long createNewReservation(Reservations newReservation);
+
+    public List<Reservations> retrieveReserationsOfCustomer(Customers customer);
     
 }

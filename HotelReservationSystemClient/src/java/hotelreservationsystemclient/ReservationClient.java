@@ -7,6 +7,7 @@ package hotelreservationsystemclient;
 
 import ejb.session.stateful.HotelReservationSessionBeanRemote;
 import ejb.session.stateless.CustomersEntitySessionBeanRemote;
+import ejb.session.stateless.ReservationsEntitySessionBeanRemote;
 import entity.Customers;
 import entity.Reservations;
 import java.text.ParseException;
@@ -16,11 +17,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
 import util.exception.InvalidLoginCredentialException;
 import util.exception.InvalidRoomQuantityException;
 import util.exception.InvalidRoomTypeException;
@@ -33,15 +29,18 @@ public class ReservationClient {
 
     private HotelReservationSessionBeanRemote hotelReservationSessionBeanRemote;
     private CustomersEntitySessionBeanRemote customersEntitySessionBeanRemote;
+    private ReservationsEntitySessionBeanRemote reservationsEntitySessionBeanRemote;
 
     private Customers currentCustomer;
-
+            SimpleDateFormat inputDateFormat = new SimpleDateFormat("d/M/y");
+            SimpleDateFormat outputDateFormat = new SimpleDateFormat("dd/MM/yyyy");//"dd/MM/yyyy hh:mm a"
     public ReservationClient() {
     }
 
-    public ReservationClient(HotelReservationSessionBeanRemote hotelReservationSessionBeanRemote, CustomersEntitySessionBeanRemote customersEntitySessionBeanRemote) {
+    public ReservationClient(HotelReservationSessionBeanRemote hotelReservationSessionBeanRemote, CustomersEntitySessionBeanRemote customersEntitySessionBeanRemote, ReservationsEntitySessionBeanRemote reservationsEntitySessionBeanRemote) {
         this.hotelReservationSessionBeanRemote = hotelReservationSessionBeanRemote;
         this.customersEntitySessionBeanRemote = customersEntitySessionBeanRemote;
+        this.reservationsEntitySessionBeanRemote = reservationsEntitySessionBeanRemote;
     }
 
     public void runApp() {
@@ -53,12 +52,14 @@ public class ReservationClient {
             System.out.println("*** Welcome to Holiday Reservation Client ***\n");
 
             response = 0;
-            System.out.println("1: Login (NOT YET IMPLEMENTED)");
+            System.out.println("1: Login");
             System.out.println("2: Register (NOT YET IMPLEMENTED)");
             System.out.println("3: Search Hotel Room");
-            System.out.println("4: Exit\n");
+            System.out.println("4: View Reservations (IMPLEMENTING...)");
 
-            while (response < 1 || response > 4) {
+            System.out.println("5: Exit\n");
+
+            while (response < 1 || response > 5) {
                 System.out.print("> ");
                 response = scanner.nextInt();
                 if (response == 1) {
@@ -80,15 +81,66 @@ public class ReservationClient {
                     //DO REGISTER STUFF
                 } else if (response == 3) {
                     doSearchRoom();
+                } else if (response == 4) {
+                    doViewReservations();
                 }
 
             }
 
-            if (response == 4) {
+            if (response == 5) {
                 System.out.println("Exited Reservation Client\n");
                 break;
             }
         }
+    }
+    
+    private void doViewReservations(){
+        Scanner scanner = new Scanner(System.in);
+
+        Integer response = 0;
+        Long reservationID = 0l;
+        List<Reservations> reservations = new ArrayList<Reservations>();
+        System.out.println("*** Holiday Reservation System :: View Reservations ***\n");
+        reservations = reservationsEntitySessionBeanRemote.retrieveReserationsOfCustomer(currentCustomer);
+        System.out.printf("%14s%26s\n", "Reservation ID", "Date");
+
+        for(Reservations r: reservations){
+            //System.out.println(r.getReservationID() +  " " + outputDateFormat.format(r.getStartDate()) + "-" + outputDateFormat.format(r.getEndDate()));
+            System.out.printf("%14s%26s\n", r.getReservationID().toString(), outputDateFormat.format(r.getStartDate())+ "-" + outputDateFormat.format(r.getEndDate()));
+
+        }
+        System.out.println("1: View Reservation");
+        System.out.println("2: Exit");
+        while (response < 1 || response > 2){
+            System.out.print("> ");
+            response = scanner.nextInt();
+            while(response == 1) {
+                    System.out.print("Please enter reservation ID> ");
+                    reservationID = scanner.nextLong();
+                    scanner.nextLine();
+                    System.out.printf("%16s%22s      %s\n", "Reservation ID", "Room Type", "Cost");
+
+                    for(Reservations r: reservations){
+                        if(r.getReservationID().equals(reservationID)){
+                           System.out.printf("%16s%22s      %s\n", r.getReservationID().toString(), r.getRoomType(), r.getCost());
+                           //System.out.println(r.getReservationID() + " " + r.getRoomType() + " " + r.getCost());
+                        }
+                    }
+                System.out.println("1: View Reservation");
+                System.out.println("2: Exit");
+                System.out.print("> ");
+                response = scanner.nextInt();
+
+                
+            }
+            
+            if(response == 2){
+                break;
+            }
+            
+        
+        }
+
     }
 
     private void doReserveRoom() {
@@ -209,8 +261,7 @@ public class ReservationClient {
         try {
             Scanner scanner = new Scanner(System.in);
             Integer response = 0;
-            SimpleDateFormat inputDateFormat = new SimpleDateFormat("d/M/y");
-            SimpleDateFormat outputDateFormat = new SimpleDateFormat("dd/MM/yyyy");//"dd/MM/yyyy hh:mm a"
+
             Date checkInDate;
             Date checkOutDate;
 
