@@ -10,6 +10,7 @@ import entity.Employees;
 import java.util.List;
 import javax.ejb.Remote;
 import util.exception.InvalidLoginCredentialException;
+import util.exception.UserAlreadyExistException;
 
 /**
  *
@@ -20,5 +21,5 @@ public interface CustomersEntitySessionBeanRemote {
     public List<Customers> retrieveAllCustomers();
     public Customers login(Long passportNumber, String password) throws InvalidLoginCredentialException;
 
-    public Long createNewCustomer(Customers newCustomer);
+    public Customers createNewCustomer(Customers newCustomer) throws UserAlreadyExistException;
 }

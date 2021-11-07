@@ -17,9 +17,12 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import util.exception.InvalidLoginCredentialException;
 import util.exception.InvalidRoomQuantityException;
 import util.exception.InvalidRoomTypeException;
+import util.exception.UserAlreadyExistException;
 
 /**
  *
@@ -53,7 +56,7 @@ public class ReservationClient {
 
             response = 0;
             System.out.println("1: Login");
-            System.out.println("2: Register (NOT YET IMPLEMENTED)");
+            System.out.println("2: Register");
             System.out.println("3: Search Hotel Room");
             System.out.println("4: View Reservations");
 
@@ -78,7 +81,11 @@ public class ReservationClient {
                 }
 
                 if (response == 2) {
-                    //DO REGISTER STUFF
+                    try {
+                        doRegister();
+                    } catch (InvalidLoginCredentialException ex) {
+                        Logger.getLogger(ReservationClient.class.getName()).log(Level.SEVERE, null, ex);
+                    }
                 } else if (response == 3) {
                     doSearchRoom();
                 } else if (response == 4) {
@@ -298,6 +305,31 @@ public class ReservationClient {
             System.out.println("Invalid date input!\n");
         }
 
+    }
+
+    private void doRegister() throws InvalidLoginCredentialException{
+       Scanner scanner = new Scanner(System.in);
+        Long passportNumber = 0l;
+        String password = "";
+
+        System.out.println("*** Holiday Reservation System :: Register ***\n");
+        System.out.print("Enter passport number> ");
+        passportNumber = scanner.nextLong();
+        scanner.nextLine();
+        System.out.print("Enter password> ");
+        password = scanner.nextLine().trim();
+
+        if (passportNumber > 0 && password.length() > 0) {
+           try {
+               currentCustomer = customersEntitySessionBeanRemote.createNewCustomer(new Customers(passportNumber, password));
+                System.out.println("Login successful as " + currentCustomer.getPassportNum() + "!\n");
+           } catch (UserAlreadyExistException ex) {
+               System.err.println("User already registered.");
+           }
+            hotelReservationSessionBeanRemote.login(currentCustomer);
+        } else {
+            throw new InvalidLoginCredentialException("Invalid input !");
+        }
     }
 
 }

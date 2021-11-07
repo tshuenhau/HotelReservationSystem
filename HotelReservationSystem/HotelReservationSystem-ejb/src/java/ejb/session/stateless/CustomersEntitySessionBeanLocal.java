@@ -10,6 +10,7 @@ import entity.Employees;
 import java.util.List;
 import javax.ejb.Local;
 import util.exception.InvalidLoginCredentialException;
+import util.exception.UserAlreadyExistException;
 
 /**
  *
@@ -20,7 +21,7 @@ public interface CustomersEntitySessionBeanLocal {
 
     public List<Customers> retrieveAllCustomers();
 
-    public Long createNewCustomer(Customers newCustomer);
+    public Customers createNewCustomer(Customers newCustomer) throws UserAlreadyExistException;
 
 
     public Customers login(Long passportNumber, String password) throws InvalidLoginCredentialException;

@@ -12,6 +12,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import util.exception.InvalidLoginCredentialException;
+import util.exception.UserAlreadyExistException;
 
 /**
  *
@@ -31,10 +32,13 @@ public class CustomersEntitySessionBean implements CustomersEntitySessionBeanRem
     }
     
     @Override
-    public Long createNewCustomer(Customers newCustomer) {
-        em.persist(newCustomer);
+    public Customers createNewCustomer(Customers newCustomer) throws UserAlreadyExistException {
+        if(em.find(Customers.class, newCustomer.getPassportNum()) == null){
+            em.persist(newCustomer);
+            return newCustomer;
+        }
+        throw new UserAlreadyExistException();
         
-        return newCustomer.getPassportNum();
     }
     
     @Override
