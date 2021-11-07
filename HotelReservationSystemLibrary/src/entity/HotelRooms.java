@@ -11,6 +11,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToOne;
 
 /**
  *
@@ -32,6 +33,9 @@ public class HotelRooms implements Serializable {
     
     @Column(nullable = false)
     private Boolean isAllocated = false;
+    
+    @OneToOne(mappedBy="allocatedRoom")
+    private Reservations reservation;
 
     public HotelRooms(String rmType) {
         this.rmType = rmType;

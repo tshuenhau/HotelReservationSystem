@@ -6,7 +6,6 @@
 package entity;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -14,6 +13,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Temporal;
 
 /**
@@ -47,8 +47,8 @@ public class Reservations implements Serializable {
     private Float cost = 0f;
 
 
-    @Column(nullable=true)
-    private Integer allocatedRoom;
+    @OneToOne()
+    private HotelRooms allocatedRoom;
 
     public Reservations() {
     }
@@ -154,14 +154,14 @@ public class Reservations implements Serializable {
     /**
      * @return the allocatedRoom
      */
-    public Integer getAllocatedRoom() {
+    public HotelRooms getAllocatedRoom() {
         return allocatedRoom;
     }
 
     /**
      * @param allocatedRoom the allocatedRoom to set
      */
-    public void setAllocatedRoom(Integer allocatedRoom) {
+    public void setAllocatedRoom(HotelRooms allocatedRoom) {
         this.allocatedRoom = allocatedRoom;
     }
 

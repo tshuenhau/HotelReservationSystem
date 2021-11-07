@@ -68,6 +68,9 @@ public class HotelReservationSessionBean implements HotelReservationSessionBeanR
         if (rooms != null) {
             rooms.clear();
         }
+        if (reservations != null) {
+            reservations.clear();
+        }
     }
 
     @Override
@@ -91,8 +94,9 @@ public class HotelReservationSessionBean implements HotelReservationSessionBeanR
     
     private void doSearchRoom(Date checkInDate, Date checkOutDate){
     this.checkInDate = checkInDate;
-        this.checkOutDate = checkOutDate;
-
+    this.checkOutDate = checkOutDate;
+        reservations.clear();
+        rooms.clear();
         rooms.put("Deluxe Room", Arrays.asList(0, 0, 0));
         rooms.put("Premier Room", Arrays.asList(0, 0, 0));
         rooms.put("Family Room", Arrays.asList(0, 0, 0));

@@ -55,7 +55,7 @@ public class ReservationClient {
             System.out.println("1: Login");
             System.out.println("2: Register (NOT YET IMPLEMENTED)");
             System.out.println("3: Search Hotel Room");
-            System.out.println("4: View Reservations (IMPLEMENTING...)");
+            System.out.println("4: View Reservations");
 
             System.out.println("5: Exit\n");
 
@@ -88,6 +88,7 @@ public class ReservationClient {
             }
 
             if (response == 5) {
+                currentCustomer = null;
                 System.out.println("Exited Reservation Client\n");
                 break;
             }

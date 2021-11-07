@@ -5,8 +5,10 @@
  */
 package ejb.session.stateless;
 
+import classes.Allocation;
 import entity.Customers;
 import entity.Reservations;
+import java.util.ArrayList;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -22,6 +24,8 @@ public class ReservationsEntitySessionBean implements ReservationsEntitySessionB
 
     @PersistenceContext(unitName = "HotelReservationSystem-ejbPU")
     private EntityManager em;
+    
+
 
     @Override
     public List<Reservations> retrieveAllReservations() {
@@ -38,8 +42,14 @@ public class ReservationsEntitySessionBean implements ReservationsEntitySessionB
     @Override
     public Long createNewReservation(Reservations newReservation) {
         em.persist(newReservation);
-        
         return newReservation.getReservationID();
+    }
+    
+    @Override
+    public Reservations updateReservation(Reservations reservation){
+        em.merge(reservation);
+        em.flush();
+        return reservation;
     }
     // Add business logic below. (Right-click in editor and choose
     // "Insert Code > Add Business Method")
