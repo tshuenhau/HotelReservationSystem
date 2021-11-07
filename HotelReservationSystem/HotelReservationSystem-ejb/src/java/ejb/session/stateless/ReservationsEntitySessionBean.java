@@ -42,6 +42,8 @@ public class ReservationsEntitySessionBean implements ReservationsEntitySessionB
     @Override
     public Long createNewReservation(Reservations newReservation) {
         em.persist(newReservation);
+                em.flush();
+
         return newReservation.getReservationID();
     }
     

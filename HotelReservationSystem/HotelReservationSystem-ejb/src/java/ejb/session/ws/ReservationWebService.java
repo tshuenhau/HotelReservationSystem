@@ -33,6 +33,7 @@ import javax.persistence.PersistenceContext;
 import util.exception.InvalidLoginCredentialException;
 import util.exception.InvalidRoomQuantityException;
 import util.exception.InvalidRoomTypeException;
+import util.exception.ReservationNotFoundException;
 
 /**
  *
@@ -41,6 +42,7 @@ import util.exception.InvalidRoomTypeException;
 @WebService(serviceName = "ReservationWebService")
 @Stateless()
 public class ReservationWebService {
+
     SimpleDateFormat inputDateFormat = new SimpleDateFormat("d/M/y");
 
     @EJB
@@ -58,6 +60,39 @@ public class ReservationWebService {
     private EntityManager em;
     SimpleDateFormat outputDateFormat = new SimpleDateFormat("dd/MM/yyyy");//"dd/MM/yyyy hh:mm a"
 
+    @WebMethod(operationName="ViewReservation")
+    public Reservations viewReservation(Long passportNum, String password, Long reservationID) throws InvalidLoginCredentialException, ReservationNotFoundException{
+        List<Reservations> reservations = ViewAllReservations(passportNum,password);
+        if(reservations!=null){
+            for(Reservations r: reservations){
+                if(r.getReservationID().equals(reservationID)){
+                    return r;
+                }
+            }
+        }
+        
+        throw new ReservationNotFoundException();
+        
+    }
+    @WebMethod(operationName = "ViewAllReservations")
+    public List<Reservations> ViewAllReservations(Long passportNum, String password) throws InvalidLoginCredentialException {
+        Customers c = Login(passportNum, password);
+        List<Reservations> allReservations = reservationsEntitySessionBeanLocal.retrieveAllReservations();
+        List<Reservations> relaventReservations = new ArrayList<>();
+        if (c != null) {
+            for (Reservations r : allReservations) {
+                em.detach(r);
+                if (r.getReservedBy().equals(c)) {
+                    relaventReservations.add(r);
+                    r.setReservedBy(null);
+                }
+            }
+        }
+
+        return relaventReservations;
+
+    }
+
     @WebMethod(operationName = "Login")
     public Customers Login(Long passPortNum, String password) throws InvalidLoginCredentialException {
         List<Customers> customers = customersEntitySessionBeanLocal.retrieveAllCustomers();
@@ -68,7 +103,7 @@ public class ReservationWebService {
                 em.detach(r);
                 r.setReservedBy(null);
             }
-            if (c.getPassportNum().equals(passPortNum)) {
+            if (c.getPassportNum().equals(passPortNum) && c.getIsPartner() == true) {
                 if (c.getPassword().equals(password)) {
                     return c;
                 }
@@ -78,32 +113,6 @@ public class ReservationWebService {
 
     }
 
-//    @WebMethod(operationName="ReserveRoom")
-//    public List<Reservations> reserveRoom(Customers customer, String roomType, Integer quantity, Date checkInDate, Date checkOutDate) throws InvalidRoomQuantityException, InvalidRoomTypeException{
-//        Map<String, List<Integer>> rooms = searchHotelRooms(checkInDate, checkOutDate);
-//        List<Reservations> reservations = new ArrayList<>();
-//        if (rooms.containsKey(roomType)) {
-//            if (rooms.get(roomType).get(0) >= quantity) {
-//                List<Integer> newList = new ArrayList<>();
-//                Integer qty = rooms.get(roomType).get(0);
-//                for (int i = 0; i < quantity; i++) {
-//                    Reservations newReservation = new Reservations(customer, roomType, checkInDate, checkOutDate, (float) rooms.get(roomType).get(1));
-//                    reservations.add(newReservation);
-//                    qty -= 1;
-//                }
-//                newList.add(qty);
-//                newList.add(rooms.get(roomType).get(1));
-//                rooms.put(roomType, newList);
-//
-//            } else {
-//                throw new InvalidRoomQuantityException("Invalid Quantity for " + roomType + " Only " + rooms.get(roomType).get(0) + " rooms available");
-//            }
-//        } else {
-//            throw new InvalidRoomTypeException("Invalid Room Type: " + roomType);
-//        }
-//        return reservations;
-//        
-//    }
     @WebMethod(operationName = "SearchRoom")
     public String[][] searchHotelRooms(String inputCheckInDate, String inputCheckOutDate) throws ParseException {
         String[][] result = new String[5][3];
@@ -242,11 +251,44 @@ public class ReservationWebService {
         return rooms;
     }
 
-//    @WebMethod(operationName="SearchRoom")
-//    public List<Reservations> addReservation(String roomType, Integer quantity) throws InvalidRoomTypeException, InvalidRoomQuantityException {
-//        doSearchRoom();
-//        return hotelReservationSessionBeanRemote.addReservation(roomType, quantity);
-//    }    
+    @WebMethod(operationName = "addReservation")
+    public List<Reservations> addReservation(Long passportNum, String password, String inputCheckInDate, String inputCheckOutDate, String roomType, Integer quantity) throws InvalidRoomTypeException, InvalidRoomQuantityException, ParseException, InvalidLoginCredentialException {
+        String[][] data = searchHotelRooms(inputCheckInDate, inputCheckOutDate);
+        Integer cost = 0;
+
+        for (int i = 0; i < data.length; i++) {
+
+            if (data[i][0].equals(roomType)) {
+                if (Integer.parseInt(data[i][1]) < quantity) {
+                    throw new InvalidRoomQuantityException("NO MORE ROOMS");
+                    //return new ArrayList<Reservations>();
+                }
+                cost = Integer.parseInt(data[i][2]);
+                System.out.println(cost);
+            }
+
+        }
+        Date checkInDate = inputDateFormat.parse(inputCheckInDate);
+        Date checkOutDate = inputDateFormat.parse(inputCheckOutDate);
+        List<Reservations> reservations = new ArrayList<>();
+
+        Customers c = Login(passportNum, password);
+        if (c != null) {
+            for (int i = 0; i < quantity; i++) {
+                Reservations newReservation = new Reservations(c, roomType, checkInDate, checkOutDate, cost);
+                reservationsEntitySessionBeanLocal.createNewReservation(newReservation);
+                reservations.add(newReservation);
+
+            }
+        }
+        for (Reservations r : reservations) {
+            em.detach(r);
+            r.getReservedBy().setReservations(null);
+        }
+
+        return reservations;
+    }
+
     /**
      * This is a sample web service operation
      */
@@ -278,7 +320,7 @@ public class ReservationWebService {
             rooms.put(temp, newList);
         }
         List<Reservations> allReservations = reservationsEntitySessionBeanLocal.retrieveAllReservations();
-        for(Reservations r: allReservations){
+        for (Reservations r : allReservations) {
             em.detach(r);
             r.setReservedBy(null);
         }
@@ -310,9 +352,5 @@ public class ReservationWebService {
         return !(date.before(startDate) || date.after(endDate));
     }
 
-    @WebMethod(operationName = "hello")
-    public String hello(@WebParam(name = "name") String txt) {
-        return "Hello " + txt + " !";
-    }
 
 }

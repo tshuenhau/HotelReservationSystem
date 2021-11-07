@@ -5,19 +5,17 @@
  */
 package util.exception;
 
-import javax.xml.ws.WebFault;
-
 /**
  *
  * @author tshuenhau
  */
-public class InvalidRoomQuantityException extends Exception{
+public class ReservationNotFoundException extends Exception {
 
-    public InvalidRoomQuantityException() {
+    public ReservationNotFoundException(String string) {
+        super(string);
     }
 
-    public InvalidRoomQuantityException(String msg) {
-        super(msg);
+    public ReservationNotFoundException() {
     }
     
     

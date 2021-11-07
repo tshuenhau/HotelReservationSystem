@@ -44,7 +44,7 @@ public class Reservations implements Serializable {
     
     
     @Column(nullable=false)
-    private Float cost = 0f;
+    private Integer cost = 0;
 
 
     @OneToOne()
@@ -53,7 +53,7 @@ public class Reservations implements Serializable {
     public Reservations() {
     }
 
-    public Reservations(Customers reservedBy, String roomType, Date startDate, Date endDate, Float cost) {
+    public Reservations(Customers reservedBy, String roomType, Date startDate, Date endDate, Integer cost) {
         this.reservedBy = reservedBy;
         this.roomType = roomType;
         this.startDate = startDate;
@@ -168,14 +168,14 @@ public class Reservations implements Serializable {
     /**
      * @return the cost
      */
-    public Float getCost() {
+    public Integer getCost() {
         return cost;
     }
 
     /**
      * @param cost the cost to set
      */
-    public void setCost(Float cost) {
+    public void setCost(Integer cost) {
         this.cost = cost;
     }
     

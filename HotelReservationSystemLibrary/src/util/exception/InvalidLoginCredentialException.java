@@ -1,5 +1,6 @@
 package util.exception;
 
+import javax.xml.ws.WebFault;
 
 
 public class InvalidLoginCredentialException extends Exception 

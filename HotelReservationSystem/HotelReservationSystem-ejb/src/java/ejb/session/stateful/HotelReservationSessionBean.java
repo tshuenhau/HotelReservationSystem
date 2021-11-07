@@ -293,7 +293,7 @@ public class HotelReservationSessionBean implements HotelReservationSessionBeanR
                 List<Integer> newList = new ArrayList<>();
                 Integer qty = rooms.get(roomType).get(0);
                 for (int i = 0; i < quantity; i++) {
-                    Reservations newReservation = new Reservations(currentCustomer, roomType, checkInDate, checkOutDate, (float) rooms.get(roomType).get(1));
+                    Reservations newReservation = new Reservations(currentCustomer, roomType, checkInDate, checkOutDate, (Integer) rooms.get(roomType).get(1));
                     reservations.add(newReservation);
                     qty -= 1;
                 }
