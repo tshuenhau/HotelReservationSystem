@@ -20,6 +20,20 @@ import javax.persistence.OneToOne;
 @Entity
 public class HotelRooms implements Serializable {
 
+    /**
+     * @return the reservation
+     */
+    public Reservations getReservation() {
+        return reservation;
+    }
+
+    /**
+     * @param reservation the reservation to set
+     */
+    public void setReservation(Reservations reservation) {
+        this.reservation = reservation;
+    }
+
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

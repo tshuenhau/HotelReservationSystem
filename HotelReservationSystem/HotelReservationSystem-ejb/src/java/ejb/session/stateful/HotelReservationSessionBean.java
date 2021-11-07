@@ -296,7 +296,6 @@ public class HotelReservationSessionBean implements HotelReservationSessionBeanR
                     Reservations newReservation = new Reservations(currentCustomer, roomType, checkInDate, checkOutDate, (float) rooms.get(roomType).get(1));
                     reservations.add(newReservation);
                     qty -= 1;
-
                 }
                 newList.add(qty);
                 newList.add(rooms.get(roomType).get(1));

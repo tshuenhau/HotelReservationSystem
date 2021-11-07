@@ -111,5 +111,19 @@ public class Customers implements Serializable {
     public void setIsPartner(Boolean isPartner) {
         this.isPartner = isPartner;
     }
+
+    /**
+     * @return the reservations
+     */
+    public List<Reservations> getReservations() {
+        return reservations;
+    }
+
+    /**
+     * @param reservations the reservations to set
+     */
+    public void setReservations(List<Reservations> reservations) {
+        this.reservations = reservations;
+    }
     
 }
