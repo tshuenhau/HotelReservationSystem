@@ -42,6 +42,12 @@ public class RoomTypes implements Serializable {
     
     @OneToOne
     private HotelRooms hotelRoom;
+    
+    @OneToOne
+    private Rates roomRate;
+    
+    @OneToOne
+    private Reservations reservation;
 
     public RoomTypes() {
     }
@@ -166,6 +172,48 @@ public class RoomTypes implements Serializable {
      */
     public void setAmenities(String amenities) {
         this.amenities = amenities;
+    }
+
+    /**
+     * @return the hotelRoom
+     */
+    public HotelRooms getHotelRoom() {
+        return hotelRoom;
+    }
+
+    /**
+     * @param hotelRoom the hotelRoom to set
+     */
+    public void setHotelRoom(HotelRooms hotelRoom) {
+        this.hotelRoom = hotelRoom;
+    }
+
+    /**
+     * @return the roomRate
+     */
+    public Rates getRoomRate() {
+        return roomRate;
+    }
+
+    /**
+     * @param roomRate the roomRate to set
+     */
+    public void setRoomRate(Rates roomRate) {
+        this.roomRate = roomRate;
+    }
+
+    /**
+     * @return the reservation
+     */
+    public Reservations getReservation() {
+        return reservation;
+    }
+
+    /**
+     * @param reservation the reservation to set
+     */
+    public void setReservation(Reservations reservation) {
+        this.reservation = reservation;
     }
     
 }

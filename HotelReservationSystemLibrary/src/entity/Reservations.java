@@ -31,8 +31,9 @@ public class Reservations implements Serializable {
     @ManyToOne(optional = true)
     private Customers reservedBy;
   
-    @Column(columnDefinition = "VARCHAR(60) CHECK (roomType IN ('Deluxe Room', 'Premier Room', 'Family Room', 'Junior Suite', 'Grand Suite'))")
-    private String roomType;
+    @OneToOne(mappedBy="reservation")
+    @Column(nullable=false)
+    private RoomTypes roomType;
   
     @Column(nullable=false)
     @Temporal(javax.persistence.TemporalType.DATE)
@@ -53,7 +54,7 @@ public class Reservations implements Serializable {
     public Reservations() {
     }
 
-    public Reservations(Customers reservedBy, String roomType, Date startDate, Date endDate, Integer cost) {
+    public Reservations(Customers reservedBy, RoomTypes roomType, Date startDate, Date endDate, Integer cost) {
         this.reservedBy = reservedBy;
         this.roomType = roomType;
         this.startDate = startDate;
@@ -111,14 +112,14 @@ public class Reservations implements Serializable {
     /**
      * @return the roomType
      */
-    public String getRoomType() {
+    public RoomTypes getRoomType() {
         return roomType;
     }
 
     /**
      * @param roomType the roomType to set
      */
-    public void setRoomType(String roomType) {
+    public void setRoomType(RoomTypes roomType) {
         this.roomType = roomType;
     }
 

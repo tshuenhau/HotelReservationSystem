@@ -12,6 +12,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToOne;
 import javax.persistence.Temporal;
 
 /**
@@ -26,8 +27,9 @@ public class Rates implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long rateID;
     
-    @Column(nullable = false, columnDefinition = "VARCHAR(60) CHECK (roomType IN ('Deluxe Room', 'Premier Room', 'Family Room', 'Junior Suite', 'Grand Suite'))")
-    private String roomType;
+    @OneToOne(mappedBy="roomRate")
+    @Column(nullable = false)
+    private RoomTypes roomType;
     
     @Column(nullable = false, columnDefinition = "VARCHAR(60) CHECK (rateType IN ('Published', 'Normal', 'Peak', 'Promo'))")
     private String rateType;
@@ -43,13 +45,13 @@ public class Rates implements Serializable {
     @Temporal(javax.persistence.TemporalType.DATE)    
     private Date endDate=null;
 
-    public Rates(String roomType, String rateType, Integer price) {
+    public Rates(RoomTypes roomType, String rateType, Integer price) {
         this.roomType = roomType;
         this.rateType = rateType;
         this.price = price;
     }
 
-    public Rates(Long rateID, String roomType, String rateType, Integer price) {
+    public Rates(Long rateID, RoomTypes roomType, String rateType, Integer price) {
         this.rateID = rateID;
         this.roomType = roomType;
         this.rateType = rateType;
@@ -94,14 +96,14 @@ public class Rates implements Serializable {
     /**
      * @return the roomType
      */
-    public String getRoomType() {
+    public RoomTypes getRoomType() {
         return roomType;
     }
 
     /**
      * @param roomType the roomType to set
      */
-    public void setRoomType(String roomType) {
+    public void setRoomType(RoomTypes roomType) {
         this.roomType = roomType;
     }
 
