@@ -105,7 +105,7 @@ public class AllocationSessionBean implements AllocationSessionBeanRemote, Alloc
                 Integer count = allocationReport.get(i).numShortage();
                 System.out.println(count);
 
-                if (allocationReport.get(i + 1).canFulfil() == true) { // if next tier can fulfil
+                if (allocationReport.get(i).canFulfil() == true) { // if next tier can fulfil
                     Integer numUpgrades = -allocationReport.get(i + 1).numShortage();//number of upgrades possible
                         System.out.println(numUpgrades);
 
