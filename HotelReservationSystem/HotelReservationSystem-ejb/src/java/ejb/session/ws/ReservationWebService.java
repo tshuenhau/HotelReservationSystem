@@ -9,10 +9,12 @@ import ejb.session.stateless.CustomersEntitySessionBeanLocal;
 import ejb.session.stateless.HotelRoomsEntitySessionBeanLocal;
 import ejb.session.stateless.RatesEntitySessionBeanLocal;
 import ejb.session.stateless.ReservationsEntitySessionBeanLocal;
+import ejb.session.stateless.RoomTypesEntitySessionBeanLocal;
 import entity.Customers;
 import entity.HotelRooms;
 import entity.Rates;
 import entity.Reservations;
+import entity.RoomTypes;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -42,6 +44,9 @@ import util.exception.ReservationNotFoundException;
 @WebService(serviceName = "ReservationWebService")
 @Stateless()
 public class ReservationWebService {
+
+    @EJB
+    private RoomTypesEntitySessionBeanLocal roomTypesEntitySessionBeanLocal;
 
     SimpleDateFormat inputDateFormat = new SimpleDateFormat("d/M/y");
 
@@ -123,20 +128,29 @@ public class ReservationWebService {
         Map<String, List<Integer>> rooms = doSearchRoom(checkInDate, checkOutDate);
         rooms = doCalculateCost(checkInDate, checkOutDate, rooms);
 
-        result[0][0] = "Deluxe Room";
-        result[1][0] = "Premier Room";
-        result[2][0] = "Family Room";
-        result[3][0] = "Junior Suite";
-        result[4][0] = "Grand Suite";
-
-        for (int i = 0; i < 5; i++) {
-            //if(rooms.get(result[i][0]) !=null)
-            {
+        List<RoomTypes> roomTypes = roomTypesEntitySessionBeanLocal.retrieveAllRoomTypes();
+        for(RoomTypes r: roomTypes){
+            rooms.put(r.getRoomTypeName(), Arrays.asList(0, 0, 0));
+        }
+        Integer count = rooms.size();
+        for(int i = 0; i< count ; i++){
+                result[0][0] = roomTypes.get(i).getRoomTypeName();
                 result[i][1] = rooms.get(result[i][0]).get(0).toString();
                 result[i][2] = rooms.get(result[i][0]).get(1).toString();
-            }
-
         }
+//        result[0][0] = "Deluxe Room";
+//        result[1][0] = "Premier Room";
+//        result[2][0] = "Family Room";
+//        result[3][0] = "Junior Suite";
+//        result[4][0] = "Grand Suite";
+//
+//        for (int i = 0; i < 5; i++) {
+//            //if(rooms.get(result[i][0]) !=null)
+//            {
+//                
+//            }
+//
+//        }
 
 //        for (Map.Entry room : rooms.entrySet()){
 //            
@@ -294,11 +308,16 @@ public class ReservationWebService {
      */
     private Map<String, List<Integer>> doSearchRoom(Date checkInDate, Date checkOutDate) {
         Map<String, List<Integer>> rooms = new HashMap<>();
-        rooms.put("Deluxe Room", Arrays.asList(0, 0, 0));
-        rooms.put("Premier Room", Arrays.asList(0, 0, 0));
-        rooms.put("Family Room", Arrays.asList(0, 0, 0));
-        rooms.put("Junior Suite", Arrays.asList(0, 0, 0));
-        rooms.put("Grand Suite", Arrays.asList(0, 0, 0));
+//        rooms.put("Deluxe Room", Arrays.asList(0, 0, 0));
+//        rooms.put("Premier Room", Arrays.asList(0, 0, 0));
+//        rooms.put("Family Room", Arrays.asList(0, 0, 0));
+//        rooms.put("Junior Suite", Arrays.asList(0, 0, 0));
+//        rooms.put("Grand Suite", Arrays.asList(0, 0, 0));
+        
+        List<RoomTypes> roomTypes = roomTypesEntitySessionBeanLocal.retrieveAllRoomTypes();
+        for(RoomTypes r: roomTypes){
+            rooms.put(r.getRoomTypeName(), Arrays.asList(0, 0, 0));
+        }
 
         List<HotelRooms> allHotelRooms = hotelRoomsEntitySessionBeanLocal.retrieveAllHotelRooms();
 

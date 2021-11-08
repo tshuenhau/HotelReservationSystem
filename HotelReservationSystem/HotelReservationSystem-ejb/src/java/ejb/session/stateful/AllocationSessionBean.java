@@ -8,10 +8,13 @@ package ejb.session.stateful;
 import classes.Allocation;
 import ejb.session.stateless.HotelRoomsEntitySessionBeanLocal;
 import ejb.session.stateless.ReservationsEntitySessionBeanLocal;
+import ejb.session.stateless.RoomTypesEntitySessionBeanLocal;
 import entity.HotelRooms;
 import entity.Reservations;
+import entity.RoomTypes;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -25,6 +28,9 @@ import util.exception.AllocationException;
  */
 @Stateless
 public class AllocationSessionBean implements AllocationSessionBeanRemote, AllocationSessionBeanLocal {
+
+    @EJB
+    private RoomTypesEntitySessionBeanLocal roomTypesEntitySessionBeanLocal;
 
     @EJB
     private HotelRoomsEntitySessionBeanLocal hotelRoomsEntitySessionBeanLocal;
@@ -48,11 +54,17 @@ public class AllocationSessionBean implements AllocationSessionBeanRemote, Alloc
         List<Allocation> allocationReport = new ArrayList<>();
         List<HotelRooms> hotelRooms = hotelRoomsEntitySessionBeanLocal.retrieveAllHotelRooms();
         List<Reservations> reservations = reservationsEntitySessionBeanLocal.retrieveAllReservations();
-        allocationReport.add(new Allocation("Deluxe Room"));
-        allocationReport.add(new Allocation("Premier Room"));
-        allocationReport.add(new Allocation("Family Room"));
-        allocationReport.add(new Allocation("Junior Suite"));
-        allocationReport.add(new Allocation("Grand Suite"));
+//        allocationReport.add(new Allocation("Deluxe Room"));
+//        allocationReport.add(new Allocation("Premier Room"));
+//        allocationReport.add(new Allocation("Family Room"));
+//        allocationReport.add(new Allocation("Junior Suite"));
+//        allocationReport.add(new Allocation("Grand Suite"));
+        
+        List<RoomTypes> roomTypes = roomTypesEntitySessionBeanLocal.retrieveAllRoomTypes();
+        for(RoomTypes r: roomTypes){
+            allocationReport.add(new Allocation(r.getRoomTypeName()));
+
+        }
 
         for (Allocation a : allocationReport) {
             for (Reservations r : reservations) {
