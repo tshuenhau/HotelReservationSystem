@@ -118,7 +118,7 @@ public class HotelReservationSessionBean implements HotelReservationSessionBeanR
             List<Integer> newList = new ArrayList<Integer>();
             newList.add(currList.get(0) + 1);
             newList.add(currList.get(1));
-            rooms.put(hotelRoom.getRmType(), newList);
+            rooms.put(hotelRoom.getRmType().getRoomTypeName(), newList);
         }
         List<Reservations> allReservations = reservationsEntitySessionBeanLocal.retrieveAllReservations();
         List<Reservations> toRemove = new ArrayList<Reservations>();

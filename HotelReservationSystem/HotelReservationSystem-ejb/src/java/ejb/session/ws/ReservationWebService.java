@@ -314,7 +314,7 @@ public class ReservationWebService {
             List<Integer> newList = new ArrayList<Integer>();
             newList.add(currList.get(0) + 1);
             newList.add(currList.get(1));
-            String temp = hotelRoom.getRmType();
+            String temp = hotelRoom.getRmType().getRoomTypeName();
             System.out.println(temp);
 
             rooms.put(temp, newList);
