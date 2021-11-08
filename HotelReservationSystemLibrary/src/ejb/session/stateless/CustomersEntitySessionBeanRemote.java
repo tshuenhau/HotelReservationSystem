@@ -19,6 +19,7 @@ import util.exception.UserAlreadyExistException;
 @Remote
 public interface CustomersEntitySessionBeanRemote {
     public List<Customers> retrieveAllCustomers();
+    public List<Customers> retrieveAllPartners();
     public Customers login(Long passportNumber, String password) throws InvalidLoginCredentialException;
 
     public Customers createNewCustomer(Customers newCustomer) throws UserAlreadyExistException;

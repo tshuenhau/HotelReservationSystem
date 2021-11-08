@@ -10,6 +10,7 @@ import ejb.session.stateless.EmployeesEntitySessionBeanRemote;
 import ejb.session.stateless.HotelRoomsEntitySessionBeanRemote;
 import ejb.session.stateless.RatesEntitySessionBeanRemote;
 import ejb.session.stateless.ReservationsEntitySessionBeanRemote;
+import entity.Customers;
 import entity.Employees;
 import java.util.Scanner;
 import util.exception.InvalidAccessRightException;
@@ -30,6 +31,7 @@ public class ManagementClient {
     private HotelRoomsEntitySessionBeanRemote hotelRoomsEntitySessionBeanRemote;
 
     private EmployeesEntitySessionBeanRemote employeesEntitySessionBeanRemote;
+    
     
     private SystemAdministrationModule systemAdministrationModule; 
     private OperationManagerModule operationManagerModule; 

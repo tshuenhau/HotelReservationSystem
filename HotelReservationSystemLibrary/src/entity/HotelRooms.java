@@ -39,8 +39,9 @@ public class HotelRooms implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long hotelRoomID;
     
-    @Column(nullable = false, columnDefinition = "VARCHAR(60) CHECK (rmType IN ('Deluxe Room', 'Premier Room', 'Family Room', 'Junior Suite', 'Grand Suite'))")
-    private String rmType;
+    @OneToOne(mappedBy="hotelRoom")
+    @Column(nullable = false)
+    private RoomTypes rmType;
     
     @Column(nullable = false)
     private Boolean status = true;
@@ -51,7 +52,7 @@ public class HotelRooms implements Serializable {
     @OneToOne(mappedBy="allocatedRoom")
     private Reservations reservation;
 
-    public HotelRooms(String rmType) {
+    public HotelRooms(RoomTypes rmType) {
         this.rmType = rmType;
     }
 
@@ -91,19 +92,7 @@ public class HotelRooms implements Serializable {
         return "entity.HotelRooms[ id=" + hotelRoomID + " ]";
     }
 
-    /**
-     * @return the rmType
-     */
-    public String getRmType() {
-        return rmType;
-    }
 
-    /**
-     * @param rmType the rmType to set
-     */
-    public void setRmType(String rmType) {
-        this.rmType = rmType;
-    }
 
     /**
      * @return the status
@@ -131,6 +120,20 @@ public class HotelRooms implements Serializable {
      */
     public void setIsAllocated(Boolean isAllocated) {
         this.isAllocated = isAllocated;
+    }
+
+    /**
+     * @return the rmType
+     */
+    public RoomTypes getRmType() {
+        return rmType;
+    }
+
+    /**
+     * @param rmType the rmType to set
+     */
+    public void setRmType(RoomTypes rmType) {
+        this.rmType = rmType;
     }
     
 }

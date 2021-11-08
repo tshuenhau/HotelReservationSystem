@@ -89,7 +89,7 @@ public class DataInitSessionBean {
 //        ratesEntitySessionBeanLocal.createNewRate(new Rates("Grand Suite","Peak", 16));
 //        ratesEntitySessionBeanLocal.createNewRate(new Rates("Grand Suite","Promo", 13));
 
-        if(em.find(HotelRooms.class, 1l) == null){
+/*        if(em.find(HotelRooms.class, 1l) == null){
                 hotelRoomsEntitySessionBeanLocal.createNewHotelRoom(new HotelRooms("Deluxe Room"));
                 hotelRoomsEntitySessionBeanLocal.createNewHotelRoom(new HotelRooms("Deluxe Room"));
                 hotelRoomsEntitySessionBeanLocal.createNewHotelRoom(new HotelRooms("Premier Room"));
@@ -98,7 +98,7 @@ public class DataInitSessionBean {
                 hotelRoomsEntitySessionBeanLocal.createNewHotelRoom(new HotelRooms("Family Room"));
                 hotelRoomsEntitySessionBeanLocal.createNewHotelRoom(new HotelRooms("Grand Suite"));
         }
-
+*/
 
 /*
 if(em.find(Employees.class, "employees1") == null){

@@ -3,13 +3,17 @@ package hotelreservationsystemclient;
 import entity.Employees;
 import java.util.Scanner;
 import ejb.session.stateless.EmployeesEntitySessionBeanRemote;
+import ejb.session.stateless.CustomersEntitySessionBeanRemote;
+import entity.Customers;
 import java.util.List;
 import util.exception.InvalidAccessRightException;
+import util.exception.UserAlreadyExistException;
 
 
 
 public class SystemAdministrationModule {
     private EmployeesEntitySessionBeanRemote employeesEntitySessionBeanRemote;
+    private CustomersEntitySessionBeanRemote customersEntitySessionBeanRemote;
     
     private Employees currentEmployee;
 
@@ -55,10 +59,15 @@ public class SystemAdministrationModule {
                     doViewAllEmployees();
                 }
                 else if(response == 3){
-                    //create partner
+                    try {
+                        doCreateNewPartner();
+                    }
+                    catch(UserAlreadyExistException ex){
+                            System.out.println("User Already Exists: " + ex.getMessage() + "\n");
+                    }
                 }
                 else if(response == 4){
-                    //view all partners
+                    doViewAllPartners();
                 }
                 else if (response == 5){
                     break;
@@ -127,6 +136,41 @@ public class SystemAdministrationModule {
 
         for (Employees employee : employees) {
             System.out.printf("%s%30s%20s\n", employee.getUsername(), employee.getEmployeeType(), employee.getPassword());
+        }
+        
+        System.out.print("Press any key to continue...> ");
+        scanner.nextLine();
+    }
+    
+    
+    private void doCreateNewPartner() throws UserAlreadyExistException{
+        Scanner scanner = new Scanner(System.in);
+        Customers newPartner = new Customers();
+        
+        System.out.println("*** Hotel Reservation System Management Client :: System Administration :: Create New Partner ***\n");
+        
+        System.out.print("Enter Passport Number> ");
+        newPartner.setPassportNum(scanner.nextLong());
+        scanner.nextLine();
+        System.out.print("Enter Password> ");
+        newPartner.setPassword(scanner.nextLine().trim());
+        newPartner.setIsPartner(Boolean.TRUE);
+        
+        customersEntitySessionBeanRemote.createNewCustomer(newPartner);
+        System.out.println("New partner created successfully!: " + newPartner.getPassportNum() + "\n");
+    }
+    
+    
+    private void doViewAllPartners(){
+        Scanner scanner = new Scanner(System.in);
+        
+        System.out.println("*** Hotel Reservation Management Client System :: System Administration :: View All Partners ***\n");
+        
+        List<Customers> partners = customersEntitySessionBeanRemote.retrieveAllPartners();
+        System.out.printf("%s%30s\n", "Passport Number", "Password");
+
+        for (Customers partner : partners) {
+            System.out.printf("%s%30s\n", partner.getPassportNum(), partner.getPassword());
         }
         
         System.out.print("Press any key to continue...> ");

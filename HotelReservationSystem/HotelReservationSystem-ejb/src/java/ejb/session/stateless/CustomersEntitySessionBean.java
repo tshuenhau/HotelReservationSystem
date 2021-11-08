@@ -32,6 +32,13 @@ public class CustomersEntitySessionBean implements CustomersEntitySessionBeanRem
     }
     
     @Override
+    public List<Customers> retrieveAllPartners() {
+        Query query = em.createQuery("Select e FROM Customers e WHERE e.isPartner = :True");
+        
+        return query.getResultList();
+    }
+    
+    @Override
     public Customers createNewCustomer(Customers newCustomer) throws UserAlreadyExistException {
         if(em.find(Customers.class, newCustomer.getPassportNum()) == null){
             em.persist(newCustomer);

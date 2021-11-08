@@ -43,8 +43,7 @@ public class EmployeeEntitySessionBean implements EmployeesEntitySessionBeanRemo
     public Employees login(String username, String password) throws InvalidLoginCredentialException {
         List<Employees> employees = retrieveAllEmployees();
         
-        for(Employees employee:employees)
-        {
+        for(Employees employee:employees){
             if(employee.getUsername().equals(username) && employee.getPassword().equals(password))
             {
                 return employee;
