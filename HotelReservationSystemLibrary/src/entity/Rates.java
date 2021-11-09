@@ -12,7 +12,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToOne;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
 
 /**
@@ -27,8 +28,8 @@ public class Rates implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long rateID;
     
-    @OneToOne(mappedBy="roomRate")
-    @Column(nullable = false)
+    @ManyToOne()
+    @JoinColumn(nullable = false)
     private RoomTypes roomType;
     
     @Column(nullable = false, columnDefinition = "VARCHAR(60) CHECK (rateType IN ('Published', 'Normal', 'Peak', 'Promo'))")

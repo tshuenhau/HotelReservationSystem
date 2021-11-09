@@ -7,6 +7,7 @@ package ejb.session.stateful;
 
 import entity.Customers;
 import entity.Reservations;
+import entity.RoomTypes;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -23,7 +24,7 @@ public interface HotelReservationSessionBeanRemote {
 
     public void remove();
     
-    public Map<String, List<Integer>> searchHotelRooms(Date checkInDate, Date checkOutDate);
+    public Map<RoomTypes, List<Integer>> searchHotelRooms(Date checkInDate, Date checkOutDate);
 
     public List<Reservations> addReservation (String roomType, Integer quantity) throws InvalidRoomTypeException, InvalidRoomQuantityException;
 
@@ -31,12 +32,12 @@ public interface HotelReservationSessionBeanRemote {
 
     public List<Reservations> confirmReservations();
 
-    public Map<String, Integer> getRoomQuantities();
+    public Map<RoomTypes, Integer> getRoomQuantities();
 
     public Integer getTotalCost();
 
     public void login(Customers customer);
 
-    public Map<String, List<Integer>> walkInSearchHotelRooms(Date checkInDate, Date checkOutDate);
+    public Map<RoomTypes, List<Integer>> walkInSearchHotelRooms(Date checkInDate, Date checkOutDate);
     
 }

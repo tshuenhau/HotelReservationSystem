@@ -27,6 +27,8 @@ import javax.annotation.PreDestroy;
 import javax.ejb.EJB;
 import javax.ejb.Remove;
 import javax.ejb.Stateful;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import util.exception.InvalidRoomQuantityException;
 import util.exception.InvalidRoomTypeException;
 
@@ -58,7 +60,9 @@ public class HotelReservationSessionBean implements HotelReservationSessionBeanR
     List<Rates> normalRates = new ArrayList<>();
     List<Rates> publishedRates = new ArrayList<>();
     //private Map<String,List<Integer>> availability = new HashMap();
-    private Map<String, List<Integer>> rooms = new HashMap();//room type -- availability -- cost
+    private Map<RoomTypes, List<Integer>> rooms = new HashMap();//room type -- availability -- cost
+    @PersistenceContext(unitName = "HotelReservationSystem-ejbPU")
+    private EntityManager em;
 
     List<Reservations> reservations = new ArrayList<>();
 
@@ -84,14 +88,14 @@ public class HotelReservationSessionBean implements HotelReservationSessionBeanR
     }
 
     @Override
-    public Map<String, List<Integer>> searchHotelRooms(Date checkInDate, Date checkOutDate) {
+    public Map<RoomTypes, List<Integer>> searchHotelRooms(Date checkInDate, Date checkOutDate) {
         doSearchRoom(checkInDate, checkOutDate);
         doCalculateCost();
         return rooms;
     }
     
     @Override
-    public Map<String, List<Integer>> walkInSearchHotelRooms(Date checkInDate, Date checkOutDate) {
+    public Map<RoomTypes, List<Integer>> walkInSearchHotelRooms(Date checkInDate, Date checkOutDate) {
         doSearchRoom(checkInDate, checkOutDate);
         doWalkInCalculateCost();
         return rooms;
@@ -105,7 +109,7 @@ public class HotelReservationSessionBean implements HotelReservationSessionBeanR
         
         List<RoomTypes> roomTypes = roomTypesEntitySessionBeanLocal.retrieveAllRoomTypes();
         for(RoomTypes r: roomTypes){
-            rooms.put(r.getRoomTypeName(), Arrays.asList(0, 0, 0));
+            rooms.put(r, Arrays.asList(0, 0, 0));
         }
 
         List<HotelRooms> allHotelRooms = hotelRoomsEntitySessionBeanLocal.retrieveAllHotelRooms();
@@ -123,7 +127,7 @@ public class HotelReservationSessionBean implements HotelReservationSessionBeanR
             List<Integer> newList = new ArrayList<Integer>();
             newList.add(currList.get(0) + 1);
             newList.add(currList.get(1));
-            rooms.put(hotelRoom.getRmType().getRoomTypeName(), newList);
+            rooms.put(hotelRoom.getRmType(), newList);
         }
         List<Reservations> allReservations = reservationsEntitySessionBeanLocal.retrieveAllReservations();
         List<Reservations> toRemove = new ArrayList<Reservations>();
@@ -292,7 +296,8 @@ public class HotelReservationSessionBean implements HotelReservationSessionBeanR
     }
 
     @Override
-    public List<Reservations> addReservation(String roomType, Integer quantity) throws InvalidRoomTypeException, InvalidRoomQuantityException {
+    public List<Reservations> addReservation(String inputRoomType, Integer quantity) throws InvalidRoomTypeException, InvalidRoomQuantityException {
+        RoomTypes roomType = em.find(RoomTypes.class, inputRoomType);
         if (rooms.containsKey(roomType)) {
             if (rooms.get(roomType).get(0) >= quantity) {
                 List<Integer> newList = new ArrayList<>();
@@ -307,7 +312,7 @@ public class HotelReservationSessionBean implements HotelReservationSessionBeanR
                 rooms.put(roomType, newList);
 
             } else {
-                throw new InvalidRoomQuantityException("Invalid Quantity for " + roomType + " Only " + rooms.get(roomType).get(0) + " rooms available");
+                throw new InvalidRoomQuantityException("Invalid Quantity for " + roomType.getRoomTypeName() + " Only " + rooms.get(roomType).get(0) + " rooms available");
             }
         } else {
             throw new InvalidRoomTypeException("Invalid Room Type: " + roomType);
@@ -332,8 +337,8 @@ public class HotelReservationSessionBean implements HotelReservationSessionBeanR
         return cost;
     }
 
-    public Map<String, Integer> getRoomQuantities() { // ROom Type --- Quantity
-        Map<String, Integer> result = new HashMap<String, Integer>();
+    public Map<RoomTypes, Integer> getRoomQuantities() { // ROom Type --- Quantity
+        Map<RoomTypes, Integer> result = new HashMap<RoomTypes, Integer>();
         for (Reservations r : reservations) {
             if (result.containsKey(r.getRoomType())) {
                 result.put(r.getRoomType(), result.get(r.getRoomType()) + 1);
@@ -342,6 +347,10 @@ public class HotelReservationSessionBean implements HotelReservationSessionBeanR
             }
         }
         return result;
+    }
+
+    public void persist(Object object) {
+        em.persist(object);
     }
 
 }

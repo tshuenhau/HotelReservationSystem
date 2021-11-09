@@ -6,9 +6,11 @@
 package entity;
 
 import java.io.Serializable;
+import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 
 /**
@@ -40,11 +42,11 @@ public class RoomTypes implements Serializable {
     @Column(nullable = false)
     private String amenities;
     
-    @OneToOne
-    private HotelRooms hotelRoom;
+    @OneToMany(mappedBy = "rmType")
+    private List<HotelRooms> hotelRooms;
     
-    @OneToOne
-    private Rates roomRate;
+    @OneToMany(mappedBy = "roomType")
+    private List<Rates> roomRates;
     
     @OneToOne
     private Reservations reservation;
@@ -177,29 +179,29 @@ public class RoomTypes implements Serializable {
     /**
      * @return the hotelRoom
      */
-    public HotelRooms getHotelRoom() {
-        return hotelRoom;
+    public List<HotelRooms> getHotelRoom() {
+        return hotelRooms;
     }
 
     /**
      * @param hotelRoom the hotelRoom to set
      */
-    public void setHotelRoom(HotelRooms hotelRoom) {
-        this.hotelRoom = hotelRoom;
+    public void setHotelRoom(List<HotelRooms> hotelRoom) {
+        this.hotelRooms = hotelRoom;
     }
 
     /**
      * @return the roomRate
      */
-    public Rates getRoomRate() {
-        return roomRate;
+    public List<Rates> getRoomRate() {
+        return roomRates;
     }
 
     /**
      * @param roomRate the roomRate to set
      */
-    public void setRoomRate(Rates roomRate) {
-        this.roomRate = roomRate;
+    public void setRoomRate(List<Rates> roomRate) {
+        this.roomRates = roomRate;
     }
 
     /**

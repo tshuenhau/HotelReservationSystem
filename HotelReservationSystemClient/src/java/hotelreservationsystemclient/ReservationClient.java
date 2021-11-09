@@ -10,6 +10,7 @@ import ejb.session.stateless.CustomersEntitySessionBeanRemote;
 import ejb.session.stateless.ReservationsEntitySessionBeanRemote;
 import entity.Customers;
 import entity.Reservations;
+import entity.RoomTypes;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -180,13 +181,13 @@ public class ReservationClient {
                         response = scanner.nextInt();
                         scanner.nextLine();
                         if (response == 2) {
-                            Map<String, Integer> quantities = hotelReservationSessionBeanRemote.getRoomQuantities();
+                            Map<RoomTypes, Integer> quantities = hotelReservationSessionBeanRemote.getRoomQuantities();
                             Integer totalCost = hotelReservationSessionBeanRemote.getTotalCost();
 
                             System.out.println("Confirm the following reservations?\n");
 
                             quantities.forEach(
-                                    (key, value) -> System.out.println(key + " X " + value)
+                                    (key, value) -> System.out.println(key.getRoomTypeName() + " X " + value)
                             );
 
                             System.out.println("Total Cost: $" + totalCost);
@@ -283,10 +284,10 @@ public class ReservationClient {
             System.out.println("*** Showing available rooms for: " + outputDateFormat.format(checkInDate) + " to " + outputDateFormat.format(checkOutDate) + "***\n");
 
             System.out.printf("%8s%22s   %s\n", "Room Type", "Availability ", "Price");
-            Map<String, List<Integer>> availability = hotelReservationSessionBeanRemote.searchHotelRooms(checkInDate, checkOutDate);
+            Map<RoomTypes, List<Integer>> availability = hotelReservationSessionBeanRemote.searchHotelRooms(checkInDate, checkOutDate);
 
             availability.entrySet().forEach(rooms -> {
-                System.out.printf("%8s%15s           %s\n", rooms.getKey(), rooms.getValue().get(0), rooms.getValue().get(1));
+                System.out.printf("%8s%15s           %s\n", rooms.getKey().getRoomTypeName(), rooms.getValue().get(0), rooms.getValue().get(1));
 
                 //System.out.println(rooms.getKey() + "      " + rooms.getValue().get(0) + "    " + rooms.getValue().get(1));
             });

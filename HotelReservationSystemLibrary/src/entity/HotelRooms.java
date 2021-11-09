@@ -11,6 +11,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 
 /**
@@ -39,8 +41,8 @@ public class HotelRooms implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long hotelRoomID;
     
-    @OneToOne(mappedBy="hotelRoom")
-    @Column(nullable = false)
+    @ManyToOne()
+    @JoinColumn(nullable = false)
     private RoomTypes rmType;
     
     @Column(nullable = false)

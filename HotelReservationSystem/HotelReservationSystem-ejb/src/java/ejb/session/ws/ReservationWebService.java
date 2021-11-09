@@ -125,12 +125,12 @@ public class ReservationWebService {
         Date checkOutDate = inputDateFormat.parse(inputCheckOutDate);
 
         //System.out.println(checkInDate);
-        Map<String, List<Integer>> rooms = doSearchRoom(checkInDate, checkOutDate);
+        Map<RoomTypes, List<Integer>> rooms = doSearchRoom(checkInDate, checkOutDate);
         rooms = doCalculateCost(checkInDate, checkOutDate, rooms);
 
         List<RoomTypes> roomTypes = roomTypesEntitySessionBeanLocal.retrieveAllRoomTypes();
         for(RoomTypes r: roomTypes){
-            rooms.put(r.getRoomTypeName(), Arrays.asList(0, 0, 0));
+            rooms.put(r, Arrays.asList(0, 0, 0));
         }
         Integer count = rooms.size();
         for(int i = 0; i< count ; i++){
@@ -159,12 +159,12 @@ public class ReservationWebService {
 
     }
 
-    private Map<String, List<Integer>> doCalculateCost(Date checkInDate, Date checkOutDate, Map<String, List<Integer>> roomsPreCost) {
+    private Map<RoomTypes, List<Integer>> doCalculateCost(Date checkInDate, Date checkOutDate, Map<RoomTypes, List<Integer>> roomsPreCost) {
         List<Rates> promoRates = new ArrayList<>();
         List<Rates> peakRates = new ArrayList<>();
         List<Rates> normalRates = new ArrayList<>();
         List<Rates> publishedRates = new ArrayList<>();
-        Map<String, List<Integer>> rooms = roomsPreCost;
+        Map<RoomTypes, List<Integer>> rooms = roomsPreCost;
 
         System.out.println("Calculating Rates...");
         List<Rates> rates = ratesEntitySessionBeanLocal.retrieveAllRates();
@@ -266,13 +266,13 @@ public class ReservationWebService {
     }
 
     @WebMethod(operationName = "addReservation")
-    public List<Reservations> addReservation(Long passportNum, String password, String inputCheckInDate, String inputCheckOutDate, String roomType, Integer quantity) throws InvalidRoomTypeException, InvalidRoomQuantityException, ParseException, InvalidLoginCredentialException {
+    public List<Reservations> addReservation(Long passportNum, String password, String inputCheckInDate, String inputCheckOutDate, String inputRoomType, Integer quantity) throws InvalidRoomTypeException, InvalidRoomQuantityException, ParseException, InvalidLoginCredentialException {
         String[][] data = searchHotelRooms(inputCheckInDate, inputCheckOutDate);
         Integer cost = 0;
 
         for (int i = 0; i < data.length; i++) {
 
-            if (data[i][0].equals(roomType)) {
+            if (data[i][0].equals(inputRoomType)) {
                 if (Integer.parseInt(data[i][1]) < quantity) {
                     throw new InvalidRoomQuantityException("NO MORE ROOMS");
                     //return new ArrayList<Reservations>();
@@ -280,12 +280,15 @@ public class ReservationWebService {
                 cost = Integer.parseInt(data[i][2]);
                 System.out.println(cost);
             }
+            else{
+                throw new InvalidRoomTypeException();
+            }
 
         }
         Date checkInDate = inputDateFormat.parse(inputCheckInDate);
         Date checkOutDate = inputDateFormat.parse(inputCheckOutDate);
         List<Reservations> reservations = new ArrayList<>();
-
+        RoomTypes roomType = em.find(RoomTypes.class, inputRoomType);
         Customers c = Login(passportNum, password);
         if (c != null) {
             for (int i = 0; i < quantity; i++) {
@@ -306,8 +309,8 @@ public class ReservationWebService {
     /**
      * This is a sample web service operation
      */
-    private Map<String, List<Integer>> doSearchRoom(Date checkInDate, Date checkOutDate) {
-        Map<String, List<Integer>> rooms = new HashMap<>();
+    private Map<RoomTypes, List<Integer>> doSearchRoom(Date checkInDate, Date checkOutDate) {
+        Map<RoomTypes, List<Integer>> rooms = new HashMap<>();
 //        rooms.put("Deluxe Room", Arrays.asList(0, 0, 0));
 //        rooms.put("Premier Room", Arrays.asList(0, 0, 0));
 //        rooms.put("Family Room", Arrays.asList(0, 0, 0));
@@ -316,7 +319,7 @@ public class ReservationWebService {
         
         List<RoomTypes> roomTypes = roomTypesEntitySessionBeanLocal.retrieveAllRoomTypes();
         for(RoomTypes r: roomTypes){
-            rooms.put(r.getRoomTypeName(), Arrays.asList(0, 0, 0));
+            rooms.put(r, Arrays.asList(0, 0, 0));
         }
 
         List<HotelRooms> allHotelRooms = hotelRoomsEntitySessionBeanLocal.retrieveAllHotelRooms();
@@ -333,7 +336,7 @@ public class ReservationWebService {
             List<Integer> newList = new ArrayList<Integer>();
             newList.add(currList.get(0) + 1);
             newList.add(currList.get(1));
-            String temp = hotelRoom.getRmType().getRoomTypeName();
+            RoomTypes temp = hotelRoom.getRmType();
             System.out.println(temp);
 
             rooms.put(temp, newList);
@@ -369,6 +372,10 @@ public class ReservationWebService {
 
     private boolean isWithinRange(Date date, Date startDate, Date endDate) {
         return !(date.before(startDate) || date.after(endDate));
+    }
+
+    public void persist(Object object) {
+        em.persist(object);
     }
 
 

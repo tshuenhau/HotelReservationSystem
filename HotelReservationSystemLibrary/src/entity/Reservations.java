@@ -12,6 +12,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Temporal;
@@ -32,7 +33,7 @@ public class Reservations implements Serializable {
     private Customers reservedBy;
   
     @OneToOne(mappedBy="reservation")
-    @Column(nullable=false)
+    @JoinColumn(nullable=false)
     private RoomTypes roomType;
   
     @Column(nullable=false)
