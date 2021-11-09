@@ -7,6 +7,7 @@ package entity;
 
 import java.io.Serializable;
 import java.util.Date;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -32,7 +33,7 @@ public class Reservations implements Serializable {
     @ManyToOne(optional = true)
     private Customers reservedBy;
   
-    @OneToOne(mappedBy="reservation")
+    @OneToOne(mappedBy="reservation", cascade = CascadeType.REMOVE)
     @JoinColumn(nullable=false)
     private RoomTypes roomType;
   
