@@ -10,6 +10,7 @@ import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 
@@ -24,8 +25,8 @@ public class RoomTypes implements Serializable {
     @Id
     private String roomTypeName;
     
-    @Column(nullable = false)
-    private String nextHigherRoomType;
+    @JoinColumn(nullable = true)
+    private RoomTypes nextHigherRoomType;
     
     @Column(nullable = false)
     private String description;
@@ -54,7 +55,7 @@ public class RoomTypes implements Serializable {
     public RoomTypes() {
     }
 
-    public RoomTypes(String roomTypeName, String nextHigherRoomType) {
+    public RoomTypes(String roomTypeName, RoomTypes nextHigherRoomType) {
         this.roomTypeName = roomTypeName;
         this.nextHigherRoomType = nextHigherRoomType;
     }
@@ -95,14 +96,14 @@ public class RoomTypes implements Serializable {
     /**
      * @return the nextHigherRoomType
      */
-    public String getNextHigherRoomType() {
+    public RoomTypes getNextHigherRoomType() {
         return nextHigherRoomType;
     }
 
     /**
      * @param nextHigherRoomType the nextHigherRoomType to set
      */
-    public void setNextHigherRoomType(String nextHigherRoomType) {
+    public void setNextHigherRoomType(RoomTypes nextHigherRoomType) {
         this.nextHigherRoomType = nextHigherRoomType;
     }
 
