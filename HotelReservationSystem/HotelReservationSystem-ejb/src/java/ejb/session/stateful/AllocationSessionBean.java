@@ -136,7 +136,7 @@ public class AllocationSessionBean implements AllocationSessionBeanRemote, Alloc
 
         for (AllocationException a : allocationExceptions) {
             for (Reservations r : reservations) {
-                if (a.getExceptionType() == 1 && r.getStartDate().equals(date) && a.getRoomType().equals(r.getRoomType().getRoomTypeName())) {
+                if (a.getExceptionType() == 1 && r.getStartDate().equals(date) && a.getRoomType().equals(r.getRoomType())) {
                   
                         r.setRoomType(a.getRoomType());
                     
