@@ -32,9 +32,9 @@ import javax.persistence.PersistenceContext;
 @LocalBean
 @Startup
 public class DataInitSessionBean {
-//
-//    @EJB
-//    private AllocationSessionBeanLocal allocationSessionBeanLocal;
+
+    @EJB
+    private AllocationSessionBeanLocal allocationSessionBeanLocal;
 
     @EJB
     private ReservationsEntitySessionBeanLocal reservationsEntitySessionBeanLocal;
