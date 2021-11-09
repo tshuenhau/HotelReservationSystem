@@ -17,6 +17,7 @@ import javax.ejb.Local;
 @Local
 public interface AllocationSessionBeanLocal {
 
-    public List<Allocation> allocateRooms(Date date);
+
+    public List<Allocation> generateReport(Date date);
     
 }

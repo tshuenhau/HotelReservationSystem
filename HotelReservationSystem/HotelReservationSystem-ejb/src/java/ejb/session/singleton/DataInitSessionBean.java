@@ -135,11 +135,11 @@ hotelRoomsEntitySessionBeanLocal.createNewHotelRoom(new HotelRooms(3l, "Sales Ma
 
 //employeeEntitySessionBeanLocal.createNewEmployee(new Employees("employee1", "System Administrator", "123"));
       
-//    try {
-//            allocationSessionBeanLocal.allocateRooms(inputDateFormat.parse("16/11/1111"));    
-//    } catch (ParseException ex) {
-//            Logger.getLogger(DataInitSessionBean.class.getName()).log(Level.SEVERE, null, ex);
-//        }
+    try {
+            allocationSessionBeanLocal.generateReport(inputDateFormat.parse("16/11/1111"));    
+    } catch (ParseException ex) {
+            Logger.getLogger(DataInitSessionBean.class.getName()).log(Level.SEVERE, null, ex);
+        }
   
     }
     
