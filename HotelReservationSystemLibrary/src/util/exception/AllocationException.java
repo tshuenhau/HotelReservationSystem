@@ -5,19 +5,20 @@
  */
 package util.exception;
 
+import entity.RoomTypes;
+
 /**
  *
  * @author tshuenhau
  */
 public class AllocationException extends Exception {
     private Integer exceptionType;
-    private String roomType;
+    private RoomTypes roomType;
     
     public AllocationException() {
     }
 
-    public AllocationException(String roomType, Integer exceptionType) {
-        super(roomType);
+    public AllocationException(RoomTypes roomType, Integer exceptionType) {
         this.roomType = roomType;
         this.exceptionType = exceptionType;
         
@@ -40,14 +41,14 @@ public class AllocationException extends Exception {
     /**
      * @return the roomType
      */
-    public String getRoomType() {
+    public RoomTypes getRoomType() {
         return roomType;
     }
 
     /**
      * @param roomType the roomType to set
      */
-    public void setRoomType(String roomType) {
+    public void setRoomType(RoomTypes roomType) {
         this.roomType = roomType;
     }
     

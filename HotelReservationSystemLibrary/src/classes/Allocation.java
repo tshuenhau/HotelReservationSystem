@@ -5,26 +5,28 @@
  */
 package classes;
 
+import entity.RoomTypes;
+
 /**
  *
  * @author tshuenhau
  */
 public class Allocation {
     
-    private String roomType;
+    private RoomTypes roomType;
     private Integer numReservations;
     private Integer numAvailable;
 
     public Allocation() {
     }
 
-    public Allocation(String roomType, Integer numReservations, Integer numAvailable) {
+    public Allocation(RoomTypes roomType, Integer numReservations, Integer numAvailable) {
         this.roomType = roomType;
         this.numReservations = numReservations;
         this.numAvailable = numAvailable;
     }
 
-    public Allocation(String roomType) {
+    public Allocation(RoomTypes roomType) {
         this.roomType = roomType;
         this.numReservations = 0;
         this.numAvailable = 0;
@@ -41,14 +43,14 @@ public class Allocation {
     /**
      * @return the roomType
      */
-    public String getRoomType() {
+    public RoomTypes getRoomType() {
         return roomType;
     }
 
     /**
      * @param roomType the roomType to set
      */
-    public void setRoomType(String roomType) {
+    public void setRoomType(RoomTypes roomType) {
         this.roomType = roomType;
     }
 
