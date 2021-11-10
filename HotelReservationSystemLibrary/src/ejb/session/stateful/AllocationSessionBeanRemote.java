@@ -17,5 +17,6 @@ import javax.ejb.Remote;
 @Remote
 public interface AllocationSessionBeanRemote {
     public List<Allocation> generateReport(Date date);
+    public void allocateRooms(Date date);
 
 }

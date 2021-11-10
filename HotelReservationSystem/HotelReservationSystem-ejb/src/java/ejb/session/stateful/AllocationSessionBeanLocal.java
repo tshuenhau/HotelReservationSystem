@@ -19,5 +19,7 @@ public interface AllocationSessionBeanLocal {
 
 
     public List<Allocation> generateReport(Date date);
+
+    public void allocateRooms(Date date);
     
 }

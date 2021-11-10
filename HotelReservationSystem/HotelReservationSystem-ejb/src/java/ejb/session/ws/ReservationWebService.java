@@ -65,20 +65,21 @@ public class ReservationWebService {
     private EntityManager em;
     SimpleDateFormat outputDateFormat = new SimpleDateFormat("dd/MM/yyyy");//"dd/MM/yyyy hh:mm a"
 
-    @WebMethod(operationName="ViewReservation")
-    public Reservations viewReservation(Long passportNum, String password, Long reservationID) throws InvalidLoginCredentialException, ReservationNotFoundException{
-        List<Reservations> reservations = ViewAllReservations(passportNum,password);
-        if(reservations!=null){
-            for(Reservations r: reservations){
-                if(r.getReservationID().equals(reservationID)){
+    @WebMethod(operationName = "ViewReservation")
+    public Reservations viewReservation(Long passportNum, String password, Long reservationID) throws InvalidLoginCredentialException, ReservationNotFoundException {
+        List<Reservations> reservations = ViewAllReservations(passportNum, password);
+        if (reservations != null) {
+            for (Reservations r : reservations) {
+                if (r.getReservationID().equals(reservationID)) {
                     return r;
                 }
             }
         }
-        
+
         throw new ReservationNotFoundException();
-        
+
     }
+
     @WebMethod(operationName = "ViewAllReservations")
     public List<Reservations> ViewAllReservations(Long passportNum, String password) throws InvalidLoginCredentialException {
         Customers c = Login(passportNum, password);
@@ -107,6 +108,8 @@ public class ReservationWebService {
             for (Reservations r : c.getReservations()) {
                 em.detach(r);
                 r.setReservedBy(null);
+                r.setAllocatedRoom(null);
+                r.setReservationRoomType(null);
             }
             if (c.getPassportNum().equals(passPortNum) && c.getIsPartner() == true) {
                 if (c.getPassword().equals(password)) {
@@ -120,7 +123,8 @@ public class ReservationWebService {
 
     @WebMethod(operationName = "SearchRoom")
     public String[][] searchHotelRooms(String inputCheckInDate, String inputCheckOutDate) throws ParseException {
-        String[][] result = new String[5][3];
+        List<RoomTypes> roomTypes = roomTypesEntitySessionBeanLocal.retrieveAllRoomTypes();
+        String[][] result = new String[roomTypes.size()][3];
         Date checkInDate = inputDateFormat.parse(inputCheckInDate);
         Date checkOutDate = inputDateFormat.parse(inputCheckOutDate);
 
@@ -128,33 +132,16 @@ public class ReservationWebService {
         Map<RoomTypes, List<Integer>> rooms = doSearchRoom(checkInDate, checkOutDate);
         rooms = doCalculateCost(checkInDate, checkOutDate, rooms);
 
-        List<RoomTypes> roomTypes = roomTypesEntitySessionBeanLocal.retrieveAllRoomTypes();
-        for(RoomTypes r: roomTypes){
-            rooms.put(r, Arrays.asList(0, 0, 0));
-        }
         Integer count = rooms.size();
-        for(int i = 0; i< count ; i++){
-                result[0][0] = roomTypes.get(i).getRoomTypeName();
-                result[i][1] = rooms.get(result[i][0]).get(0).toString();
-                result[i][2] = rooms.get(result[i][0]).get(1).toString();
+        for (Map.Entry room : rooms.entrySet()) {
+            System.out.println(room.getKey() + " " + room.getValue());
         }
-//        result[0][0] = "Deluxe Room";
-//        result[1][0] = "Premier Room";
-//        result[2][0] = "Family Room";
-//        result[3][0] = "Junior Suite";
-//        result[4][0] = "Grand Suite";
-//
-//        for (int i = 0; i < 5; i++) {
-//            //if(rooms.get(result[i][0]) !=null)
-//            {
-//                
-//            }
-//
-//        }
+        for (int i = 0; i < count; i++) {
+            result[i][0] = roomTypes.get(i).getRoomTypeName();
+            result[i][1] = rooms.get(roomTypes.get(i)).get(0).toString();
+            result[i][2] = rooms.get(roomTypes.get(i)).get(1).toString();
+        }
 
-//        for (Map.Entry room : rooms.entrySet()){
-//            
-//        }
         return result;
 
     }
@@ -262,6 +249,10 @@ public class ReservationWebService {
 
             gcal.add(Calendar.DAY_OF_MONTH, 1);
         }
+
+        for (Map.Entry room : rooms.entrySet()) {
+            System.out.println(room.getKey() + " " + room.getValue());
+        }
         return rooms;
     }
 
@@ -269,10 +260,12 @@ public class ReservationWebService {
     public List<Reservations> addReservation(Long passportNum, String password, String inputCheckInDate, String inputCheckOutDate, String inputRoomType, Integer quantity) throws InvalidRoomTypeException, InvalidRoomQuantityException, ParseException, InvalidLoginCredentialException {
         String[][] data = searchHotelRooms(inputCheckInDate, inputCheckOutDate);
         Integer cost = 0;
+        Boolean found = false;
 
         for (int i = 0; i < data.length; i++) {
 
             if (data[i][0].equals(inputRoomType)) {
+                found = true;
                 if (Integer.parseInt(data[i][1]) < quantity) {
                     throw new InvalidRoomQuantityException("NO MORE ROOMS");
                     //return new ArrayList<Reservations>();
@@ -280,9 +273,10 @@ public class ReservationWebService {
                 cost = Integer.parseInt(data[i][2]);
                 System.out.println(cost);
             }
-            else{
-                throw new InvalidRoomTypeException();
-            }
+
+        }
+        if (found == false) {
+            throw new InvalidRoomTypeException();
 
         }
         Date checkInDate = inputDateFormat.parse(inputCheckInDate);
@@ -301,6 +295,10 @@ public class ReservationWebService {
         for (Reservations r : reservations) {
             em.detach(r);
             r.getReservedBy().setReservations(null);
+            r.getReservationRoomType().setReservations(null);
+            r.getReservationRoomType().setNextHigherRoomType(null);
+            r.getReservationRoomType().setHotelRooms(null);
+            r.getReservationRoomType().setRoomRates(null);
         }
 
         return reservations;
@@ -311,14 +309,9 @@ public class ReservationWebService {
      */
     private Map<RoomTypes, List<Integer>> doSearchRoom(Date checkInDate, Date checkOutDate) {
         Map<RoomTypes, List<Integer>> rooms = new HashMap<>();
-//        rooms.put("Deluxe Room", Arrays.asList(0, 0, 0));
-//        rooms.put("Premier Room", Arrays.asList(0, 0, 0));
-//        rooms.put("Family Room", Arrays.asList(0, 0, 0));
-//        rooms.put("Junior Suite", Arrays.asList(0, 0, 0));
-//        rooms.put("Grand Suite", Arrays.asList(0, 0, 0));
-        
+
         List<RoomTypes> roomTypes = roomTypesEntitySessionBeanLocal.retrieveAllRoomTypes();
-        for(RoomTypes r: roomTypes){
+        for (RoomTypes r : roomTypes) {
             rooms.put(r, Arrays.asList(0, 0, 0));
         }
 
@@ -373,10 +366,5 @@ public class ReservationWebService {
     private boolean isWithinRange(Date date, Date startDate, Date endDate) {
         return !(date.before(startDate) || date.after(endDate));
     }
-
-    public void persist(Object object) {
-        em.persist(object);
-    }
-
 
 }

@@ -197,35 +197,35 @@ public class RoomTypes implements Serializable {
     /**
      * @param hotelRoom the hotelRoom to set
      */
-    public void setHotelRoom(List<HotelRooms> hotelRoom) {
+    public void setHotelRooms(List<HotelRooms> hotelRoom) {
         this.hotelRooms = hotelRoom;
     }
 
     /**
      * @return the roomRate
      */
-    public List<Rates> getRoomRate() {
+    public List<Rates> getRoomRates() {
         return roomRates;
     }
 
     /**
      * @param roomRate the roomRate to set
      */
-    public void setRoomRate(List<Rates> roomRate) {
+    public void setRoomRates(List<Rates> roomRate) {
         this.roomRates = roomRate;
     }
 
     /**
      * @return the reservations
      */
-    public List<Reservations> getReservation() {
+    public List<Reservations> getReservations() {
         return reservations;
     }
 
     /**
      * @param reservation the reservations to set
      */
-    public void setReservation(List<Reservations> reservation) {
+    public void setReservations(List<Reservations> reservation) {
         this.reservations = reservation;
     }
     

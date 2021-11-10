@@ -131,6 +131,7 @@ public class DataInitSessionBean {
         
             try {
             allocationSessionBeanLocal.generateReport(inputDateFormat.parse("11/11/1111"));
+            //allocationSessionBeanLocal.allocateRooms(inputDateFormat.parse("11/11/1111"));
             } catch (ParseException ex) {
             Logger.getLogger(DataInitSessionBean.class.getName()).log(Level.SEVERE, null, ex);
         }
