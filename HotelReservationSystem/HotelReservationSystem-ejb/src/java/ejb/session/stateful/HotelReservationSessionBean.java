@@ -142,13 +142,13 @@ public class HotelReservationSessionBean implements HotelReservationSessionBeanR
 
         for (Reservations reservation : allReservations) {
             List<Integer> currList = new ArrayList<Integer>();
-            if (rooms.containsKey(reservation.getRoomType())) {
-                currList = rooms.get(reservation.getRoomType());
+            if (rooms.containsKey(reservation.getReservationRoomType())) {
+                currList = rooms.get(reservation.getReservationRoomType());
             }
             List<Integer> newList = new ArrayList<Integer>();
             newList.add(currList.get(0) - 1);
             newList.add(currList.get(1));
-            rooms.put(reservation.getRoomType(), newList);
+            rooms.put(reservation.getReservationRoomType(), newList);
         }
     }
 
@@ -340,10 +340,10 @@ public class HotelReservationSessionBean implements HotelReservationSessionBeanR
     public Map<RoomTypes, Integer> getRoomQuantities() { // ROom Type --- Quantity
         Map<RoomTypes, Integer> result = new HashMap<RoomTypes, Integer>();
         for (Reservations r : reservations) {
-            if (result.containsKey(r.getRoomType())) {
-                result.put(r.getRoomType(), result.get(r.getRoomType()) + 1);
+            if (result.containsKey(r.getReservationRoomType())) {
+                result.put(r.getReservationRoomType(), result.get(r.getReservationRoomType()) + 1);
             } else {
-                result.put(r.getRoomType(), 1);
+                result.put(r.getReservationRoomType(), 1);
             }
         }
         return result;

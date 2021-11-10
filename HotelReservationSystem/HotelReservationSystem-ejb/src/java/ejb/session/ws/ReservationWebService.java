@@ -359,13 +359,13 @@ public class ReservationWebService {
 
         for (Reservations reservation : allReservations) {
             List<Integer> currList = new ArrayList<Integer>();
-            if (rooms.containsKey(reservation.getRoomType())) {
-                currList = rooms.get(reservation.getRoomType());
+            if (rooms.containsKey(reservation.getReservationRoomType())) {
+                currList = rooms.get(reservation.getReservationRoomType());
             }
             List<Integer> newList = new ArrayList<Integer>();
             newList.add(currList.get(0) - 1);
             newList.add(currList.get(1));
-            rooms.put(reservation.getRoomType(), newList);
+            rooms.put(reservation.getReservationRoomType(), newList);
         }
         return rooms;
     }

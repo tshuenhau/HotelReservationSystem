@@ -50,13 +50,13 @@ public class RoomTypes implements Serializable {
     @OneToMany(mappedBy = "roomType")
     private List<Rates> roomRates;
     
-    @OneToOne()
-    private Reservations reservation;
+    @OneToMany(mappedBy = "reservationRoomType")
+    private List<Reservations> reservations;
 
     public RoomTypes() {
         hotelRooms = new ArrayList<>();
         roomRates = new ArrayList<>();
-        reservation = null;
+        reservations = null;
     }
 
     public RoomTypes(String roomTypeName, RoomTypes nextHigherRoomType) {
@@ -216,17 +216,17 @@ public class RoomTypes implements Serializable {
     }
 
     /**
-     * @return the reservation
+     * @return the reservations
      */
-    public Reservations getReservation() {
-        return reservation;
+    public List<Reservations> getReservation() {
+        return reservations;
     }
 
     /**
-     * @param reservation the reservation to set
+     * @param reservation the reservations to set
      */
-    public void setReservation(Reservations reservation) {
-        this.reservation = reservation;
+    public void setReservation(List<Reservations> reservation) {
+        this.reservations = reservation;
     }
     
 }

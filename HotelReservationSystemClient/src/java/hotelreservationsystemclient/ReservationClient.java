@@ -131,7 +131,7 @@ public class ReservationClient {
 
                     for(Reservations r: reservations){
                         if(r.getReservationID().equals(reservationID)){
-                           System.out.printf("%16s%22s      %s\n", r.getReservationID().toString(), r.getRoomType(), r.getCost());
+                           System.out.printf("%16s%22s      %s\n", r.getReservationID().toString(), r.getReservationRoomType(), r.getCost());
                            //System.out.println(r.getReservationID() + " " + r.getRoomType() + " " + r.getCost());
                         }
                     }
