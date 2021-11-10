@@ -145,19 +145,17 @@ public class SystemAdministrationModule {
     
     private void doCreateNewPartner() throws UserAlreadyExistException{
         Scanner scanner = new Scanner(System.in);
-        Customers newPartner = new Customers();
         
         System.out.println("*** Hotel Reservation System Management Client :: System Administration :: Create New Partner ***\n");
         
         System.out.print("Enter Passport Number> ");
-        newPartner.setPassportNum(scanner.nextLong());
+        Long passportNum = scanner.nextLong();
         scanner.nextLine();
         System.out.print("Enter Password> ");
-        newPartner.setPassword(scanner.nextLine().trim());
-        newPartner.setIsPartner(Boolean.TRUE);
+        String password = scanner.nextLine().trim();
         
-        customersEntitySessionBeanRemote.createNewCustomer(newPartner);
-        System.out.println("New partner created successfully!: " + newPartner.getPassportNum() + "\n");
+        Long newPartnerPassportNum = customersEntitySessionBeanRemote.createNewPartner(new Customers(passportNum, password, true));
+        System.out.println("New partner created successfully!: " + newPartnerPassportNum + "\n");
     }
     
     

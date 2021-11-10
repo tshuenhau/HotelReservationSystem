@@ -16,7 +16,7 @@ import javax.ejb.Remote;
 @Remote
 public interface HotelRoomsEntitySessionBeanRemote {
     public List<HotelRooms> retrieveAllHotelRooms();
-    public Long createNewHotelRoom(HotelRooms hotelRoom);
+    public String createNewHotelRoom(HotelRooms hotelRoom);
 
 
 }

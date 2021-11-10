@@ -18,6 +18,6 @@ public interface HotelRoomsEntitySessionBeanLocal {
 
     public List<HotelRooms> retrieveAllHotelRooms();
 
-    public Long createNewHotelRoom(HotelRooms hotelRoom);
+    public String createNewHotelRoom(HotelRooms hotelRoom);
     
 }

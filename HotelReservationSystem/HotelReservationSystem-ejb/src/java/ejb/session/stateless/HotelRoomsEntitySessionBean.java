@@ -29,7 +29,7 @@ public class HotelRoomsEntitySessionBean implements HotelRoomsEntitySessionBeanR
     }
     
     @Override
-    public Long createNewHotelRoom(HotelRooms hotelRoom){
+    public String createNewHotelRoom(HotelRooms hotelRoom){
         em.persist(hotelRoom);
         em.flush();
         return hotelRoom.getHotelRoomID();

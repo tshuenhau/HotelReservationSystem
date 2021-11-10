@@ -39,8 +39,7 @@ public class HotelRooms implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long hotelRoomID;
+    private String hotelRoomID;
     
     @ManyToOne()
     @JoinColumn(nullable = false)
@@ -55,18 +54,19 @@ public class HotelRooms implements Serializable {
     @OneToOne(mappedBy="allocatedRoom")
     private Reservations reservation;
 
-    public HotelRooms(RoomTypes rmType) {
+    public HotelRooms(String hotelRoomID, RoomTypes rmType) {
+        this.hotelRoomID = hotelRoomID;
         this.rmType = rmType;
     }
 
     public HotelRooms() {
     }
 
-    public Long getHotelRoomID() {
+    public String getHotelRoomID() {
         return hotelRoomID;
     }
 
-    public void setHotelRoomID(Long hotelRoomID) {
+    public void setHotelRoomID(String hotelRoomID) {
         this.hotelRoomID = hotelRoomID;
     }
 

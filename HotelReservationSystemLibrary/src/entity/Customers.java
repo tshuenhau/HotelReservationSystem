@@ -34,22 +34,27 @@ public class Customers implements Serializable {
     
     @OneToMany(mappedBy="reservedBy")
     private List<Reservations> reservations = new ArrayList<Reservations>(); 
-
-    public Customers(Long passportNum, String password) {
-        this.passportNum = passportNum;
-        this.password = password;
-        this.isPartner = false;
-    }
     
+    
+    public Customers() {
+        reservations = new ArrayList<>();
+    }
+       
+
     public Customers(Long passportNum, String password, Boolean isPartner) {
+        this();
         this.passportNum = passportNum;
         this.password = password;
         this.isPartner = isPartner;
     }
 
-    public Customers() {
+    public Customers(Long passportNum, String password) {
+        this();
+        this.passportNum = passportNum;
+        this.password = password;
+        this.isPartner = true;
     }
-       
+
 
     public Long getPassportNum() {
         return passportNum;

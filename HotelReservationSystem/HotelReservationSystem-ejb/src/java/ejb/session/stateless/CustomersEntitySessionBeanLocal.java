@@ -27,5 +27,7 @@ public interface CustomersEntitySessionBeanLocal {
     public Customers login(Long passportNumber, String password) throws InvalidLoginCredentialException;
 
     public List<Customers> retrieveAllPartners();
+
+    public Long createNewPartner(Customers newPartner);
     
 }

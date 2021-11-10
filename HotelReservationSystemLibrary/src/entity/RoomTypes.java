@@ -6,8 +6,8 @@
 package entity;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -33,13 +33,13 @@ public class RoomTypes implements Serializable {
     private String description;
     
     @Column(nullable = false)
-    private String size;
+    private Integer size;
     
     @Column(nullable = false)
     private String bed;
     
     @Column(nullable = false)
-    private String capacity;
+    private Integer capacity;
     
     @Column(nullable = false)
     private String amenities;
@@ -54,11 +54,20 @@ public class RoomTypes implements Serializable {
     private Reservations reservation;
 
     public RoomTypes() {
+        hotelRooms = new ArrayList<>();
+        roomRates = new ArrayList<>();
+        reservation = null;
     }
 
     public RoomTypes(String roomTypeName, RoomTypes nextHigherRoomType) {
+        this();
         this.roomTypeName = roomTypeName;
         this.nextHigherRoomType = nextHigherRoomType;
+        this.amenities = "Pool";
+        this.bed = "King";
+        this.capacity = 10;
+        this.description = "good";
+        this.size = 2;
     }
     
     public String getRoomTypeName() {
@@ -125,14 +134,14 @@ public class RoomTypes implements Serializable {
     /**
      * @return the size
      */
-    public String getSize() {
+    public Integer getSize() {
         return size;
     }
 
     /**
      * @param size the size to set
      */
-    public void setSize(String size) {
+    public void setSize(Integer size) {
         this.size = size;
     }
 
@@ -153,14 +162,14 @@ public class RoomTypes implements Serializable {
     /**
      * @return the capacity
      */
-    public String getCapacity() {
+    public Integer getCapacity() {
         return capacity;
     }
 
     /**
      * @param capacity the capacity to set
      */
-    public void setCapacity(String capacity) {
+    public void setCapacity(Integer capacity) {
         this.capacity = capacity;
     }
 
