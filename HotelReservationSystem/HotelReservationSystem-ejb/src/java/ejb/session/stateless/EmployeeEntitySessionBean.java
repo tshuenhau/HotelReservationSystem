@@ -35,10 +35,13 @@ public class EmployeeEntitySessionBean implements EmployeesEntitySessionBeanRemo
     }
     
     @Override
-    public String createNewEmployee(Employees newEmployee){
+    public String createNewEmployee(Employees newEmployee) throws UserAlreadyExistException {        
+        if(em.find(Employees.class, newEmployee.getUsername()) == null){
             em.persist(newEmployee);
             em.flush();
-        return newEmployee.getUsername();
+            return newEmployee.getUsername();
+        }
+        throw new UserAlreadyExistException();
     }
     
     public Employees login(String username, String password) throws InvalidLoginCredentialException {

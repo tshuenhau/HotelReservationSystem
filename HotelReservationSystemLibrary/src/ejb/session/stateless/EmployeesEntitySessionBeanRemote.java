@@ -20,7 +20,7 @@ public interface EmployeesEntitySessionBeanRemote {
     
     public List<Employees> retrieveAllEmployees();
     
-    public String createNewEmployee(Employees newEmployee);
+    public String createNewEmployee(Employees newEmployee) throws UserAlreadyExistException;
     
     public Employees login(String username, String password) throws InvalidLoginCredentialException;
 
