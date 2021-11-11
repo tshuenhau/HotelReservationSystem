@@ -107,7 +107,6 @@ public class Rates implements Serializable {
     public void setRoomType(RoomTypes roomType) {
         this.roomType = roomType;
     }
-
     /**
      * @return the rateType
      */
