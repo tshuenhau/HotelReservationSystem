@@ -12,6 +12,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import util.exception.InvalidLoginCredentialException;
+import util.exception.UserAlreadyExistException;
 
 /**
  *
@@ -34,9 +35,9 @@ public class EmployeeEntitySessionBean implements EmployeesEntitySessionBeanRemo
     }
     
     @Override
-    public String createNewEmployee(Employees newEmployee) {
-        em.persist(newEmployee);
-        
+    public String createNewEmployee(Employees newEmployee){
+            em.persist(newEmployee);
+            em.flush();
         return newEmployee.getUsername();
     }
     

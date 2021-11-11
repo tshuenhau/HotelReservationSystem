@@ -46,14 +46,6 @@ public class CustomersEntitySessionBean implements CustomersEntitySessionBeanRem
             return newCustomer;
         }
         throw new UserAlreadyExistException();
-        
-    }
-    
-    @Override
-    public Long createNewPartner(Customers newPartner) {
-        em.persist(newPartner);
-        em.flush();
-        return newPartner.getPassportNum();
     }
     
     @Override

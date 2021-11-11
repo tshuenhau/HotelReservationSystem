@@ -79,7 +79,7 @@ public class ManagementClient {
                             doLogin();
                             System.out.println("Login successful as " + currentEmployee.getUsername() + "!\n");
                             if (currentEmployee.getEmployeeType().equals("System Administrator")){
-                                systemAdministrationModule = new SystemAdministrationModule(employeesEntitySessionBeanRemote, currentEmployee);
+                                systemAdministrationModule = new SystemAdministrationModule(employeesEntitySessionBeanRemote, currentEmployee, customersEntitySessionBeanRemote);
                                 menuMainSystemAdmin();
                             }
                             else if (currentEmployee.getEmployeeType().equals("Operation Manager")){

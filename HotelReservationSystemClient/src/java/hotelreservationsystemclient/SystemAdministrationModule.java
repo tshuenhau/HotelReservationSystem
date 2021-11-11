@@ -21,8 +21,9 @@ public class SystemAdministrationModule {
     public SystemAdministrationModule(){
     }
 
-    public SystemAdministrationModule(EmployeesEntitySessionBeanRemote employeesEntitySessionBeanRemote, Employees currentEmployee) {
+    public SystemAdministrationModule(EmployeesEntitySessionBeanRemote employeesEntitySessionBeanRemote, Employees currentEmployee, CustomersEntitySessionBeanRemote customersEntitySessionBeanRemote) {
         this.employeesEntitySessionBeanRemote = employeesEntitySessionBeanRemote;
+        this.customersEntitySessionBeanRemote = customersEntitySessionBeanRemote;
         this.currentEmployee = currentEmployee;
     }
     
@@ -53,7 +54,12 @@ public class SystemAdministrationModule {
                 response = scanner.nextInt();
 
                 if(response == 1){
-                    doCreateNewEmployee();
+                    try {
+                        doCreateNewEmployee();
+                    }
+                    catch(UserAlreadyExistException ex){
+                        System.out.println("User Already Exists!\n");
+                    }
                 }
                 else if(response == 2){
                     doViewAllEmployees();
@@ -63,7 +69,7 @@ public class SystemAdministrationModule {
                         doCreateNewPartner();
                     }
                     catch(UserAlreadyExistException ex){
-                            System.out.println("User Already Exists: " + ex.getMessage() + "\n");
+                        System.out.println("User Already Exists!\n");
                     }
                 }
                 else if(response == 4){
@@ -85,7 +91,7 @@ public class SystemAdministrationModule {
     
     
     
-    private void doCreateNewEmployee(){
+    private void doCreateNewEmployee() throws UserAlreadyExistException {
         Scanner scanner = new Scanner(System.in);
         Employees newEmployee = new Employees();
         
@@ -154,8 +160,8 @@ public class SystemAdministrationModule {
         System.out.print("Enter Password> ");
         String password = scanner.nextLine().trim();
         
-        Long newPartnerPassportNum = customersEntitySessionBeanRemote.createNewPartner(new Customers(passportNum, password, true));
-        System.out.println("New partner created successfully!: " + newPartnerPassportNum + "\n");
+        Customers newPartner = customersEntitySessionBeanRemote.createNewCustomer(new Customers(passportNum, password, true));
+        System.out.println("New partner created successfully!: " + newPartner.getPassportNum() + "\n");
     }
     
     

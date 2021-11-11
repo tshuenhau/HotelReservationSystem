@@ -71,63 +71,62 @@ public class DataInitSessionBean {
     
     @PostConstruct
     public void postConstruct() {
-        
+ 
+        employeeEntitySessionBeanLocal.createNewEmployee(new Employees("sysadmin", "System Administrator", "password"));
+        employeeEntitySessionBeanLocal.createNewEmployee(new Employees("opmanager", "Operation Manager", "password"));
+        employeeEntitySessionBeanLocal.createNewEmployee(new Employees("salesmanager", "Sales Manager", "password"));
+        employeeEntitySessionBeanLocal.createNewEmployee(new Employees("guestrelo", "Guest Relation Officer", "password"));
 
-//        employeeEntitySessionBeanLocal.createNewEmployee(new Employees("sysadmin", "System Administrator", "password"));
-//        employeeEntitySessionBeanLocal.createNewEmployee(new Employees("opmanager", "Operation Manager", "password"));
-//        employeeEntitySessionBeanLocal.createNewEmployee(new Employees("salesmanager", "Sales Manager", "password"));
-//        employeeEntitySessionBeanLocal.createNewEmployee(new Employees("guestrelo", "Guest Relation Officer", "password"));
-//
-//        
-//        RoomTypes GrandSuite = new RoomTypes("Grand Suite", null);
-//        RoomTypes JuniorSuite = new RoomTypes("Junior Suite", GrandSuite);
-//        RoomTypes FamilyRoom = new RoomTypes("Family Room", JuniorSuite);
-//        RoomTypes PremierRoom = new RoomTypes("Premier Room", FamilyRoom);
-//        RoomTypes DeluxeRoom = new RoomTypes("Deluxe Room", PremierRoom);
-//        roomTypesEntitySessionBeanLocal.createNewRoomType(GrandSuite);
-//        roomTypesEntitySessionBeanLocal.createNewRoomType(JuniorSuite);
-//        roomTypesEntitySessionBeanLocal.createNewRoomType(FamilyRoom);
-//        roomTypesEntitySessionBeanLocal.createNewRoomType(PremierRoom);
-//        roomTypesEntitySessionBeanLocal.createNewRoomType(DeluxeRoom);
-//
-//        
-//        ratesEntitySessionBeanLocal.createNewRate(new Rates(DeluxeRoom, "Published", 100));
-//        ratesEntitySessionBeanLocal.createNewRate(new Rates(DeluxeRoom, "Normal", 50));
-//        ratesEntitySessionBeanLocal.createNewRate(new Rates(PremierRoom, "Published", 200));
-//        ratesEntitySessionBeanLocal.createNewRate(new Rates(PremierRoom, "Normal", 100));
-//        ratesEntitySessionBeanLocal.createNewRate(new Rates(FamilyRoom, "Published", 300));
-//        ratesEntitySessionBeanLocal.createNewRate(new Rates(FamilyRoom, "Normal", 150));
-//        ratesEntitySessionBeanLocal.createNewRate(new Rates(JuniorSuite, "Published", 400));
-//        ratesEntitySessionBeanLocal.createNewRate(new Rates(JuniorSuite, "Normal", 200));
-//        ratesEntitySessionBeanLocal.createNewRate(new Rates(GrandSuite, "Published", 500));
-//        ratesEntitySessionBeanLocal.createNewRate(new Rates(GrandSuite, "Normal", 250));
-//
-//        
-//        hotelRoomsEntitySessionBeanLocal.createNewHotelRoom(new HotelRooms("0101", DeluxeRoom));
-//        hotelRoomsEntitySessionBeanLocal.createNewHotelRoom(new HotelRooms("0201", DeluxeRoom));
-//        hotelRoomsEntitySessionBeanLocal.createNewHotelRoom(new HotelRooms("0301", DeluxeRoom));
-//        hotelRoomsEntitySessionBeanLocal.createNewHotelRoom(new HotelRooms("0401", DeluxeRoom));
-//        hotelRoomsEntitySessionBeanLocal.createNewHotelRoom(new HotelRooms("0501", DeluxeRoom));
-//        hotelRoomsEntitySessionBeanLocal.createNewHotelRoom(new HotelRooms("0102", PremierRoom));
-//        hotelRoomsEntitySessionBeanLocal.createNewHotelRoom(new HotelRooms("0202", PremierRoom));
-//        hotelRoomsEntitySessionBeanLocal.createNewHotelRoom(new HotelRooms("0302", PremierRoom));
-//        hotelRoomsEntitySessionBeanLocal.createNewHotelRoom(new HotelRooms("0402", PremierRoom));
-//        hotelRoomsEntitySessionBeanLocal.createNewHotelRoom(new HotelRooms("0502", PremierRoom));
-//        hotelRoomsEntitySessionBeanLocal.createNewHotelRoom(new HotelRooms("0103", FamilyRoom));
-//        hotelRoomsEntitySessionBeanLocal.createNewHotelRoom(new HotelRooms("0203", FamilyRoom));
-//        hotelRoomsEntitySessionBeanLocal.createNewHotelRoom(new HotelRooms("0303", FamilyRoom));
-//        hotelRoomsEntitySessionBeanLocal.createNewHotelRoom(new HotelRooms("0403", FamilyRoom));
-//        hotelRoomsEntitySessionBeanLocal.createNewHotelRoom(new HotelRooms("0503", FamilyRoom));
-//        hotelRoomsEntitySessionBeanLocal.createNewHotelRoom(new HotelRooms("0104", JuniorSuite));
-//        hotelRoomsEntitySessionBeanLocal.createNewHotelRoom(new HotelRooms("0204", JuniorSuite));
-//        hotelRoomsEntitySessionBeanLocal.createNewHotelRoom(new HotelRooms("0304", JuniorSuite));
-//        hotelRoomsEntitySessionBeanLocal.createNewHotelRoom(new HotelRooms("0404", JuniorSuite));
-//        hotelRoomsEntitySessionBeanLocal.createNewHotelRoom(new HotelRooms("0504", JuniorSuite));
-//        hotelRoomsEntitySessionBeanLocal.createNewHotelRoom(new HotelRooms("0105", GrandSuite));
-//        hotelRoomsEntitySessionBeanLocal.createNewHotelRoom(new HotelRooms("0205", GrandSuite));
-//        hotelRoomsEntitySessionBeanLocal.createNewHotelRoom(new HotelRooms("0305", GrandSuite));
-//        hotelRoomsEntitySessionBeanLocal.createNewHotelRoom(new HotelRooms("0405", GrandSuite));
-//        hotelRoomsEntitySessionBeanLocal.createNewHotelRoom(new HotelRooms("0505", GrandSuite));
+        
+        RoomTypes GrandSuite = new RoomTypes("Grand Suite", null);
+        RoomTypes JuniorSuite = new RoomTypes("Junior Suite", GrandSuite);
+        RoomTypes FamilyRoom = new RoomTypes("Family Room", JuniorSuite);
+        RoomTypes PremierRoom = new RoomTypes("Premier Room", FamilyRoom);
+        RoomTypes DeluxeRoom = new RoomTypes("Deluxe Room", PremierRoom);
+        roomTypesEntitySessionBeanLocal.createNewRoomType(GrandSuite);
+        roomTypesEntitySessionBeanLocal.createNewRoomType(JuniorSuite);
+        roomTypesEntitySessionBeanLocal.createNewRoomType(FamilyRoom);
+        roomTypesEntitySessionBeanLocal.createNewRoomType(PremierRoom);
+        roomTypesEntitySessionBeanLocal.createNewRoomType(DeluxeRoom);
+
+        
+        ratesEntitySessionBeanLocal.createNewRate(new Rates(DeluxeRoom, "Published", 100));
+        ratesEntitySessionBeanLocal.createNewRate(new Rates(DeluxeRoom, "Normal", 50));
+        ratesEntitySessionBeanLocal.createNewRate(new Rates(PremierRoom, "Published", 200));
+        ratesEntitySessionBeanLocal.createNewRate(new Rates(PremierRoom, "Normal", 100));
+        ratesEntitySessionBeanLocal.createNewRate(new Rates(FamilyRoom, "Published", 300));
+        ratesEntitySessionBeanLocal.createNewRate(new Rates(FamilyRoom, "Normal", 150));
+        ratesEntitySessionBeanLocal.createNewRate(new Rates(JuniorSuite, "Published", 400));
+        ratesEntitySessionBeanLocal.createNewRate(new Rates(JuniorSuite, "Normal", 200));
+        ratesEntitySessionBeanLocal.createNewRate(new Rates(GrandSuite, "Published", 500));
+        ratesEntitySessionBeanLocal.createNewRate(new Rates(GrandSuite, "Normal", 250));
+
+        
+        hotelRoomsEntitySessionBeanLocal.createNewHotelRoom(new HotelRooms("0101", DeluxeRoom));
+        hotelRoomsEntitySessionBeanLocal.createNewHotelRoom(new HotelRooms("0201", DeluxeRoom));
+        hotelRoomsEntitySessionBeanLocal.createNewHotelRoom(new HotelRooms("0301", DeluxeRoom));
+        hotelRoomsEntitySessionBeanLocal.createNewHotelRoom(new HotelRooms("0401", DeluxeRoom));
+        hotelRoomsEntitySessionBeanLocal.createNewHotelRoom(new HotelRooms("0501", DeluxeRoom));
+        hotelRoomsEntitySessionBeanLocal.createNewHotelRoom(new HotelRooms("0102", PremierRoom));
+        hotelRoomsEntitySessionBeanLocal.createNewHotelRoom(new HotelRooms("0202", PremierRoom));
+        hotelRoomsEntitySessionBeanLocal.createNewHotelRoom(new HotelRooms("0302", PremierRoom));
+        hotelRoomsEntitySessionBeanLocal.createNewHotelRoom(new HotelRooms("0402", PremierRoom));
+        hotelRoomsEntitySessionBeanLocal.createNewHotelRoom(new HotelRooms("0502", PremierRoom));
+        hotelRoomsEntitySessionBeanLocal.createNewHotelRoom(new HotelRooms("0103", FamilyRoom));
+        hotelRoomsEntitySessionBeanLocal.createNewHotelRoom(new HotelRooms("0203", FamilyRoom));
+        hotelRoomsEntitySessionBeanLocal.createNewHotelRoom(new HotelRooms("0303", FamilyRoom));
+        hotelRoomsEntitySessionBeanLocal.createNewHotelRoom(new HotelRooms("0403", FamilyRoom));
+        hotelRoomsEntitySessionBeanLocal.createNewHotelRoom(new HotelRooms("0503", FamilyRoom));
+        hotelRoomsEntitySessionBeanLocal.createNewHotelRoom(new HotelRooms("0104", JuniorSuite));
+        hotelRoomsEntitySessionBeanLocal.createNewHotelRoom(new HotelRooms("0204", JuniorSuite));
+        hotelRoomsEntitySessionBeanLocal.createNewHotelRoom(new HotelRooms("0304", JuniorSuite));
+        hotelRoomsEntitySessionBeanLocal.createNewHotelRoom(new HotelRooms("0404", JuniorSuite));
+        hotelRoomsEntitySessionBeanLocal.createNewHotelRoom(new HotelRooms("0504", JuniorSuite));
+        hotelRoomsEntitySessionBeanLocal.createNewHotelRoom(new HotelRooms("0105", GrandSuite));
+        hotelRoomsEntitySessionBeanLocal.createNewHotelRoom(new HotelRooms("0205", GrandSuite));
+        hotelRoomsEntitySessionBeanLocal.createNewHotelRoom(new HotelRooms("0305", GrandSuite));
+        hotelRoomsEntitySessionBeanLocal.createNewHotelRoom(new HotelRooms("0405", GrandSuite));
+        hotelRoomsEntitySessionBeanLocal.createNewHotelRoom(new HotelRooms("0505", GrandSuite));
         
             try {
             allocationSessionBeanLocal.generateReport(inputDateFormat.parse("16/11/1111"));

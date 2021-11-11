@@ -23,5 +23,4 @@ public interface CustomersEntitySessionBeanRemote {
     public Customers login(Long passportNumber, String password) throws InvalidLoginCredentialException;
 
     public Customers createNewCustomer(Customers newCustomer) throws UserAlreadyExistException;
-    public Long createNewPartner(Customers newPartner);
 }

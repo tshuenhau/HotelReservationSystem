@@ -9,6 +9,7 @@ import entity.Employees;
 import java.util.List;
 import javax.ejb.Local;
 import util.exception.InvalidLoginCredentialException;
+import util.exception.UserAlreadyExistException;
 
 /**
  *
