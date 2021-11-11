@@ -31,6 +31,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import util.exception.InvalidRoomQuantityException;
 import util.exception.InvalidRoomTypeException;
+import util.exception.NotLoggedInException;
 
 /**
  *
@@ -50,7 +51,7 @@ public class HotelReservationSessionBean implements HotelReservationSessionBeanR
 
     @EJB
     private HotelRoomsEntitySessionBeanLocal hotelRoomsEntitySessionBeanLocal;
-    Customers currentCustomer;
+    private Customers currentCustomer;
     SimpleDateFormat outputDateFormat = new SimpleDateFormat("dd/MM/yyyy");//"dd/MM/yyyy hh:mm a"
     Date checkInDate;
     Date checkOutDate;
@@ -80,11 +81,14 @@ public class HotelReservationSessionBean implements HotelReservationSessionBeanR
         if (reservations != null) {
             reservations.clear();
         }
+        if(getCurrentCustomer() != null){
+            setCurrentCustomer(null);
+        }
     }
 
     @Override
     public void login(Customers customer) {
-        this.currentCustomer = customer;
+        this.setCurrentCustomer(customer);
     }
 
     @Override
@@ -296,14 +300,17 @@ public class HotelReservationSessionBean implements HotelReservationSessionBeanR
     }
 
     @Override
-    public List<Reservations> addReservation(String inputRoomType, Integer quantity) throws InvalidRoomTypeException, InvalidRoomQuantityException {
+    public List<Reservations> addReservation(String inputRoomType, Integer quantity) throws InvalidRoomTypeException, InvalidRoomQuantityException, NotLoggedInException {
+//        if(checkLoggedIn() == null){
+//            throw new NotLoggedInException();
+//        }
         RoomTypes roomType = em.find(RoomTypes.class, inputRoomType);
         if (rooms.containsKey(roomType)) {
             if (rooms.get(roomType).get(0) >= quantity) {
                 List<Integer> newList = new ArrayList<>();
                 Integer qty = rooms.get(roomType).get(0);
                 for (int i = 0; i < quantity; i++) {
-                    Reservations newReservation = new Reservations(currentCustomer, roomType, checkInDate, checkOutDate, (Integer) rooms.get(roomType).get(1));
+                    Reservations newReservation = new Reservations(checkLoggedIn(), roomType, checkInDate, checkOutDate, (Integer) rooms.get(roomType).get(1));
                     reservations.add(newReservation);
                     qty -= 1;
                 }
@@ -312,7 +319,7 @@ public class HotelReservationSessionBean implements HotelReservationSessionBeanR
                 rooms.put(roomType, newList);
 
             } else {
-                throw new InvalidRoomQuantityException("Invalid Quantity for " + roomType.getRoomTypeName() + " Only " + rooms.get(roomType).get(0) + " rooms available");
+                throw new InvalidRoomQuantityException("Invalid Quantity for " + roomType.getRoomTypeName() + " Only " + Math.max(rooms.get(roomType).get(0),0) + " room(s) available");
             }
         } else {
             throw new InvalidRoomTypeException("Invalid Room Type: " + roomType);
@@ -349,8 +356,34 @@ public class HotelReservationSessionBean implements HotelReservationSessionBeanR
         return result;
     }
 
-    public void persist(Object object) {
-        em.persist(object);
+    /**
+     * @return the currentCustomer
+     * @throws util.exception.NotLoggedInException
+     */
+    @Override
+    public Customers checkLoggedIn() throws NotLoggedInException{
+        if(getCurrentCustomer() == null){
+            throw new NotLoggedInException("Please Login to use this feature.");
+        }
+        return getCurrentCustomer();
     }
+
+    /**
+     * @param currentCustomer the currentCustomer to set
+     */
+    @Override
+    public void setCurrentCustomer(Customers currentCustomer) {
+        this.currentCustomer = currentCustomer;
+    }
+
+    /**
+     * @return the currentCustomer
+     */
+    @Override
+    public Customers getCurrentCustomer() {
+        return currentCustomer;
+    }
+
+  
 
 }

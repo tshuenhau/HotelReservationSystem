@@ -52,7 +52,7 @@ public class Customers implements Serializable {
         this();
         this.passportNum = passportNum;
         this.password = password;
-        this.isPartner = true;
+        this.isPartner = false;
     }
 
 

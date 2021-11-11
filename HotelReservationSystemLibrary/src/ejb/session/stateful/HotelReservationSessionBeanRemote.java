@@ -14,6 +14,7 @@ import java.util.Map;
 import javax.ejb.Remote;
 import util.exception.InvalidRoomQuantityException;
 import util.exception.InvalidRoomTypeException;
+import util.exception.NotLoggedInException;
 
 /**
  *
@@ -26,7 +27,7 @@ public interface HotelReservationSessionBeanRemote {
     
     public Map<RoomTypes, List<Integer>> searchHotelRooms(Date checkInDate, Date checkOutDate);
 
-    public List<Reservations> addReservation (String roomType, Integer quantity) throws InvalidRoomTypeException, InvalidRoomQuantityException;
+    public List<Reservations> addReservation(String inputRoomType, Integer quantity) throws InvalidRoomTypeException, InvalidRoomQuantityException, NotLoggedInException;
 
     public boolean isWithinRange(Date date, Date startDate, Date endDate);
 
@@ -39,5 +40,11 @@ public interface HotelReservationSessionBeanRemote {
     public void login(Customers customer);
 
     public Map<RoomTypes, List<Integer>> walkInSearchHotelRooms(Date checkInDate, Date checkOutDate);
+
+    public Customers checkLoggedIn() throws NotLoggedInException;
+
+    public void setCurrentCustomer(Customers currentCustomer);
+
+    public Customers getCurrentCustomer();
     
 }
