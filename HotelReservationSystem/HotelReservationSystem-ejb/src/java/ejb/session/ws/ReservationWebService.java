@@ -83,29 +83,33 @@ public class ReservationWebService {
     @WebMethod(operationName = "ViewAllReservations")
     public List<Reservations> ViewAllReservations(Long passportNum, String password) throws InvalidLoginCredentialException {
         Customers c = Login(passportNum, password);
-        List<Reservations> allReservations = new ArrayList<>();//reservationsEntitySessionBeanLocal.retrieveAllReservations();
+        List<Reservations> allReservations = reservationsEntitySessionBeanLocal.retrieveAllReservations();
         List<Reservations> relaventReservations = new ArrayList<>();
-        for (Reservations r : allReservations){
-            em.detach(r);
-            //r.setReservedBy(null);
-            r.getReservationRoomType().setRoomRates(null);
-            r.setReservationRoomType(null);
-        }
+       
         if (c != null) {
             for (Reservations r : allReservations) {
                 if (r.getReservedBy().equals(c)) {
                     relaventReservations.add(r);
+                    r.getReservedBy().setReservations(null);
+                    //r.setReservedBy(null);
+
                 }
             }
         }
         for (Reservations r : relaventReservations){
             em.detach(r);
-            //r.setReservedBy(null);
-            r.setReservationRoomType(null);
+            r.setAllocatedRoom(null);
+                r.getReservationRoomType().setRoomRates(null);
+                r.getReservationRoomType().setRoomRates(null);
+            r.getReservationRoomType().setReservations(null);
+            r.getReservationRoomType().setNextHigherRoomType(null);
+            
+                        //r.setReservationRoomType(null);
+
         }
         
 
-        return allReservations;
+        return relaventReservations;
 
     }
 
