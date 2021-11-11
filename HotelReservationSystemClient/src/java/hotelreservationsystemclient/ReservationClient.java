@@ -37,8 +37,9 @@ public class ReservationClient {
     private CustomersEntitySessionBeanRemote customersEntitySessionBeanRemote;
     private ReservationsEntitySessionBeanRemote reservationsEntitySessionBeanRemote;
 
-            SimpleDateFormat inputDateFormat = new SimpleDateFormat("d/M/y");
-            SimpleDateFormat outputDateFormat = new SimpleDateFormat("dd/MM/yyyy");//"dd/MM/yyyy hh:mm a"
+    SimpleDateFormat inputDateFormat = new SimpleDateFormat("d/M/y");
+    SimpleDateFormat outputDateFormat = new SimpleDateFormat("dd/MM/yyyy");//"dd/MM/yyyy hh:mm a"
+
     public ReservationClient() {
     }
 
@@ -54,6 +55,7 @@ public class ReservationClient {
         Integer response = 0;
 
         while (true) {
+
             System.out.println("*** Welcome to Holiday Reservation Client ***\n");
 
             response = 0;
@@ -64,84 +66,85 @@ public class ReservationClient {
 
             System.out.println("5: Exit\n");
 
-            try{while (response < 1 || response > 5) {
-                System.out.print("> ");
-                response = scanner.nextInt();
-                if (response == 1) {
-                    if (hotelReservationSessionBeanRemote.getCurrentCustomer() == null) {
-                        try {
-                            doLogin();
-                            System.out.println("Login successful as " + hotelReservationSessionBeanRemote.getCurrentCustomer().getPassportNum() + "!\n");
+            while (response < 1 || response > 5) {
+                try {
+                    System.out.print("> ");
+                    response = scanner.nextInt();
+                    if (response == 1) {
+                        if (hotelReservationSessionBeanRemote.getCurrentCustomer() == null) {
+                            try {
+                                doLogin();
+                                System.out.println("Login successful as " + hotelReservationSessionBeanRemote.getCurrentCustomer().getPassportNum() + "!\n");
 
-                        } catch (InvalidLoginCredentialException ex) {
-                            System.err.println("Invalid login credential: " + ex.getMessage() + "\n");
+                            } catch (InvalidLoginCredentialException ex) {
+                                System.err.println("Invalid login credential: " + ex.getMessage() + "\n");
 
+                            }
+                        } else {
+                            System.out.println("You are already login as " + hotelReservationSessionBeanRemote.getCurrentCustomer().getPassportNum() + "\n");
                         }
-                    } else {
-                        System.out.println("You are already login as " + hotelReservationSessionBeanRemote.getCurrentCustomer().getPassportNum() + "\n");
                     }
-                }
 
-                if (response == 2) {
-                    try {
-                        doRegister();
-                    } catch (InvalidLoginCredentialException ex) {
-                        Logger.getLogger(ReservationClient.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                } else if (response == 3) {
-                    doSearchRoom();
-                } else if (response == 4) {
+                    if (response == 2) {
+                        try {
+                            doRegister();
+                        } catch (InvalidLoginCredentialException ex) {
+                            Logger.getLogger(ReservationClient.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    } else if (response == 3) {
+                        doSearchRoom();
+                    } else if (response == 4) {
                         doViewReservations();
-                    
-                    
-                }
 
+                    }
+
+                    if (response == 5) {
+                        hotelReservationSessionBeanRemote.setCurrentCustomer(null);
+                        System.out.println("Exited Reservation Client\n");
+                        break;
+                    }
+                } catch (InputMismatchException ex) {
+                    System.err.println("Input type mismatch.");
+                    scanner.nextLine();
+                    break;
+                }
             }
 
-            if (response == 5) {
-                hotelReservationSessionBeanRemote.setCurrentCustomer(null);
-                System.out.println("Exited Reservation Client\n");
-                break;
-            }
         }
-            catch(InputMismatchException ex){
-                System.err.println("Input type mismatch.");
-                }
-        }
-        
+
     }
-    
-    private void doViewReservations(){
+
+    private void doViewReservations() {
         try {
             Scanner scanner = new Scanner(System.in);
-            
+
             Integer response = 0;
             Long reservationID = 0l;
             List<Reservations> reservations = new ArrayList<Reservations>();
             System.out.println("*** Holiday Reservation System :: View Reservations ***\n");
             reservations = reservationsEntitySessionBeanRemote.retrieveReserationsOfCustomer(hotelReservationSessionBeanRemote.checkLoggedIn());
             System.out.printf("%14s%26s\n", "Reservation ID", "Date");
-            
-            for(Reservations r: reservations){
+
+            for (Reservations r : reservations) {
                 //System.out.println(r.getReservationID() +  " " + outputDateFormat.format(r.getStartDate()) + "-" + outputDateFormat.format(r.getEndDate()));
-                System.out.printf("%14s%26s\n", r.getReservationID().toString(), outputDateFormat.format(r.getStartDate())+ "-" + outputDateFormat.format(r.getEndDate()));
-                
+                System.out.printf("%14s%26s\n", r.getReservationID().toString(), outputDateFormat.format(r.getStartDate()) + "-" + outputDateFormat.format(r.getEndDate()));
+
             }
             System.out.println("");
-            
+
             System.out.println("1: View Reservation");
             System.out.println("2: Exit");
-            while (response < 1 || response > 2){
+            while (response < 1 || response > 2) {
                 System.out.print("> ");
                 response = scanner.nextInt();
-                while(response == 1) {
+                while (response == 1) {
                     System.out.print("Please enter reservation ID> ");
                     reservationID = scanner.nextLong();
                     scanner.nextLine();
                     System.out.printf("%14s%16s      %s\n", "Reservation ID", "Room Type", "Cost");
 
-                    for(Reservations r: reservations){
-                        if(r.getReservationID().equals(reservationID)){
+                    for (Reservations r : reservations) {
+                        if (r.getReservationID().equals(reservationID)) {
                             System.out.printf("%14s%16s      %s\n", r.getReservationID().toString(), r.getReservationRoomType().getRoomTypeName(), r.getCost());
                             //System.out.println(r.getReservationID() + " " + r.getRoomType() + " " + r.getCost());
                         }
@@ -150,14 +153,13 @@ public class ReservationClient {
                     System.out.println("2: Exit");
                     System.out.print("> ");
                     response = scanner.nextInt();
-                    
+
                 }
-                
-                if(response == 2){
+
+                if (response == 2) {
                     break;
                 }
-                
-                
+
             }
         } catch (NotLoggedInException ex) {
             System.err.println(ex.getMessage());
@@ -175,7 +177,6 @@ public class ReservationClient {
             String roomType = "";
             List<Reservations> reservations = new ArrayList<>();
             Integer quantity = 0;
-            
 
             System.out.println("*** Holiday Reservation System :: Reserve Hotel Room ***\n");
             while (response < 1 || response > 3) {
@@ -191,7 +192,7 @@ public class ReservationClient {
                     } catch (NotLoggedInException ex) {
                         System.err.println(ex.getMessage());
                     }
-                                System.out.println("");
+                    System.out.println("");
 
                     System.out.println("1: Add more rooms");
                     System.out.println("2: Confirm");
@@ -326,7 +327,6 @@ public class ReservationClient {
                 if (response == 1) {
                     doReserveRoom();
 
-                    
                 }
             }
 
@@ -336,8 +336,8 @@ public class ReservationClient {
 
     }
 
-    private void doRegister() throws InvalidLoginCredentialException{
-       Scanner scanner = new Scanner(System.in);
+    private void doRegister() throws InvalidLoginCredentialException {
+        Scanner scanner = new Scanner(System.in);
         Long passportNumber = 0l;
         String password = "";
 
@@ -349,17 +349,17 @@ public class ReservationClient {
         password = scanner.nextLine().trim();
 
         if (passportNumber > 0 && password.length() > 0) {
-           try {
-               Customers currentCustomer = customersEntitySessionBeanRemote.createNewCustomer(new Customers(passportNumber, password));
-               System.out.println("");
-               System.out.println("Successfully registered " + currentCustomer.getPassportNum() + "!\n");
+            try {
+                Customers currentCustomer = customersEntitySessionBeanRemote.createNewCustomer(new Customers(passportNumber, password));
+                System.out.println("");
+                System.out.println("Successfully registered " + currentCustomer.getPassportNum() + "!\n");
                 System.out.println("Automatically loggin in...\n");
-               System.out.println("Login successful as " + currentCustomer.getPassportNum() + "!\n");
-                       hotelReservationSessionBeanRemote.login(currentCustomer);
+                System.out.println("Login successful as " + currentCustomer.getPassportNum() + "!\n");
+                hotelReservationSessionBeanRemote.login(currentCustomer);
 
-           } catch (UserAlreadyExistException ex) {
-               System.err.println("User already registered.");
-           }
+            } catch (UserAlreadyExistException ex) {
+                System.err.println("User already registered.");
+            }
         } else {
             throw new InvalidLoginCredentialException("Invalid input !");
         }
