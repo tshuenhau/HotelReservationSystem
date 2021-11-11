@@ -311,7 +311,7 @@ public class ReservationClient {
             Map<RoomTypes, List<Integer>> availability = hotelReservationSessionBeanRemote.searchHotelRooms(checkInDate, checkOutDate);
 
             availability.entrySet().forEach(rooms -> {
-                System.out.printf("%12s%16s%9s\n", rooms.getKey().getRoomTypeName(), Math.max(rooms.getValue().get(0), 0), rooms.getValue().get(1));
+                System.out.printf("%12s%16s%9s\n", rooms.getKey().getRoomTypeName(), rooms.getValue().get(0), rooms.getValue().get(1));
 
                 //System.out.println(rooms.getKey() + "      " + rooms.getValue().get(0) + "    " + rooms.getValue().get(1));
             });

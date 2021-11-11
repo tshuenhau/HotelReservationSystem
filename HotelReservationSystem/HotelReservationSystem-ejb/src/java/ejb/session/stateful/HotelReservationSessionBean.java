@@ -150,7 +150,7 @@ public class HotelReservationSessionBean implements HotelReservationSessionBeanR
                 currList = rooms.get(reservation.getReservationRoomType());
             }
             List<Integer> newList = new ArrayList<Integer>();
-            newList.add(currList.get(0) - 1);
+            newList.add(Math.max(currList.get(0) - 1, 0));
             newList.add(currList.get(1));
             rooms.put(reservation.getReservationRoomType(), newList);
         }
@@ -319,7 +319,7 @@ public class HotelReservationSessionBean implements HotelReservationSessionBeanR
                 rooms.put(roomType, newList);
 
             } else {
-                throw new InvalidRoomQuantityException("Invalid Quantity for " + roomType.getRoomTypeName() + " Only " + Math.max(rooms.get(roomType).get(0),0) + " room(s) available");
+                throw new InvalidRoomQuantityException("Invalid Quantity for " + roomType.getRoomTypeName() + " Only " + rooms.get(roomType).get(0) + " room(s) available");
             }
         } else {
             throw new InvalidRoomTypeException("Invalid Room Type: " + roomType);
