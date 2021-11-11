@@ -128,7 +128,7 @@ public class DataInitSessionBean {
         hotelRoomsEntitySessionBeanLocal.createNewHotelRoom(new HotelRooms("0405", GrandSuite));
         hotelRoomsEntitySessionBeanLocal.createNewHotelRoom(new HotelRooms("0505", GrandSuite));
         
-            try {
+        try {
             allocationSessionBeanLocal.generateReport(inputDateFormat.parse("16/11/1111"));
             //allocationSessionBeanLocal.allocateRooms(inputDateFormat.parse("11/11/1111"));
             } catch (ParseException ex) {

@@ -33,7 +33,7 @@ public class CustomersEntitySessionBean implements CustomersEntitySessionBeanRem
     
     @Override
     public List<Customers> retrieveAllPartners() {
-        Query query = em.createQuery("Select e FROM Customers e WHERE e.isPartner = :True");
+        Query query = em.createQuery("Select e FROM Customers e WHERE e.isPartner = true");
         
         return query.getResultList();
     }
