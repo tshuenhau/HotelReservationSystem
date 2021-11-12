@@ -45,11 +45,11 @@ public class AllocationSessionBean implements AllocationSessionBeanRemote, Alloc
         List<AllocationException> allocationExceptions = new ArrayList<>();
 
     public List<AllocationException> viewAllocationException(Date date) {
-        allocationExceptions.clear();
-        hotelRooms.clear();
-        reservations.clear();
-        roomTypes.clear();
-        generateReport(date);
+//        allocationExceptions.clear();
+//        hotelRooms.clear();
+//        reservations.clear();
+//        roomTypes.clear();
+//        generateReport(date);
         return allocationExceptions;
     }
 
@@ -65,7 +65,7 @@ public class AllocationSessionBean implements AllocationSessionBeanRemote, Alloc
 
         for (Allocation a : allocationReport) {
             for (Reservations r : reservations) {
-                if (r.getEndDate().equals(date)) {
+                if (r.getEndDate().before(date)) {
                     if (r.getAllocatedRoom() != null) {
                         r.getAllocatedRoom().setIsAllocated(false);
                         reservationsEntitySessionBeanLocal.updateReservation(r);

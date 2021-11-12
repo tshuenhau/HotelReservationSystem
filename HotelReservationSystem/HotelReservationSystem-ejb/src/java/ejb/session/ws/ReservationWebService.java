@@ -5,6 +5,7 @@
  */
 package ejb.session.ws;
 
+import ejb.session.stateful.AllocationSessionBeanLocal;
 import ejb.session.stateless.CustomersEntitySessionBeanLocal;
 import ejb.session.stateless.HotelRoomsEntitySessionBeanLocal;
 import ejb.session.stateless.RatesEntitySessionBeanLocal;
@@ -46,6 +47,9 @@ import util.exception.ReservationNotFoundException;
 public class ReservationWebService {
 
     @EJB
+    private AllocationSessionBeanLocal allocationSessionBeanLocal;
+
+    @EJB
     private RoomTypesEntitySessionBeanLocal roomTypesEntitySessionBeanLocal;
 
     SimpleDateFormat inputDateFormat = new SimpleDateFormat("d/M/y");
@@ -78,6 +82,12 @@ public class ReservationWebService {
 
         throw new ReservationNotFoundException();
 
+    }
+    @WebMethod(operationName = "sameDayCheckIn")
+    public Integer sameDayCheckIn(String inputCheckInDate) throws ParseException{
+        Date checkInDate = inputDateFormat.parse(inputCheckInDate);
+        allocationSessionBeanLocal.allocateRooms(checkInDate);
+        return 0;
     }
 
     @WebMethod(operationName = "ViewAllReservations")
