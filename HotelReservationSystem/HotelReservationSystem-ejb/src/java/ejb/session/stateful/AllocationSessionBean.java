@@ -59,11 +59,7 @@ public class AllocationSessionBean implements AllocationSessionBeanRemote, Alloc
     }
 
     public List<AllocationException> viewAllocationException(Date date) {
-//        allocationExceptions.clear();
-//        hotelRooms.clear();
-//        reservations.clear();
-//        roomTypes.clear();
-//        generateReport(date);
+
         return allocationExceptions;
     }
 
@@ -79,16 +75,22 @@ public class AllocationSessionBean implements AllocationSessionBeanRemote, Alloc
 
         for (Allocation a : allocationReport) {
             for (Reservations r : reservations) {
-                if (r.getEndDate().before(date) || r.getEndDate().equals(date) || r.getStartDate().after(date)) {
+                if (isWithinRange(date, r.getStartDate(), r.getEndDate()) == false) {
                     if (r.getAllocatedRoom() != null) {
                         r.getAllocatedRoom().setIsAllocated(false);
-                        reservationsEntitySessionBeanLocal.updateReservation(r);
                         //r.setAllocatedRoom(null);
+
+                        reservationsEntitySessionBeanLocal.updateReservation(r);
                     }
-                    //r.setAllocatedRoom(null);
-                    //need to set the hotel room allocated to this reservation to isAllocated = false;
-                } //System.out.println(isWithinRange(date, r.getStartDate(), r.getEndDate()));
-                else if (r.getStartDate().equals(date) && r.getReservationRoomType().equals(a.getRoomType()) && r.getAllocatedRoom() == null) {
+                } 
+                else if(isWithinRange(date, r.getStartDate(), r.getEndDate()) == true){
+                    if (r.getAllocatedRoom() != null) {
+                        r.getAllocatedRoom().setIsAllocated(true);
+                        reservationsEntitySessionBeanLocal.updateReservation(r);
+                    }
+                }
+                
+                if (r.getStartDate().equals(date) && r.getReservationRoomType().equals(a.getRoomType()) && r.getAllocatedRoom() == null) {
                     a.setNumReservations(a.getNumReservations() + 1);
                 }
                 
@@ -175,10 +177,12 @@ public class AllocationSessionBean implements AllocationSessionBeanRemote, Alloc
         for (Reservations r : reservations) {
             if (r.getStartDate().equals(date)) {
                 for (HotelRooms h : hotelRooms) {
-                    if (r.getReservationRoomType().equals(h.getRmType()) && h.getIsAllocated() == false && h.getStatus() == true) { // not allocating those updates
+                    if (r.getReservationRoomType().equals(h.getRmType()) && h.getIsAllocated() == false && h.getStatus() == true && r.getAllocatedRoom() == null) { // not allocating those updates
                         System.out.println("ALLOCTE");
                         h.setIsAllocated(true);
                         r.setAllocatedRoom(h);
+                        System.out.println("allocating reservation id:" + r.getReservationID());
+
                         reservationsEntitySessionBeanLocal.updateReservation(r);
                         break;
                     }

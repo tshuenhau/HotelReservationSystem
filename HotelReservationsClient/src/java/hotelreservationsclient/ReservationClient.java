@@ -83,7 +83,7 @@ public class ReservationClient {
                                 break;
                             }
                         } else {
-                            System.out.println("You are already login as " + hotelReservationSessionBeanRemote.getCurrentCustomer().getPassportNum() + "\n");
+                            System.err.println("You are already login as " + hotelReservationSessionBeanRemote.getCurrentCustomer().getPassportNum() + "\n");
                         }
                     }
 
@@ -144,11 +144,11 @@ public class ReservationClient {
                     System.out.print("Please enter reservation ID> ");
                     reservationID = scanner.nextLong();
                     scanner.nextLine();
-                    System.out.printf("%14s%16s      %s%26s\n", "Reservation ID", "Room Type", "Cost", "Date");
+                    System.out.printf("%14s%35s      %s%26s\n", "Reservation ID", "Room Type", "Cost", "Date");
 
                     for (Reservations r : reservations) {
                         if (r.getReservationID().equals(reservationID)) {
-                            System.out.printf("%14s%26s       %s%26s\n", r.getReservationID().toString(), r.getCost(), outputDateFormat.format(r.getStartDate()) + "-" + outputDateFormat.format(r.getEndDate()) , r.getReservationRoomType().getRoomTypeName());
+                            System.out.printf("%14s%35s       %s%26s\n", r.getReservationID().toString(), r.getReservationRoomType().getRoomTypeName(), r.getCost(), outputDateFormat.format(r.getStartDate()) + "-" + outputDateFormat.format(r.getEndDate()) );
                             //System.out.println(r.getReservationID() + " " + r.getRoomType() + " " + r.getCost());
                             break;
                         }
@@ -234,10 +234,10 @@ public class ReservationClient {
                             if (reserveResponse == 1) {
 
                                 List<Reservations> confirmedReservations = hotelReservationSessionBeanRemote.confirmReservations();
-                                System.out.printf("%14s%16s%26s%26s\n", "Reservation ID", "Cost", "Date", "Room Type");
+                                System.out.printf("%14s%24s%26s%26s\n", "Reservation ID", "Room Type", "Cost", "Date");
 
                                 for(Reservations r: confirmedReservations){
-                            System.out.printf("%14s%16s%26s%26s\n", r.getReservationID().toString(), r.getCost(), outputDateFormat.format(r.getStartDate()) + "-" + outputDateFormat.format(r.getEndDate()), r.getReservationRoomType().getRoomTypeName());
+                            System.out.printf("%14s%26s%26s%26s\n", r.getReservationID().toString(), r.getReservationRoomType().getRoomTypeName(), r.getCost(), outputDateFormat.format(r.getStartDate()) + "-" + outputDateFormat.format(r.getEndDate()));
                                 }
                                 System.out.println("");
                                 System.out.println("Reservation(s) Confirmed!\n");
@@ -254,13 +254,13 @@ public class ReservationClient {
                                 }
                                 
                             } else if (reserveResponse == 2) {
-                                System.out.println("Cancelled\n");
+                                System.err.println("Cancelled\n");
                                 break;
                             }
                         }
 
                         if (response == 3) {
-                            System.out.println("Exited Reservation Function\n");
+                            System.err.println("Exited Reservation Function\n");
                             break;
                         }
 
@@ -270,7 +270,7 @@ public class ReservationClient {
 
             }
         } catch (InvalidRoomTypeException | InvalidRoomQuantityException ex) {
-            System.out.println(ex.getMessage());
+            System.err.println(ex.getMessage());
             handleReservationExceptions(checkInDate);
         } catch (NotLoggedInException ex) {
             System.err.println(ex.getMessage());
@@ -332,11 +332,11 @@ public class ReservationClient {
 
             System.out.println("*** Showing available rooms for: " + outputDateFormat.format(checkInDate) + " to " + outputDateFormat.format(checkOutDate) + "***\n");
 
-            System.out.printf("%12s%9s%16s\n", "Availability", "Price" , "Room Type");
+            System.out.printf("%25s%16s%9s\n", "Room Type", "Availability", "Price" );
             Map<RoomTypes, List<Integer>> availability = hotelReservationSessionBeanRemote.searchHotelRooms(checkInDate, checkOutDate);
 
             availability.entrySet().forEach(rooms -> {
-                System.out.printf("%12s%9s%16s\n", rooms.getValue().get(0), rooms.getValue().get(1), rooms.getKey().getRoomTypeName());
+                System.out.printf("%25s%16s%9s\n", rooms.getKey().getRoomTypeName(), rooms.getValue().get(0), rooms.getValue().get(1));
 
                 //System.out.println(rooms.getKey() + "      " + rooms.getValue().get(0) + "    " + rooms.getValue().get(1));
             });

@@ -312,7 +312,7 @@ public class HotelReservationSessionBean implements HotelReservationSessionBeanR
     public List<Reservations> addReservation(String inputRoomType, Integer quantity) throws InvalidRoomTypeException, InvalidRoomQuantityException, NotLoggedInException {
         List<RoomTypes> roomTypeResults = em.createQuery("SELECT r FROM RoomTypes r WHERE r.roomTypeName = :value").setParameter("value", inputRoomType).getResultList();
         if(roomTypeResults.size() < 1){
-            throw new InvalidRoomTypeException("Invalid Room Type: " + roomTypeResults.get(0));
+            throw new InvalidRoomTypeException("Invalid Room Type: " + inputRoomType);
         }
         if (rooms.containsKey(roomTypeResults.get(0))) {
             if (rooms.get(roomTypeResults.get(0)).get(0) >= quantity) {

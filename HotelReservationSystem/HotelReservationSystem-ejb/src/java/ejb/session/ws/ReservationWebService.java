@@ -297,7 +297,7 @@ public class ReservationWebService {
             if (data[i][0].equals(inputRoomType)) {
                 found = true;
                 if (Integer.parseInt(data[i][1]) < quantity) {
-                    throw new InvalidRoomQuantityException("NO MORE ROOMS");
+                throw new InvalidRoomQuantityException("Invalid Quantity for " + inputRoomType + " Only " + data[i][1] + " room(s) available");
                     //return new ArrayList<Reservations>();
                 }
                 cost = Integer.parseInt(data[i][2]);
