@@ -227,13 +227,20 @@ public class ReservationClient {
                             int reserveResponse = 0;
                             System.out.println("1: Confirm");
                             System.out.println("2: Cancel");
+                                                                            System.out.print("> ");
+
                             reserveResponse = scanner.nextInt();
-                                                System.out.print("> ");
 
                             if (reserveResponse == 1) {
 
-                                hotelReservationSessionBeanRemote.confirmReservations();
-                                System.out.println("Confirmed\n");
+                                List<Reservations> confirmedReservations = hotelReservationSessionBeanRemote.confirmReservations();
+                                System.out.printf("%14s%16s      %s%26s\n", "Reservation ID", "Room Type", "Cost", "Date");
+
+                                for(Reservations r: confirmedReservations){
+                            System.out.printf("%14s%16s       %s%26s\n", r.getReservationID().toString(), r.getReservationRoomType().getRoomTypeName(), r.getCost(), outputDateFormat.format(r.getStartDate()) + "-" + outputDateFormat.format(r.getEndDate()));
+                                }
+                                System.out.println("");
+                                System.out.println("Reservation(s) Confirmed!\n");
                                 System.out.println("Same day check-in (and after 2am)?");
                                 System.out.println("1: Yes");
                                 System.out.println("2: No");
