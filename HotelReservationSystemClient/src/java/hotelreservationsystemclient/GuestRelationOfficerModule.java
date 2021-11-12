@@ -1,5 +1,6 @@
 package hotelreservationsystemclient;
 
+import ejb.session.stateful.HotelReservationSessionBeanRemote;
 import entity.Employees;
 import java.util.Scanner;
 import ejb.session.stateless.EmployeesEntitySessionBeanRemote;
@@ -23,6 +24,7 @@ public class GuestRelationOfficerModule {
     private RoomTypesEntitySessionBeanRemote roomTypesEntitySessionBeanRemote;
     private HotelRoomsEntitySessionBeanRemote hotelRoomsEntitySessionBeanRemote;
     private RatesEntitySessionBeanRemote ratesEntitySessionBeanRemote;
+    private HotelReservationSessionBeanRemote hotelReservationSessionBeanRemote;
     
     private Employees currentEmployee;
     
@@ -32,12 +34,13 @@ public class GuestRelationOfficerModule {
     public GuestRelationOfficerModule(){
     }
 
-    public GuestRelationOfficerModule(EmployeesEntitySessionBeanRemote employeesEntitySessionBeanRemote, Employees currentEmployee, RoomTypesEntitySessionBeanRemote roomTypesEntitySessionBeanRemote, HotelRoomsEntitySessionBeanRemote hotelRoomsEntitySessionBeanRemote, RatesEntitySessionBeanRemote ratesEntitySessionBeanRemote) {
+    public GuestRelationOfficerModule(EmployeesEntitySessionBeanRemote employeesEntitySessionBeanRemote, Employees currentEmployee, RoomTypesEntitySessionBeanRemote roomTypesEntitySessionBeanRemote, HotelRoomsEntitySessionBeanRemote hotelRoomsEntitySessionBeanRemote, RatesEntitySessionBeanRemote ratesEntitySessionBeanRemote, HotelReservationSessionBeanRemote hotelReservationSessionBeanRemote) {
         this.employeesEntitySessionBeanRemote = employeesEntitySessionBeanRemote;
         this.roomTypesEntitySessionBeanRemote = roomTypesEntitySessionBeanRemote;
         this.hotelRoomsEntitySessionBeanRemote = hotelRoomsEntitySessionBeanRemote;
         this.ratesEntitySessionBeanRemote = ratesEntitySessionBeanRemote;
         this.currentEmployee = currentEmployee;
+        this.hotelReservationSessionBeanRemote = hotelReservationSessionBeanRemote;
     }
     
     
@@ -92,35 +95,17 @@ public class GuestRelationOfficerModule {
         Scanner scanner = new Scanner(System.in);
         Integer response = 0;
         
-        System.out.println("*** Hotel Reservation Management Client System :: Operation Manager :: View Room Rate Details ***\n");
-        System.out.print("Select Room Rate ID: > ");
-        String roomTypeNameChosen = scanner.nextLine().trim();
-        
+        System.out.println("*** Hotel Reservation Management Client System :: Guest Relation Officer :: Walk-in Search Room ***\n");
         try {
-            RoomTypes roomTypeEntity = roomTypesEntitySessionBeanRemote.retrievesRoomTypeByRoomTypeName(roomTypeNameChosen);
-            System.out.printf("%10s%20s%20s%15s%20s%40s%40s\n", "Room Type Name", "Next Higher Room Type", "Description", "Size", "Bed", "Capacity", "Amenities");
-            if (roomTypeEntity.getNextHigherRoomType() == null) {
-                System.out.printf("%10s%30s%20s%15s%20s%20s%20s\n", roomTypeEntity.getRoomTypeName(), "null", roomTypeEntity.getDescription(), roomTypeEntity.getSize(), roomTypeEntity.getBed(), roomTypeEntity.getCapacity(), roomTypeEntity.getAmenities());
-            } else {
-                System.out.printf("%10s%30s%20s%15s%20s%40s%40s\n", roomTypeEntity.getRoomTypeName(), roomTypeEntity.getNextHigherRoomType().getRoomTypeName(), roomTypeEntity.getDescription(), roomTypeEntity.getSize(), roomTypeEntity.getBed(), roomTypeEntity.getCapacity(), roomTypeEntity.getAmenities());         
-            }
-            System.out.println("------------------------");
-            System.out.println("1: Walk-in Reserve");
-            System.out.println("2: Back");
-            System.out.print("> ");
-            response = scanner.nextInt();
-
-            if(response == 1) {
-                doUpdateRoomType(roomTypeEntity);
-            }
-            else if(response == 2)
-            {
-                doDeleteRoomType(roomTypeEntity);
-            }
-        }
-        catch(RoomTypeNotFoundException ex) {
-            System.out.println("An error has occurred while retrieving staff: " + ex.getMessage() + "\n");
+            System.out.print("Enter check-in date (DD/MM/YYYY): ");
+            newRate.setStartDate(inputDateFormat.parse(scanner.nextLine().trim()));
+            System.out.print("Enter check-out date (DD/MM/YYYY): ");
+            newRate.setStartDate(inputDateFormat.parse(scanner.nextLine().trim()));
+            hotelReservationSessionBeanRemote
+        } catch (ParseException ex) {
+            System.out.println("Parse Exception");
         }
     }
 */
+
 }
