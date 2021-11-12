@@ -83,7 +83,7 @@ public class AllocationSessionBean implements AllocationSessionBeanRemote, Alloc
                     if (r.getAllocatedRoom() != null) {
                         r.getAllocatedRoom().setIsAllocated(false);
                         reservationsEntitySessionBeanLocal.updateReservation(r);
-                        r.setAllocatedRoom(null);
+                        //r.setAllocatedRoom(null);
                     }
                     //r.setAllocatedRoom(null);
                     //need to set the hotel room allocated to this reservation to isAllocated = false;
