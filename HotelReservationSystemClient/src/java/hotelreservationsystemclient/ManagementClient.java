@@ -37,7 +37,8 @@ public class ManagementClient {
     
     private SystemAdministrationModule systemAdministrationModule; 
     private OperationManagerModule operationManagerModule;
-    private SalesManagerModule salesManagerModule; 
+    private SalesManagerModule salesManagerModule;
+    private GuestRelationOfficerModule guestRelationOfficerModule; 
     
     private Employees currentEmployee;
     
@@ -95,7 +96,8 @@ public class ManagementClient {
                                 menuMainSalesManager();
                             }
                             else if (currentEmployee.getEmployeeType().equals("Guest Relation Officer")){
-                                //
+                                guestRelationOfficerModule = new GuestRelationOfficerModule(employeesEntitySessionBeanRemote, currentEmployee, roomTypesEntitySessionBeanRemote, hotelRoomsEntitySessionBeanRemote, ratesEntitySessionBeanRemote);
+                                menuMainGuestRelationOfficer();
                             }
                         }
                         catch(InvalidLoginCredentialException ex){
@@ -232,6 +234,45 @@ public class ManagementClient {
                 if(response == 1){
                     try {
                         salesManagerModule.menuSalesManager();
+                    }
+                    catch (InvalidAccessRightException ex){
+                        System.out.println("Invalid option, please try again!: " + ex.getMessage() + "\n");
+                    }
+                }
+                else if (response == 2){
+                    currentEmployee = null;
+                    break;
+                }
+                else {
+                    System.out.println("Invalid option, please try again!\n");                
+                }
+            }
+            
+            if(response == 2){
+                break;
+            }
+        }
+    }
+    
+    private void menuMainGuestRelationOfficer(){
+        Scanner scanner = new Scanner(System.in);
+        Integer response = 0;
+        
+        while(true){
+            System.out.println("*** Hotel Reservation System Management Client ***\n");
+            System.out.println("You are login as " + currentEmployee.getUsername() + " with " + currentEmployee.getEmployeeType() + " rights\n");
+            System.out.println("1: Guest Relation Officer");
+            System.out.println("2: Logout\n");
+            response = 0;
+            
+            while(response < 1 || response > 2){
+                System.out.print("> ");
+
+                response = scanner.nextInt();
+                
+                if(response == 1){
+                    try {
+                        guestRelationOfficerModule.menuGuestRelationOfficer();
                     }
                     catch (InvalidAccessRightException ex){
                         System.out.println("Invalid option, please try again!: " + ex.getMessage() + "\n");

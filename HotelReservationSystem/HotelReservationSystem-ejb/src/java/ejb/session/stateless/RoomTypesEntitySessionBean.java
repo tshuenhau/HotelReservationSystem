@@ -7,12 +7,10 @@ package ejb.session.stateless;
 
 import entity.RoomTypes;
 import java.util.List;
-import java.util.Set;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
-import javax.validation.ConstraintViolation;
 import util.exception.DeleteRoomTypeException;
 import util.exception.RoomTypeNotFoundException;
 
@@ -35,10 +33,8 @@ public class RoomTypesEntitySessionBean implements RoomTypesEntitySessionBeanRem
     
     @Override
     public RoomTypes createNewRoomType(RoomTypes newRoomType){
-        if(em.find(RoomTypes.class, newRoomType.getRoomTypeName()) == null){
             em.persist(newRoomType);
             em.flush();
-        }
         return newRoomType;
     }
     
@@ -53,6 +49,18 @@ public class RoomTypesEntitySessionBean implements RoomTypesEntitySessionBeanRem
         else
         {
             throw new RoomTypeNotFoundException("Room Type Name " + roomTypeName + " does not exist!");
+        }
+    }
+    
+    @Override
+    public void updateRoomType(RoomTypes roomType, String newRoomTypeName) throws RoomTypeNotFoundException {
+        if (roomType != null && roomType.getRoomTypeName() != null) {
+            RoomTypes roomTypeToUpdate = retrievesRoomTypeByRoomTypeName(roomType.getRoomTypeName());
+            roomTypeToUpdate.setRoomTypeName(newRoomTypeName);
+            em.merge(roomTypeToUpdate);
+            em.flush();
+        } else {
+            throw new RoomTypeNotFoundException("Room Type " + roomType.getRoomTypeName() + " cannot be found!");
         }
     }
     
@@ -75,7 +83,7 @@ public class RoomTypesEntitySessionBean implements RoomTypesEntitySessionBeanRem
         }
         else
         {
-            throw new DeleteRoomTypeException("Room Type " + roomTypeName + " is associated with existing hotel rooms and/or reservations and/or room rates) and cannot be deleted!");
+            throw new DeleteRoomTypeException("Room Type " + roomTypeName + " is associated with existing hotel rooms and/or reservations and/or room rates and cannot be deleted!");
         }
     }
 

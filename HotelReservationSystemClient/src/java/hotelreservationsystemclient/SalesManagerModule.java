@@ -250,7 +250,7 @@ public class SalesManagerModule {
             System.out.printf("%s%30s%20s%20s%20s%20s\n", rate.getRateID(), rate.getRateType(), rate.getRoomType().getRoomTypeName(), rate.getPrice(), rate.getStartDate(), rate.getEndDate());
         }
         
-        System.out.print("Press any key to continue...> ");
+        System.out.println("Press any key to continue...> ");
         scanner.nextLine();
     }
 }

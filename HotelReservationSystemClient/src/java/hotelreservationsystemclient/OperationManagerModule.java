@@ -198,15 +198,14 @@ public class OperationManagerModule {
     
     
     private void doUpdateRoomType(RoomTypes roomTypeEntity) {
-        Scanner scanner = new Scanner(System.in);        
-        String input;
-        
+        Scanner scanner = new Scanner(System.in);
         System.out.println("*** Hotel Reservation Management Client System :: Operation Manager :: View Room Type Details :: Update Room Type ***\n");
-        System.out.println("Enter new name to be updated: ");
-        input = scanner.nextLine().trim();
-        if(input.length() > 0){
-            roomTypeEntity.setRoomTypeName(input);
-            System.out.print("Room Type Name updated successfully! ");
+        System.out.print("Enter new room type name to be updated: ");
+        try {
+            String newRoomTypeName = scanner.nextLine().trim();
+            roomTypesEntitySessionBeanRemote.updateRoomType(roomTypeEntity, newRoomTypeName);
+        } catch (RoomTypeNotFoundException ex) {
+            System.out.println("An error has occurred while updating the staff: " + ex.getMessage() + "\n");
         }
     }
     
