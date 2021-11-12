@@ -9,6 +9,7 @@ import entity.RoomTypes;
 import java.util.List;
 import javax.ejb.Remote;
 import util.exception.DeleteRoomTypeException;
+import util.exception.RoomTypeAlreadyExistException;
 import util.exception.RoomTypeNotFoundException;
 
 /**
@@ -18,7 +19,7 @@ import util.exception.RoomTypeNotFoundException;
 @Remote
 public interface RoomTypesEntitySessionBeanRemote {
     public List<RoomTypes> retrieveAllRoomTypes();
-    public RoomTypes createNewRoomType(RoomTypes roomType);
+    public RoomTypes createNewRoomType(RoomTypes roomType) throws RoomTypeAlreadyExistException;
     
     public void deleteRoomType(String roomTypeName) throws RoomTypeNotFoundException, DeleteRoomTypeException;
     public void updateRoomType(RoomTypes roomType, String newRoomTypeName) throws RoomTypeNotFoundException;

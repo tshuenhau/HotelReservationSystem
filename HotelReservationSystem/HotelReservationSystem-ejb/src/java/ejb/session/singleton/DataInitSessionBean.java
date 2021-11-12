@@ -12,7 +12,6 @@ import ejb.session.stateless.HotelRoomsEntitySessionBeanLocal;
 import ejb.session.stateless.RatesEntitySessionBeanLocal;
 import ejb.session.stateless.ReservationsEntitySessionBeanLocal;
 import ejb.session.stateless.RoomTypesEntitySessionBeanLocal;
-import entity.Customers;
 import entity.Employees;
 import entity.HotelRooms;
 import entity.Rates;
@@ -28,6 +27,7 @@ import javax.ejb.LocalBean;
 import javax.ejb.Startup;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import util.exception.RoomTypeAlreadyExistException;
 import util.exception.UserAlreadyExistException;
 
 /**
@@ -123,7 +123,7 @@ public class DataInitSessionBean {
                 hotelRoomsEntitySessionBeanLocal.createNewHotelRoom(new HotelRooms("0305", GrandSuite));
                 hotelRoomsEntitySessionBeanLocal.createNewHotelRoom(new HotelRooms("0405", GrandSuite));
                 hotelRoomsEntitySessionBeanLocal.createNewHotelRoom(new HotelRooms("0505", GrandSuite));
-            } catch (UserAlreadyExistException ex) {
+            } catch (UserAlreadyExistException | RoomTypeAlreadyExistException ex) {
                 Logger.getLogger(DataInitSessionBean.class.getName()).log(Level.SEVERE, null, ex);
             }
 

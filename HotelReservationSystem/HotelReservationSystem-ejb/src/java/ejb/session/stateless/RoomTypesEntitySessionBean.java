@@ -12,6 +12,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import util.exception.DeleteRoomTypeException;
+import util.exception.RoomTypeAlreadyExistException;
 import util.exception.RoomTypeNotFoundException;
 
 /**
@@ -32,9 +33,23 @@ public class RoomTypesEntitySessionBean implements RoomTypesEntitySessionBeanRem
     }
     
     @Override
-    public RoomTypes createNewRoomType(RoomTypes newRoomType){
+    public RoomTypes createNewRoomType(RoomTypes newRoomType) throws RoomTypeAlreadyExistException {
+        List<RoomTypes> roomTypes = retrieveAllRoomTypes();
+        boolean exists = false;
+
+        if (newRoomType != null) {
+            for (RoomTypes roomType : roomTypes) {
+                if (roomType.equals(newRoomType)) {
+                    exists = true;
+                    throw new RoomTypeAlreadyExistException("Room Type Name " + roomType.getRoomTypeName() + " already exists!");
+                }
+            }
+        }
+        
+        if (!exists) {
             em.persist(newRoomType);
             em.flush();
+        }
         return newRoomType;
     }
     
@@ -56,8 +71,7 @@ public class RoomTypesEntitySessionBean implements RoomTypesEntitySessionBeanRem
         if(roomTypeEntity != null){
             return roomTypeEntity;
         }
-        else
-        {
+        else {
             throw new RoomTypeNotFoundException("Room Type Name " + roomTypeName + " does not exist!");
         }
     }

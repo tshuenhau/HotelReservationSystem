@@ -10,6 +10,7 @@ import entity.RoomTypes;
 import java.util.List;
 import util.exception.DeleteRoomTypeException;
 import util.exception.InvalidAccessRightException;
+import util.exception.RoomTypeAlreadyExistException;
 import util.exception.RoomTypeNotFoundException;
 
 
@@ -116,23 +117,27 @@ public class OperationManagerModule {
         Integer nextHigherRoomTypeChosen = scanner.nextInt();
         scanner.nextLine();
         
-        if (nextHigherRoomTypeChosen == 2) {
-            String createdRoomTypeName = roomTypesEntitySessionBeanRemote.createNewRoomType(new RoomTypes(newRoomTypeName, null)).getRoomTypeName();
-            System.out.println("New Room Type created successfully!: " + createdRoomTypeName + "\n");
-        }
-        else if (nextHigherRoomTypeChosen == 1) {
-            System.out.print("Enter Next Higher Room Type: ");
-            String nextHigherRoomType = scanner.nextLine().trim();
-            
-            //Existing Current Room Types
-            List<RoomTypes> existingRoomTypes = roomTypesEntitySessionBeanRemote.retrieveAllRoomTypes();
-            
-            for (RoomTypes roomtype : existingRoomTypes) {
-                if (roomtype.getRoomTypeName().equals(nextHigherRoomType)) {
-                   String createdRoomTypeName = roomTypesEntitySessionBeanRemote.createNewRoomType(new RoomTypes(newRoomTypeName, roomtype)).getRoomTypeName();
-                   System.out.println("New Room Type created successfully: " + createdRoomTypeName + "\n");
+        try {
+            if (nextHigherRoomTypeChosen == 2) {
+                String createdRoomTypeName = roomTypesEntitySessionBeanRemote.createNewRoomType(new RoomTypes(newRoomTypeName, null)).getRoomTypeName();
+                System.out.println("New Room Type created successfully!: " + createdRoomTypeName + "\n");
+            }
+            else if (nextHigherRoomTypeChosen == 1) {
+                System.out.print("Enter Next Higher Room Type: ");
+                String nextHigherRoomType = scanner.nextLine().trim();
+
+                //Existing Current Room Types
+                List<RoomTypes> existingRoomTypes = roomTypesEntitySessionBeanRemote.retrieveAllRoomTypes();
+
+                for (RoomTypes roomtype : existingRoomTypes) {
+                    if (roomtype.getRoomTypeName().equals(nextHigherRoomType)) {
+                       String createdRoomTypeName = roomTypesEntitySessionBeanRemote.createNewRoomType(new RoomTypes(newRoomTypeName, roomtype)).getRoomTypeName();
+                       System.out.println("New Room Type created successfully: " + createdRoomTypeName + "\n");
+                    }
                 }
             }
+        } catch (RoomTypeAlreadyExistException ex) {
+            System.out.println("An error has occurred while creating room type: " + ex.getMessage() + "\n");
         }
     }
     
@@ -169,7 +174,7 @@ public class OperationManagerModule {
             }
         }
         catch(RoomTypeNotFoundException ex) {
-            System.out.println("An error has occurred while retrieving staff: " + ex.getMessage() + "\n");
+            System.out.println("An error has occurred while viewing all room types: " + ex.getMessage() + "\n");
         }
     }
     
@@ -217,10 +222,14 @@ public class OperationManagerModule {
         System.out.println("*** Hotel Reservation Management Client System :: Operation Manager :: View All Room Types ***\n");
         
         List<RoomTypes> roomTypes = roomTypesEntitySessionBeanRemote.retrieveAllRoomTypes();
-        System.out.printf("%s%30s%20s%20s%20s%20s\n", "Room Type Name", "Description", "Size", "Bed", "Capacity", "Amenities");
+        System.out.printf("%s%30s%30s%20s%20s%20s\n", "Room Type Name", "Next Higher Room Type", "Description", "Size", "Bed", "Capacity", "Amenities");
 
         for (RoomTypes roomType : roomTypes) {
-            System.out.printf("%s%30s%20s%20s%20s%20s\n", roomType.getRoomTypeName(), roomType.getDescription(), roomType.getSize(), roomType.getBed(), roomType.getCapacity(), roomType.getAmenities());
+            if (roomType.getNextHigherRoomType() == null) {
+                System.out.printf("%s%30s%30s%20s%20s%20s%20s\n", roomType.getRoomTypeName(), "null", roomType.getDescription(), roomType.getSize(), roomType.getBed(), roomType.getCapacity(), roomType.getAmenities());
+            } else {
+                System.out.printf("%s%30s%30s%20s%20s%20s%20s\n", roomType.getRoomTypeName(), roomType.getNextHigherRoomType().getRoomTypeName(), roomType.getDescription(), roomType.getSize(), roomType.getBed(), roomType.getCapacity(), roomType.getAmenities());
+            }
         }
         
         System.out.print("Press any key to continue...> ");
