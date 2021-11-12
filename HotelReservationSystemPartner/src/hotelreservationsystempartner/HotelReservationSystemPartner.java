@@ -8,15 +8,18 @@ package hotelreservationsystempartner;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.xml.datatype.XMLGregorianCalendar;
 import ws.client.Customers;
 import ws.client.InvalidLoginCredentialException_Exception;
 import ws.client.InvalidRoomQuantityException_Exception;
 import ws.client.InvalidRoomTypeException_Exception;
 import ws.client.ParseException_Exception;
+import ws.client.ReservationNotFoundException_Exception;
 import ws.client.ReservationWebService_Service;
 import ws.client.Reservations;
 import ws.client.StringArray;
@@ -48,11 +51,12 @@ public class HotelReservationSystemPartner {
             response = 0;
             System.out.println("1: Login");
             System.out.println("2: Search Hotel Room");
-            System.out.println("3: View Reservations");
+            System.out.println("3: View All Reservations");
+            System.out.println("4: View Reservation");
 
-            System.out.println("4: Exit\n");
-            while (response < 1 || response > 4) {
-
+            System.out.println("5: Exit\n");
+            while (response < 1 || response > 5) {
+                try{
                 System.out.print("> ");
                 response = scanner.nextInt();
                 if (response == 1) {
@@ -127,27 +131,62 @@ public class HotelReservationSystemPartner {
                             }
                         }
 
-                    } catch (ParseException_Exception ex) {
+                    } catch (ParseException_Exception | InvalidLoginCredentialException_Exception ex) {
                         System.err.println(ex.getMessage());
-                    } catch (InvalidLoginCredentialException_Exception ex) {
-                        System.err.println(ex.getMessage());
+                        break;
                     }
 
                 } else if (response == 3) {
+                    if (currentCustomer == null) {
+                        System.err.println("Please Login To Use this feature.");
+                        break;
+                    }
                     try {
                         List<Reservations> reservations = service.getReservationWebServicePort().viewAllReservations(currentCustomer.getPassportNum(), currentCustomer.getPassword());
                         System.out.printf("%14s%26s\n", "Reservation ID", "Date");
 
                         for (Reservations r : reservations) {
+                            Date startDate = r.getStartDate().toGregorianCalendar().getTime();
+                            Date endDate = r.getEndDate().toGregorianCalendar().getTime();
                             //System.out.println(r.getReservationID() +  " " + outputDateFormat.format(r.getStartDate()) + "-" + outputDateFormat.format(r.getEndDate()));
-                            System.out.printf("%14s%26s\n", r.getReservationID().toString(), outputDateFormat.format(r.getStartDate()) + "-" + outputDateFormat.format(r.getEndDate()));
+                            System.out.printf("%14s%26s\n", r.getReservationID().toString(), outputDateFormat.format(startDate) + "-" + outputDateFormat.format(endDate));
 
                         }
                     } catch (InvalidLoginCredentialException_Exception ex) {
                         System.err.println(ex.getMessage());
                     }
+
+                } else if (response == 4) {
+                    if (currentCustomer == null) {
+                        System.err.println("Please Login To Use this feature.");
+                        break;
+                    }
+                    System.out.print("Please enter reservation ID> ");
+                    Long reservationID = scanner.nextLong();
+                    scanner.nextLine();
+                    try {
+                        Reservations r = service.getReservationWebServicePort().viewReservation(currentCustomer.getPassportNum(), currentCustomer.getPassword(), reservationID);
+                        System.out.printf("%14s%16s      %s\n", "Reservation ID", "Room Type", "Cost");
+                        System.out.printf("%14s%16s      %s\n", r.getReservationID().toString(), r.getReservationRoomType().getRoomTypeName(), r.getCost());
+
+                    } catch (InvalidLoginCredentialException_Exception ex) {
+                        System.err.println(ex.getMessage());
+                    } catch (ReservationNotFoundException_Exception ex) {
+                        System.err.println(ex.getMessage());
+                    }
+
                 }
 
+            }
+                catch(InputMismatchException ex){
+                    System.err.println("Input type mismatch.");
+                                        scanner.nextLine();
+
+                    break;
+                }
+            }
+            if (response == 5) {
+                break;
             }
         }
 
