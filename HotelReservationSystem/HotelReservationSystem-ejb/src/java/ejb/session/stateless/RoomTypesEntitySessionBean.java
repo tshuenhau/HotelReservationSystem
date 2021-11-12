@@ -41,7 +41,17 @@ public class RoomTypesEntitySessionBean implements RoomTypesEntitySessionBeanRem
     
     @Override
     public RoomTypes retrievesRoomTypeByRoomTypeName(String roomTypeName) throws RoomTypeNotFoundException {
-        RoomTypes roomTypeEntity = em.find(RoomTypes.class, roomTypeName);
+        List<RoomTypes> roomTypes = retrieveAllRoomTypes();
+        
+        RoomTypes roomTypeEntity = new RoomTypes();
+        
+        if (roomTypeName != null) {
+            for (RoomTypes roomType : roomTypes) {
+                if (roomType.getRoomTypeName().equals(roomTypeName)) {
+                    roomTypeEntity = roomType;
+                }
+            }
+        }
         
         if(roomTypeEntity != null){
             return roomTypeEntity;

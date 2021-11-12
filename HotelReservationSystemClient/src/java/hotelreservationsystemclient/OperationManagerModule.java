@@ -121,39 +121,16 @@ public class OperationManagerModule {
             System.out.println("New Room Type created successfully!: " + createdRoomTypeName + "\n");
         }
         else if (nextHigherRoomTypeChosen == 1) {
-            System.out.print("Select Next Higher Room Type (1: Deluxe Room, 2: Premier Room, 3: Family Room, 4: Junior Suite, 5: Grand Suite)> ");
-            Integer roomTypeChosen = scanner.nextInt();
+            System.out.print("Enter Next Higher Room Type: ");
+            String nextHigherRoomType = scanner.nextLine().trim();
             
             //Existing Current Room Types
-            RoomTypes GrandSuite = new RoomTypes("Grand Suite", null);
-            RoomTypes JuniorSuite = new RoomTypes("Junior Suite", GrandSuite);
-            RoomTypes FamilyRoom = new RoomTypes("Family Room", JuniorSuite);
-            RoomTypes PremierRoom = new RoomTypes("Premier Room", FamilyRoom);
-            RoomTypes DeluxeRoom = new RoomTypes("Deluxe Room", PremierRoom);
-
-            while (true) {
-                if (roomTypeChosen == 1) {
-                    String createdRoomTypeName = roomTypesEntitySessionBeanRemote.createNewRoomType(new RoomTypes(newRoomTypeName, DeluxeRoom)).getRoomTypeName();
-                    System.out.println("New Room Type created successfully: " + createdRoomTypeName + "\n");
-                    break;
-                } else if (roomTypeChosen == 2) {
-                    String createdRoomTypeName = roomTypesEntitySessionBeanRemote.createNewRoomType(new RoomTypes(newRoomTypeName, PremierRoom)).getRoomTypeName();
-                    System.out.println("New Room Type created successfully: " + createdRoomTypeName + "\n");
-                    break;
-                } else if (roomTypeChosen == 3) {
-                    String createdRoomTypeName = roomTypesEntitySessionBeanRemote.createNewRoomType(new RoomTypes(newRoomTypeName, FamilyRoom)).getRoomTypeName();
-                    System.out.println("New Room Type created successfully: " + createdRoomTypeName + "\n");
-                    break;
-                } else if (roomTypeChosen == 4) {
-                    String createdRoomTypeName = roomTypesEntitySessionBeanRemote.createNewRoomType(new RoomTypes(newRoomTypeName, JuniorSuite)).getRoomTypeName();
-                    System.out.println("New Room Type created successfully: " + createdRoomTypeName + "\n");
-                    break;
-                } else if (roomTypeChosen == 5) {
-                    String createdRoomTypeName = roomTypesEntitySessionBeanRemote.createNewRoomType(new RoomTypes(newRoomTypeName, GrandSuite)).getRoomTypeName();
-                    System.out.println("New Room Type created successfully: " + createdRoomTypeName + "\n");
-                    break;
-                } else {
-                    System.out.println("Invalid option, please try again!\n");
+            List<RoomTypes> existingRoomTypes = roomTypesEntitySessionBeanRemote.retrieveAllRoomTypes();
+            
+            for (RoomTypes roomtype : existingRoomTypes) {
+                if (roomtype.getRoomTypeName().equals(nextHigherRoomType)) {
+                   String createdRoomTypeName = roomTypesEntitySessionBeanRemote.createNewRoomType(new RoomTypes(newRoomTypeName, roomtype)).getRoomTypeName();
+                   System.out.println("New Room Type created successfully: " + createdRoomTypeName + "\n");
                 }
             }
         }
