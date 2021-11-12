@@ -99,11 +99,13 @@ public class ReservationWebService {
         if (c != null) {
             for (Reservations r : allReservations) {
                 r.setAllocatedRoom(null);
-                if (r.getReservedBy().equals(c)) {
-                    relaventReservations.add(r);
-                    r.getReservedBy().setReservations(null);
-                    //r.setReservedBy(null);
+                if (r.getReservedBy() != null) {
+                    if (r.getReservedBy().equals(c)) {
+                        relaventReservations.add(r);
+                        r.getReservedBy().setReservations(null);
+                        //r.setReservedBy(null);
 
+                    }
                 }
             }
         }

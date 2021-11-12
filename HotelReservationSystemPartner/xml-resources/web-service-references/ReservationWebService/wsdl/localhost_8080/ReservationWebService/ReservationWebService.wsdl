@@ -25,11 +25,17 @@
 <message name="InvalidLoginCredentialException">
 <part name="fault" element="tns:InvalidLoginCredentialException"/>
 </message>
-<message name="SearchRoom">
-<part name="parameters" element="tns:SearchRoom"/>
+<message name="sameDayCheckIn">
+<part name="parameters" element="tns:sameDayCheckIn"/>
 </message>
-<message name="SearchRoomResponse">
-<part name="parameters" element="tns:SearchRoomResponse"/>
+<message name="sameDayCheckInResponse">
+<part name="parameters" element="tns:sameDayCheckInResponse"/>
+</message>
+<message name="Login">
+<part name="parameters" element="tns:Login"/>
+</message>
+<message name="LoginResponse">
+<part name="parameters" element="tns:LoginResponse"/>
 </message>
 <message name="ViewReservation">
 <part name="parameters" element="tns:ViewReservation"/>
@@ -40,23 +46,17 @@
 <message name="ReservationNotFoundException">
 <part name="fault" element="tns:ReservationNotFoundException"/>
 </message>
-<message name="sameDayCheckIn">
-<part name="parameters" element="tns:sameDayCheckIn"/>
+<message name="SearchRoom">
+<part name="parameters" element="tns:SearchRoom"/>
 </message>
-<message name="sameDayCheckInResponse">
-<part name="parameters" element="tns:sameDayCheckInResponse"/>
+<message name="SearchRoomResponse">
+<part name="parameters" element="tns:SearchRoomResponse"/>
 </message>
 <message name="ViewAllReservations">
 <part name="parameters" element="tns:ViewAllReservations"/>
 </message>
 <message name="ViewAllReservationsResponse">
 <part name="parameters" element="tns:ViewAllReservationsResponse"/>
-</message>
-<message name="Login">
-<part name="parameters" element="tns:Login"/>
-</message>
-<message name="LoginResponse">
-<part name="parameters" element="tns:LoginResponse"/>
 </message>
 <portType name="ReservationWebService">
 <operation name="addReservation">
@@ -67,10 +67,15 @@
 <fault message="tns:ParseException" name="ParseException" wsam:Action="http://ws.session.ejb/ReservationWebService/addReservation/Fault/ParseException"/>
 <fault message="tns:InvalidLoginCredentialException" name="InvalidLoginCredentialException" wsam:Action="http://ws.session.ejb/ReservationWebService/addReservation/Fault/InvalidLoginCredentialException"/>
 </operation>
-<operation name="SearchRoom">
-<input wsam:Action="http://ws.session.ejb/ReservationWebService/SearchRoomRequest" message="tns:SearchRoom"/>
-<output wsam:Action="http://ws.session.ejb/ReservationWebService/SearchRoomResponse" message="tns:SearchRoomResponse"/>
-<fault message="tns:ParseException" name="ParseException" wsam:Action="http://ws.session.ejb/ReservationWebService/SearchRoom/Fault/ParseException"/>
+<operation name="sameDayCheckIn">
+<input wsam:Action="http://ws.session.ejb/ReservationWebService/sameDayCheckInRequest" message="tns:sameDayCheckIn"/>
+<output wsam:Action="http://ws.session.ejb/ReservationWebService/sameDayCheckInResponse" message="tns:sameDayCheckInResponse"/>
+<fault message="tns:ParseException" name="ParseException" wsam:Action="http://ws.session.ejb/ReservationWebService/sameDayCheckIn/Fault/ParseException"/>
+</operation>
+<operation name="Login">
+<input wsam:Action="http://ws.session.ejb/ReservationWebService/LoginRequest" message="tns:Login"/>
+<output wsam:Action="http://ws.session.ejb/ReservationWebService/LoginResponse" message="tns:LoginResponse"/>
+<fault message="tns:InvalidLoginCredentialException" name="InvalidLoginCredentialException" wsam:Action="http://ws.session.ejb/ReservationWebService/Login/Fault/InvalidLoginCredentialException"/>
 </operation>
 <operation name="ViewReservation">
 <input wsam:Action="http://ws.session.ejb/ReservationWebService/ViewReservationRequest" message="tns:ViewReservation"/>
@@ -78,20 +83,15 @@
 <fault message="tns:InvalidLoginCredentialException" name="InvalidLoginCredentialException" wsam:Action="http://ws.session.ejb/ReservationWebService/ViewReservation/Fault/InvalidLoginCredentialException"/>
 <fault message="tns:ReservationNotFoundException" name="ReservationNotFoundException" wsam:Action="http://ws.session.ejb/ReservationWebService/ViewReservation/Fault/ReservationNotFoundException"/>
 </operation>
-<operation name="sameDayCheckIn">
-<input wsam:Action="http://ws.session.ejb/ReservationWebService/sameDayCheckInRequest" message="tns:sameDayCheckIn"/>
-<output wsam:Action="http://ws.session.ejb/ReservationWebService/sameDayCheckInResponse" message="tns:sameDayCheckInResponse"/>
-<fault message="tns:ParseException" name="ParseException" wsam:Action="http://ws.session.ejb/ReservationWebService/sameDayCheckIn/Fault/ParseException"/>
+<operation name="SearchRoom">
+<input wsam:Action="http://ws.session.ejb/ReservationWebService/SearchRoomRequest" message="tns:SearchRoom"/>
+<output wsam:Action="http://ws.session.ejb/ReservationWebService/SearchRoomResponse" message="tns:SearchRoomResponse"/>
+<fault message="tns:ParseException" name="ParseException" wsam:Action="http://ws.session.ejb/ReservationWebService/SearchRoom/Fault/ParseException"/>
 </operation>
 <operation name="ViewAllReservations">
 <input wsam:Action="http://ws.session.ejb/ReservationWebService/ViewAllReservationsRequest" message="tns:ViewAllReservations"/>
 <output wsam:Action="http://ws.session.ejb/ReservationWebService/ViewAllReservationsResponse" message="tns:ViewAllReservationsResponse"/>
 <fault message="tns:InvalidLoginCredentialException" name="InvalidLoginCredentialException" wsam:Action="http://ws.session.ejb/ReservationWebService/ViewAllReservations/Fault/InvalidLoginCredentialException"/>
-</operation>
-<operation name="Login">
-<input wsam:Action="http://ws.session.ejb/ReservationWebService/LoginRequest" message="tns:Login"/>
-<output wsam:Action="http://ws.session.ejb/ReservationWebService/LoginResponse" message="tns:LoginResponse"/>
-<fault message="tns:InvalidLoginCredentialException" name="InvalidLoginCredentialException" wsam:Action="http://ws.session.ejb/ReservationWebService/Login/Fault/InvalidLoginCredentialException"/>
 </operation>
 </portType>
 <binding name="ReservationWebServicePortBinding" type="tns:ReservationWebService">
@@ -117,7 +117,7 @@
 <soap:fault name="InvalidLoginCredentialException" use="literal"/>
 </fault>
 </operation>
-<operation name="SearchRoom">
+<operation name="sameDayCheckIn">
 <soap:operation soapAction=""/>
 <input>
 <soap:body use="literal"/>
@@ -127,6 +127,18 @@
 </output>
 <fault name="ParseException">
 <soap:fault name="ParseException" use="literal"/>
+</fault>
+</operation>
+<operation name="Login">
+<soap:operation soapAction=""/>
+<input>
+<soap:body use="literal"/>
+</input>
+<output>
+<soap:body use="literal"/>
+</output>
+<fault name="InvalidLoginCredentialException">
+<soap:fault name="InvalidLoginCredentialException" use="literal"/>
 </fault>
 </operation>
 <operation name="ViewReservation">
@@ -144,7 +156,7 @@
 <soap:fault name="ReservationNotFoundException" use="literal"/>
 </fault>
 </operation>
-<operation name="sameDayCheckIn">
+<operation name="SearchRoom">
 <soap:operation soapAction=""/>
 <input>
 <soap:body use="literal"/>
@@ -157,18 +169,6 @@
 </fault>
 </operation>
 <operation name="ViewAllReservations">
-<soap:operation soapAction=""/>
-<input>
-<soap:body use="literal"/>
-</input>
-<output>
-<soap:body use="literal"/>
-</output>
-<fault name="InvalidLoginCredentialException">
-<soap:fault name="InvalidLoginCredentialException" use="literal"/>
-</fault>
-</operation>
-<operation name="Login">
 <soap:operation soapAction=""/>
 <input>
 <soap:body use="literal"/>

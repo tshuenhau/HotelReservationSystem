@@ -22,6 +22,7 @@ import java.util.Map;
 import util.exception.InvalidRoomQuantityException;
 import util.exception.InvalidRoomTypeException;
 import util.exception.NotLoggedInException;
+import util.exception.UnableToAllocateException;
 
 
 
@@ -81,7 +82,11 @@ public class GuestRelationOfficerModule {
                     doWalkInSearch();
                 }
                 else if(response == 2){
-                    //doCheckIn();
+                    try {
+                        doCheckIn();
+                    } catch (UnableToAllocateException ex) {
+                        System.out.println("Unable to allocate room. No available room");
+                    }
                 }
                 else if(response == 3){
                     //doCheckOut();
@@ -201,8 +206,8 @@ public class GuestRelationOfficerModule {
                             int reserveResponse = 0;
                             System.out.println("1: Confirm");
                             System.out.println("2: Cancel");
-                            reserveResponse = scanner.nextInt();
                             System.out.print("> ");
+                            reserveResponse = scanner.nextInt();
                             if (reserveResponse == 1) {
 
                                 List<Reservations> reserved = hotelReservationSessionBeanRemote.confirmReservations();
@@ -261,7 +266,7 @@ public class GuestRelationOfficerModule {
         }
     }
     
-    private void doCheckIn() {
+    private void doCheckIn() throws UnableToAllocateException  {
         Scanner scanner = new Scanner(System.in);
         System.out.println("*** Hotel Reservation System Management Client :: Check-in Guest ***\n");
         
@@ -271,10 +276,14 @@ public class GuestRelationOfficerModule {
         
         Reservations reservation = reservationsEntitySessionBeanRemote.retrieveReservation(reservationID);
         
-        HotelRooms allocatedRoom = reservation.getAllocatedRoom();
         
-        if (allocatedRoom.getIsAllocated()) {
-            System.out.print("You have been allocated to Room " + allocatedRoom.getHotelRoomID() + " at " + allocatedRoom.getRmType().getRoomTypeName());
+        HotelRooms allocatedRoom = reservation.getAllocatedRoom();
+        if (allocatedRoom != null) {
+            if (allocatedRoom.getIsAllocated()) {
+                System.out.println("You have been allocated to Room " + allocatedRoom.getHotelRoomID() + " at " + allocatedRoom.getRmType().getRoomTypeName());
+            }
+        } else {
+            throw new UnableToAllocateException();
         }
     }
     /*
