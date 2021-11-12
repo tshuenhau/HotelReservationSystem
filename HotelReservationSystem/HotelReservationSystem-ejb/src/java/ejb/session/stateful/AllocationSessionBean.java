@@ -79,7 +79,7 @@ public class AllocationSessionBean implements AllocationSessionBeanRemote, Alloc
 
         for (Allocation a : allocationReport) {
             for (Reservations r : reservations) {
-                if (r.getEndDate().before(date) || r.getEndDate().equals(date)) {
+                if (r.getEndDate().before(date) || r.getEndDate().equals(date) || r.getStartDate().after(date)) {
                     if (r.getAllocatedRoom() != null) {
                         r.getAllocatedRoom().setIsAllocated(false);
                         reservationsEntitySessionBeanLocal.updateReservation(r);
@@ -91,6 +91,7 @@ public class AllocationSessionBean implements AllocationSessionBeanRemote, Alloc
                 else if (r.getStartDate().equals(date) && r.getReservationRoomType().equals(a.getRoomType()) && r.getAllocatedRoom() == null) {
                     a.setNumReservations(a.getNumReservations() + 1);
                 }
+                
             }
 
             for (HotelRooms h : hotelRooms) {
