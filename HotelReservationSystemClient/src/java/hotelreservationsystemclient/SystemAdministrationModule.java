@@ -154,13 +154,15 @@ public class SystemAdministrationModule {
         
         System.out.println("*** Hotel Reservation System Management Client :: System Administration :: Create New Partner ***\n");
         
+        System.out.print("Enter Name> ");
+        String name = scanner.nextLine().trim();
         System.out.print("Enter Passport Number> ");
         Long passportNum = scanner.nextLong();
         scanner.nextLine();
         System.out.print("Enter Password> ");
         String password = scanner.nextLine().trim();
         
-        Customers newPartner = customersEntitySessionBeanRemote.createNewCustomer(new Customers(passportNum, password, true));
+        Customers newPartner = customersEntitySessionBeanRemote.createNewCustomer(new Customers(passportNum, password, name, true));
         System.out.println("New partner created successfully!: " + newPartner.getPassportNum() + "\n");
     }
     

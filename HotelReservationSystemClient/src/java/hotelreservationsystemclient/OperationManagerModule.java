@@ -70,10 +70,10 @@ public class OperationManagerModule {
             System.out.println("-----------------------");
             System.out.println("9: Allocate Room for Reservations");
             System.out.println("-----------------------");
-            System.out.println("10: Back\n");
+            System.out.println("9: Back\n");
             response = 0;
             
-            while(response < 1 || response > 10){
+            while(response < 1 || response > 9){
                 System.out.print("> ");
 
                 response = scanner.nextInt();
@@ -105,7 +105,7 @@ public class OperationManagerModule {
                 else if (response == 9){
                     //allocateRoom();
                 }
-                else if (response == 10){
+                else if (response == 9){
                     break;
                 }
                 else {
@@ -113,7 +113,7 @@ public class OperationManagerModule {
                 }
             }
             
-            if(response == 10){
+            if(response == 9){
                 break;
             }
         }
