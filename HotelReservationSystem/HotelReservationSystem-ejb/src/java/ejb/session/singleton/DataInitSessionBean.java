@@ -28,6 +28,7 @@ import javax.ejb.Startup;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import util.exception.RateAlreadyExistException;
+import util.exception.RoomAlreadyExistException;
 import util.exception.RoomTypeAlreadyExistException;
 import util.exception.UserAlreadyExistException;
 
@@ -125,6 +126,8 @@ public class DataInitSessionBean {
                 hotelRoomsEntitySessionBeanLocal.createNewHotelRoom(new HotelRooms("0405", GrandSuite));
                 hotelRoomsEntitySessionBeanLocal.createNewHotelRoom(new HotelRooms("0505", GrandSuite));
             } catch (UserAlreadyExistException | RoomTypeAlreadyExistException | RateAlreadyExistException ex) {
+                Logger.getLogger(DataInitSessionBean.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (RoomAlreadyExistException ex) {
                 Logger.getLogger(DataInitSessionBean.class.getName()).log(Level.SEVERE, null, ex);
             }
 
