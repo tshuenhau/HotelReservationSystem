@@ -5,6 +5,7 @@
  */
 package hotelreservationsystemclient;
 
+import ejb.session.stateful.AllocationSessionBeanRemote;
 import ejb.session.stateful.HotelReservationSessionBeanRemote;
 import ejb.session.stateless.CustomersEntitySessionBeanRemote;
 import ejb.session.stateless.EmployeesEntitySessionBeanRemote;
@@ -37,6 +38,8 @@ public class ManagementClient {
     
     private HotelReservationSessionBeanRemote hotelReservationSessionBeanRemote;
     
+    private AllocationSessionBeanRemote allocationSessionBeanRemote;
+    
     
     private SystemAdministrationModule systemAdministrationModule; 
     private OperationManagerModule operationManagerModule;
@@ -50,8 +53,9 @@ public class ManagementClient {
         this.currentEmployee = null;
     }
 
-    public ManagementClient(HotelReservationSessionBeanRemote hotelReservationSessionBeanRemote, ReservationsEntitySessionBeanRemote reservationsEntitySessionBeanRemote, CustomersEntitySessionBeanRemote customersEntitySessionBeanRemote, RatesEntitySessionBeanRemote ratesEntitySessionBeanRemote, HotelRoomsEntitySessionBeanRemote hotelRoomsEntitySessionBeanRemote, EmployeesEntitySessionBeanRemote employeeEntitySessionBeanRemote, RoomTypesEntitySessionBeanRemote roomTypesEntitySessionBeanRemote) {
+    public ManagementClient(HotelReservationSessionBeanRemote hotelReservationSessionBeanRemote, AllocationSessionBeanRemote allocationSessionBeanRemote, ReservationsEntitySessionBeanRemote reservationsEntitySessionBeanRemote, CustomersEntitySessionBeanRemote customersEntitySessionBeanRemote, RatesEntitySessionBeanRemote ratesEntitySessionBeanRemote, HotelRoomsEntitySessionBeanRemote hotelRoomsEntitySessionBeanRemote, EmployeesEntitySessionBeanRemote employeeEntitySessionBeanRemote, RoomTypesEntitySessionBeanRemote roomTypesEntitySessionBeanRemote) {
         this.hotelReservationSessionBeanRemote = hotelReservationSessionBeanRemote;
+        this.allocationSessionBeanRemote = allocationSessionBeanRemote;
         this.reservationsEntitySessionBeanRemote = reservationsEntitySessionBeanRemote;
         this.customersEntitySessionBeanRemote = customersEntitySessionBeanRemote;
         this.ratesEntitySessionBeanRemote = ratesEntitySessionBeanRemote;
@@ -100,7 +104,7 @@ public class ManagementClient {
                                 menuMainSalesManager();
                             }
                             else if (currentEmployee.getEmployeeType().equals("Guest Relation Officer")){
-                                guestRelationOfficerModule = new GuestRelationOfficerModule(employeesEntitySessionBeanRemote, currentEmployee, roomTypesEntitySessionBeanRemote, hotelRoomsEntitySessionBeanRemote, ratesEntitySessionBeanRemote, hotelReservationSessionBeanRemote);
+                                guestRelationOfficerModule = new GuestRelationOfficerModule(allocationSessionBeanRemote, employeesEntitySessionBeanRemote, currentEmployee, roomTypesEntitySessionBeanRemote, hotelRoomsEntitySessionBeanRemote, ratesEntitySessionBeanRemote, hotelReservationSessionBeanRemote);
                                 menuMainGuestRelationOfficer();
                             }
                         }

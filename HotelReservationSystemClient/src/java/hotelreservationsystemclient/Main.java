@@ -54,7 +54,7 @@ public class Main {
      */
     public static void main(String[] args) {
         // TODO code application logic here
-        ManagementClient managementClient = new ManagementClient(hotelReservationSessionBeanRemote, reservationsEntitySessionBeanRemote, customersEntitySessionBeanRemote, ratesEntitySessionBeanRemote, hotelRoomsEntitySessionBeanRemote, employeeEntitySessionBeanRemote, roomTypesEntitySessionBeanRemote);
+        ManagementClient managementClient = new ManagementClient(hotelReservationSessionBeanRemote, allocationSessionBeanRemote, reservationsEntitySessionBeanRemote, customersEntitySessionBeanRemote, ratesEntitySessionBeanRemote, hotelRoomsEntitySessionBeanRemote, employeeEntitySessionBeanRemote, roomTypesEntitySessionBeanRemote);
         ReservationClient reservationClient = new ReservationClient(hotelReservationSessionBeanRemote, customersEntitySessionBeanRemote, reservationsEntitySessionBeanRemote, allocationSessionBeanRemote);
 
         Scanner scanner = new Scanner(System.in);
