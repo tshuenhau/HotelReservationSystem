@@ -8,6 +8,8 @@ package ejb.session.stateless;
 import entity.RoomTypes;
 import java.util.List;
 import javax.ejb.Remote;
+import util.exception.DeleteRoomTypeException;
+import util.exception.RoomTypeNotFoundException;
 
 /**
  *
@@ -16,5 +18,8 @@ import javax.ejb.Remote;
 @Remote
 public interface RoomTypesEntitySessionBeanRemote {
     public List<RoomTypes> retrieveAllRoomTypes();
-    public String createNewRoomType(RoomTypes roomType);
+    public RoomTypes createNewRoomType(RoomTypes roomType);
+    
+    public void deleteRoomType(String roomTypeName) throws RoomTypeNotFoundException, DeleteRoomTypeException;
+    public RoomTypes retrievesRoomTypeByRoomTypeName(String roomTypeName) throws RoomTypeNotFoundException;
 }

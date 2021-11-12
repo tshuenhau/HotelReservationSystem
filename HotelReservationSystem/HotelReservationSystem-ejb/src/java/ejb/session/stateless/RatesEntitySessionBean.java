@@ -29,10 +29,10 @@ public class RatesEntitySessionBean implements RatesEntitySessionBeanRemote, Rat
     }
     
     @Override
-    public Long createNewRate(Rates rate){
-        em.persist(rate);
-        em.flush();
-        return rate.getRateID();
+    public Rates createNewRate(Rates newRoomRate) {
+            em.persist(newRoomRate);
+            em.flush();
+        return newRoomRate;
     }
 
     // Add business logic below. (Right-click in editor and choose

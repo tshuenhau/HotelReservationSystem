@@ -18,5 +18,5 @@ public interface RatesEntitySessionBeanRemote {
     
     public List<Rates> retrieveAllRates();
 
-    public Long createNewRate(Rates rate);
+    public Rates createNewRate(Rates rate);
 }

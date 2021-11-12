@@ -12,6 +12,7 @@ import javax.ejb.EJB;
 import ejb.session.stateless.EmployeesEntitySessionBeanRemote;
 import ejb.session.stateless.RatesEntitySessionBeanRemote;
 import ejb.session.stateless.ReservationsEntitySessionBeanRemote;
+import ejb.session.stateless.RoomTypesEntitySessionBeanRemote;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
@@ -20,6 +21,9 @@ import java.util.Scanner;
  * @author chenx
  */
 public class Main {
+
+    @EJB
+    private static RoomTypesEntitySessionBeanRemote roomTypesEntitySessionBeanRemote;
 
     @EJB
     private static HotelReservationSessionBeanRemote hotelReservationSessionBeanRemote;
@@ -38,13 +42,15 @@ public class Main {
 
     @EJB
     private static EmployeesEntitySessionBeanRemote employeeEntitySessionBeanRemote;
+    
+    
 
     /**
      * @param args the command line arguments
      */
     public static void main(String[] args) {
         // TODO code application logic here
-        ManagementClient managementClient = new ManagementClient(reservationsEntitySessionBeanRemote, customersEntitySessionBeanRemote, ratesEntitySessionBeanRemote, hotelRoomsEntitySessionBeanRemote, employeeEntitySessionBeanRemote);
+        ManagementClient managementClient = new ManagementClient(reservationsEntitySessionBeanRemote, customersEntitySessionBeanRemote, ratesEntitySessionBeanRemote, hotelRoomsEntitySessionBeanRemote, employeeEntitySessionBeanRemote, roomTypesEntitySessionBeanRemote);
         ReservationClient reservationClient = new ReservationClient(hotelReservationSessionBeanRemote, customersEntitySessionBeanRemote, reservationsEntitySessionBeanRemote);
 
         Scanner scanner = new Scanner(System.in);
@@ -84,7 +90,9 @@ public class Main {
 
                 }
             }
+            if (response == 3) {
+            break;
+            }
         }
-
     }
 }

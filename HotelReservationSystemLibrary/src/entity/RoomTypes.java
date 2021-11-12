@@ -56,7 +56,7 @@ public class RoomTypes implements Serializable {
     public RoomTypes() {
         hotelRooms = new ArrayList<>();
         roomRates = new ArrayList<>();
-        reservations = null;
+        reservations = new ArrayList<>();
     }
 
     public RoomTypes(String roomTypeName, RoomTypes nextHigherRoomType) {
@@ -69,6 +69,8 @@ public class RoomTypes implements Serializable {
         this.description = "good";
         this.size = 2;
     }
+    
+    
     
     public String getRoomTypeName() {
         return roomTypeName;
@@ -190,7 +192,7 @@ public class RoomTypes implements Serializable {
     /**
      * @return the hotelRoom
      */
-    public List<HotelRooms> getHotelRoom() {
+    public List<HotelRooms> getHotelRooms() {
         return hotelRooms;
     }
 

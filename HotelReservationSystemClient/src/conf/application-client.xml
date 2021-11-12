@@ -21,4 +21,9 @@
     <ejb-ref-type>Session</ejb-ref-type>
     <remote>ejb.session.stateless.CustomersEntitySessionBeanRemote</remote>
   </ejb-ref>
+  <ejb-ref>
+    <ejb-ref-name>HotelRoomsEntitySessionBeanRemote</ejb-ref-name>
+    <ejb-ref-type>Session</ejb-ref-type>
+    <remote>ejb.session.stateless.HotelRoomsEntitySessionBeanRemote</remote>
+  </ejb-ref>
 </application-client>

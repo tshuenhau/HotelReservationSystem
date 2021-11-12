@@ -7,10 +7,14 @@ package ejb.session.stateless;
 
 import entity.RoomTypes;
 import java.util.List;
+import java.util.Set;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import javax.validation.ConstraintViolation;
+import util.exception.DeleteRoomTypeException;
+import util.exception.RoomTypeNotFoundException;
 
 /**
  *
@@ -30,11 +34,49 @@ public class RoomTypesEntitySessionBean implements RoomTypesEntitySessionBeanRem
     }
     
     @Override
-    public String createNewRoomType(RoomTypes roomType){
-        em.persist(roomType);
-        em.flush();
-        return roomType.getRoomTypeName();
+    public RoomTypes createNewRoomType(RoomTypes newRoomType){
+        if(em.find(RoomTypes.class, newRoomType.getRoomTypeName()) == null){
+            em.persist(newRoomType);
+            em.flush();
+        }
+        return newRoomType;
+    }
+    
+    
+    @Override
+    public RoomTypes retrievesRoomTypeByRoomTypeName(String roomTypeName) throws RoomTypeNotFoundException {
+        RoomTypes roomTypeEntity = em.find(RoomTypes.class, roomTypeName);
         
+        if(roomTypeEntity != null){
+            return roomTypeEntity;
+        }
+        else
+        {
+            throw new RoomTypeNotFoundException("Room Type Name " + roomTypeName + " does not exist!");
+        }
+    }
+    
+    @Override
+    public void deleteRoomType(String roomTypeName) throws RoomTypeNotFoundException, DeleteRoomTypeException {
+        RoomTypes roomTypeEntityToRemove = retrievesRoomTypeByRoomTypeName(roomTypeName);
+        List<RoomTypes> roomTypesEntities = retrieveAllRoomTypes();
+        
+        
+        if(roomTypeEntityToRemove.getHotelRooms().isEmpty() && roomTypeEntityToRemove.getReservations().isEmpty() && roomTypeEntityToRemove.getRoomRates().isEmpty()){
+            for (RoomTypes roomTypes : roomTypesEntities) {
+                if (roomTypes.getNextHigherRoomType().getRoomTypeName().equals(roomTypeName)) {
+                    roomTypes.setNextHigherRoomType(null);
+                } else if (roomTypes.getNextHigherRoomType() == null){
+                    //do nothing
+                }
+            }
+            em.remove(roomTypeEntityToRemove);
+            System.out.println("Room Type successfully removed!");
+        }
+        else
+        {
+            throw new DeleteRoomTypeException("Room Type " + roomTypeName + " is associated with existing hotel rooms and/or reservations and/or room rates) and cannot be deleted!");
+        }
     }
 
     

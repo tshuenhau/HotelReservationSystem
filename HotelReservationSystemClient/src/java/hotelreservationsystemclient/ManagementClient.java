@@ -10,7 +10,7 @@ import ejb.session.stateless.EmployeesEntitySessionBeanRemote;
 import ejb.session.stateless.HotelRoomsEntitySessionBeanRemote;
 import ejb.session.stateless.RatesEntitySessionBeanRemote;
 import ejb.session.stateless.ReservationsEntitySessionBeanRemote;
-import entity.Customers;
+import ejb.session.stateless.RoomTypesEntitySessionBeanRemote;
 import entity.Employees;
 import java.util.Scanner;
 import util.exception.InvalidAccessRightException;
@@ -32,9 +32,12 @@ public class ManagementClient {
 
     private EmployeesEntitySessionBeanRemote employeesEntitySessionBeanRemote;
     
+    private RoomTypesEntitySessionBeanRemote roomTypesEntitySessionBeanRemote;
+    
     
     private SystemAdministrationModule systemAdministrationModule; 
-    private OperationManagerModule operationManagerModule; 
+    private OperationManagerModule operationManagerModule;
+    private SalesManagerModule salesManagerModule; 
     
     private Employees currentEmployee;
     
@@ -43,12 +46,13 @@ public class ManagementClient {
         this.currentEmployee = null;
     }
 
-    public ManagementClient(ReservationsEntitySessionBeanRemote reservationsEntitySessionBeanRemote, CustomersEntitySessionBeanRemote customersEntitySessionBeanRemote, RatesEntitySessionBeanRemote ratesEntitySessionBeanRemote, HotelRoomsEntitySessionBeanRemote hotelRoomsEntitySessionBeanRemote, EmployeesEntitySessionBeanRemote employeeEntitySessionBeanRemote) {
+    public ManagementClient(ReservationsEntitySessionBeanRemote reservationsEntitySessionBeanRemote, CustomersEntitySessionBeanRemote customersEntitySessionBeanRemote, RatesEntitySessionBeanRemote ratesEntitySessionBeanRemote, HotelRoomsEntitySessionBeanRemote hotelRoomsEntitySessionBeanRemote, EmployeesEntitySessionBeanRemote employeeEntitySessionBeanRemote, RoomTypesEntitySessionBeanRemote roomTypesEntitySessionBeanRemote) {
         this.reservationsEntitySessionBeanRemote = reservationsEntitySessionBeanRemote;
         this.customersEntitySessionBeanRemote = customersEntitySessionBeanRemote;
         this.ratesEntitySessionBeanRemote = ratesEntitySessionBeanRemote;
         this.hotelRoomsEntitySessionBeanRemote = hotelRoomsEntitySessionBeanRemote;
         this.employeesEntitySessionBeanRemote = employeeEntitySessionBeanRemote;
+        this.roomTypesEntitySessionBeanRemote = roomTypesEntitySessionBeanRemote;
     }
     
     public void runApp(){
@@ -83,11 +87,12 @@ public class ManagementClient {
                                 menuMainSystemAdmin();
                             }
                             else if (currentEmployee.getEmployeeType().equals("Operation Manager")){
-                                operationManagerModule = new OperationManagerModule(employeesEntitySessionBeanRemote, currentEmployee);
+                                operationManagerModule = new OperationManagerModule(employeesEntitySessionBeanRemote, currentEmployee, roomTypesEntitySessionBeanRemote, hotelRoomsEntitySessionBeanRemote);
                                 menuMainOperationManager();
                             }
                             else if (currentEmployee.getEmployeeType().equals("Sales Manager")){
-                                //
+                                salesManagerModule = new SalesManagerModule(employeesEntitySessionBeanRemote, currentEmployee, roomTypesEntitySessionBeanRemote, hotelRoomsEntitySessionBeanRemote, ratesEntitySessionBeanRemote);
+                                menuMainSalesManager();
                             }
                             else if (currentEmployee.getEmployeeType().equals("Guest Relation Officer")){
                                 //
@@ -100,12 +105,6 @@ public class ManagementClient {
                     else {
                         System.out.println("You are already login as " + currentEmployee.getUsername() + "\n");
                     }
-                }
-                else if(response == 2 ){
-                    //DO REGISTER STUFF
-                }
-                else if (response == 3){
-                    //
                 }
             }
             
@@ -193,6 +192,46 @@ public class ManagementClient {
                 if(response == 1){
                     try {
                         operationManagerModule.menuOperationManager();
+                    }
+                    catch (InvalidAccessRightException ex){
+                        System.out.println("Invalid option, please try again!: " + ex.getMessage() + "\n");
+                    }
+                }
+                else if (response == 2){
+                    currentEmployee = null;
+                    break;
+                }
+                else {
+                    System.out.println("Invalid option, please try again!\n");                
+                }
+            }
+            
+            if(response == 2){
+                break;
+            }
+        }
+    }
+    
+    
+    private void menuMainSalesManager(){
+        Scanner scanner = new Scanner(System.in);
+        Integer response = 0;
+        
+        while(true){
+            System.out.println("*** Hotel Reservation System Management Client ***\n");
+            System.out.println("You are login as " + currentEmployee.getUsername() + " with " + currentEmployee.getEmployeeType() + " rights\n");
+            System.out.println("1: Sales Manager");
+            System.out.println("2: Logout\n");
+            response = 0;
+            
+            while(response < 1 || response > 2){
+                System.out.print("> ");
+
+                response = scanner.nextInt();
+                
+                if(response == 1){
+                    try {
+                        salesManagerModule.menuSalesManager();
                     }
                     catch (InvalidAccessRightException ex){
                         System.out.println("Invalid option, please try again!: " + ex.getMessage() + "\n");
