@@ -76,7 +76,7 @@ public class ReservationClient {
                         if (hotelReservationSessionBeanRemote.isLoggedIn() == false) {
                             try {
                                 doLogin();
-                                System.out.println("Login successful as " + hotelReservationSessionBeanRemote.getCurrentCustomer().getPassportNum() + "!\n");
+                                System.out.println("Login successful as " + hotelReservationSessionBeanRemote.getCurrentCustomer().getName() + "!\n");
 
                             } catch (InvalidLoginCredentialException ex) {
                                 System.err.println("Invalid login credential: " + ex.getMessage());
@@ -364,8 +364,12 @@ public class ReservationClient {
         Scanner scanner = new Scanner(System.in);
         Long passportNumber = 0l;
         String password = "";
+        String name = "";
 
         System.out.println("*** Holiday Reservation System :: Register ***\n");
+        System.out.print("Enter name> ");
+        name = scanner.nextLine().trim();
+
         System.out.print("Enter passport number> ");
         passportNumber = scanner.nextLong();
         scanner.nextLine();
@@ -374,11 +378,11 @@ public class ReservationClient {
 
         if (passportNumber > 0 && password.length() > 0) {
             try {
-                Customers currentCustomer = customersEntitySessionBeanRemote.createNewCustomer(new Customers(passportNumber, password));
+                Customers currentCustomer = customersEntitySessionBeanRemote.createNewCustomer(new Customers(passportNumber, name, password));
                 System.out.println("");
-                System.out.println("Successfully registered " + currentCustomer.getPassportNum() + "!\n");
+                System.out.println("Successfully registered " + currentCustomer.getName()+  " with passport number "+ currentCustomer.getPassportNum() + "!\n");
                 System.out.println("Automatically loggin in...\n");
-                System.out.println("Login successful as " + currentCustomer.getPassportNum() + "!\n");
+                System.out.println("Login successful as " + currentCustomer.getName() + "!\n");
                 hotelReservationSessionBeanRemote.login(currentCustomer);
 
             } catch (UserAlreadyExistException ex) {
