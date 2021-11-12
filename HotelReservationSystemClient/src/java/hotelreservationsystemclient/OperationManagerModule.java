@@ -1,6 +1,5 @@
 package hotelreservationsystemclient;
 
-import static com.sun.org.apache.xalan.internal.lib.ExsltDatetime.date;
 import ejb.session.stateful.AllocationSessionBeanRemote;
 import entity.Employees;
 import java.util.Scanner;
@@ -66,9 +65,7 @@ public class OperationManagerModule {
             System.out.println("6: Delete Room");
             System.out.println("7: View All Rooms");
             System.out.println("-----------------------");
-            System.out.println("8: View Room Allocation Exception Report");
-            System.out.println("-----------------------");
-            System.out.println("9: Allocate Room for Reservations");
+            System.out.println("8: Allocate Rooms");
             System.out.println("-----------------------");
             System.out.println("9: Back\n");
             response = 0;
@@ -100,10 +97,7 @@ public class OperationManagerModule {
                     doViewAllHotelRooms();
                 }
                 else if (response == 8){
-                    doViewAllocationExceptionReport();
-                }
-                else if (response == 9){
-                    //allocateRoom();
+                    doAllocateRoom();
                 }
                 else if (response == 9){
                     break;
@@ -169,11 +163,11 @@ public class OperationManagerModule {
         
         try {
             RoomTypes roomTypeEntity = roomTypesEntitySessionBeanRemote.retrievesRoomTypeByRoomTypeName(roomTypeNameChosen);
-            System.out.printf("%10s%30s%20s%15s%20s%20s%20s\n", "Room Type Name", "Next Higher Room Type", "Description", "Size", "Bed", "Capacity", "Amenities");
+            System.out.printf("%10s%40s%20s%15s%20s%20s%20s\n", "Room Type Name", "Next Higher Room Type", "Description", "Size", "Bed", "Capacity", "Amenities");
             if (roomTypeEntity.getNextHigherRoomType() == null) {
-                System.out.printf("%10s%30s%20s%15s%20s%20s%20s\n", roomTypeEntity.getRoomTypeName(), "null", roomTypeEntity.getDescription(), roomTypeEntity.getSize(), roomTypeEntity.getBed(), roomTypeEntity.getCapacity(), roomTypeEntity.getAmenities());
+                System.out.printf("%10s%40s%20s%15s%20s%20s%20s\n", roomTypeEntity.getRoomTypeName(), "null", roomTypeEntity.getDescription(), roomTypeEntity.getSize(), roomTypeEntity.getBed(), roomTypeEntity.getCapacity(), roomTypeEntity.getAmenities());
             } else {
-                System.out.printf("%10s%30s%20s%15s%20s%20s%20s\n", roomTypeEntity.getRoomTypeName(), roomTypeEntity.getNextHigherRoomType().getRoomTypeName(), roomTypeEntity.getDescription(), roomTypeEntity.getSize(), roomTypeEntity.getBed(), roomTypeEntity.getCapacity(), roomTypeEntity.getAmenities());         
+                System.out.printf("%10s%40s%20s%15s%20s%20s%20s\n", roomTypeEntity.getRoomTypeName(), roomTypeEntity.getNextHigherRoomType().getRoomTypeName(), roomTypeEntity.getDescription(), roomTypeEntity.getSize(), roomTypeEntity.getBed(), roomTypeEntity.getCapacity(), roomTypeEntity.getAmenities());         
             }
             System.out.println("------------------------");
             System.out.println("1: Update Room Type");
@@ -239,13 +233,13 @@ public class OperationManagerModule {
         System.out.println("*** Hotel Reservation Management Client System :: Operation Manager :: View All Room Types ***\n");
         
         List<RoomTypes> roomTypes = roomTypesEntitySessionBeanRemote.retrieveAllRoomTypes();
-        System.out.printf("%s%30s%30s%20s%20s%20s\n", "Room Type Name", "Next Higher Room Type", "Description", "Size", "Bed", "Capacity", "Amenities");
+        System.out.printf("%s%40s%30s%20s%20s%20s\n", "Room Type Name", "Next Higher Room Type", "Description", "Size", "Bed", "Capacity", "Amenities");
 
         for (RoomTypes roomType : roomTypes) {
             if (roomType.getNextHigherRoomType() == null) {
-                System.out.printf("%s%30s%30s%20s%20s%20s%20s\n", roomType.getRoomTypeName(), "null", roomType.getDescription(), roomType.getSize(), roomType.getBed(), roomType.getCapacity(), roomType.getAmenities());
+                System.out.printf("%s%40s%30s%20s%20s%20s%20s\n", roomType.getRoomTypeName(), "null", roomType.getDescription(), roomType.getSize(), roomType.getBed(), roomType.getCapacity(), roomType.getAmenities());
             } else {
-                System.out.printf("%s%30s%30s%20s%20s%20s%20s\n", roomType.getRoomTypeName(), roomType.getNextHigherRoomType().getRoomTypeName(), roomType.getDescription(), roomType.getSize(), roomType.getBed(), roomType.getCapacity(), roomType.getAmenities());
+                System.out.printf("%s%40s%30s%20s%20s%20s%20s\n", roomType.getRoomTypeName(), roomType.getNextHigherRoomType().getRoomTypeName(), roomType.getDescription(), roomType.getSize(), roomType.getBed(), roomType.getCapacity(), roomType.getAmenities());
             }
         }
         
@@ -272,29 +266,49 @@ public class OperationManagerModule {
         }
     }
     
-    private void doViewAllocationExceptionReport(){
+    private void doAllocateRoom(){
         Scanner scanner = new Scanner(System.in);
-        
-        System.out.println("*** Hotel Reservation Management Client System :: Operation Manager :: View Room Allocation Exception Report ***\n");
+        Integer response = 0;
         Date date;
+        
+        System.out.println("*** Hotel Reservation Management Client System :: Operation Manager :: Allocate Room ***\n");
+        
         
         try {
             System.out.print("Enter date (dd/mm/yyyy)> ");
             date = inputDateFormat.parse(scanner.nextLine().trim());
-        
             allocationSessionBeanRemote.allocateRooms(date);
-            List<AllocationException> allocationExceptions = allocationSessionBeanRemote.viewAllocationException(date);
-            System.out.printf("%s%30s\n", "Room Type", "Exception Type");
+            
+            System.out.println("------------------------");
+            System.out.println("1: View Room Allocation Exception Report");
+            System.out.println("2: Back\n");
+            System.out.print("> ");
+            response = scanner.nextInt();
 
-            for (AllocationException allocationException : allocationExceptions) {
-                System.out.printf("%s%30s\n", allocationException.getRoomType().getRoomTypeName(), allocationException.getExceptionType());
+            if(response == 1) {
+                doViewAllocationExceptionReport(date);
             }
-
-            System.out.print("Press any key to continue...> ");
-            scanner.nextLine();
-        } catch (ParseException ex) {
-            System.err.println("Invalid date input!\n");
         }
+        catch(ParseException ex) {
+            System.out.println("An error has occurred while allocation rooms: " + ex.getMessage() + "\n");
+        }
+    }
+    
+    
+    private void doViewAllocationExceptionReport(Date date){
+        Scanner scanner = new Scanner(System.in);
+        
+        System.out.println("*** Hotel Reservation Management Client System :: Operation Manager :: View Room Allocation Exception Report ***\n");
+        
+        List<AllocationException> allocationExceptions = allocationSessionBeanRemote.viewAllocationException(date);
+        System.out.printf("%s%30s\n", "Room Type", "Exception Type");
+
+        for (AllocationException allocationException : allocationExceptions) {
+            System.out.printf("%s%30s\n", allocationException.getRoomType().getRoomTypeName(), allocationException.getExceptionType());
+        }
+
+        System.out.print("Press any key to continue...> ");
+        scanner.nextLine();
     }
     
     private void doUpdateRoomStatus() {

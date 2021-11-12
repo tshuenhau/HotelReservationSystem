@@ -26,7 +26,8 @@ public class SalesManagerModule {
     
     private Employees currentEmployee;
     
-    SimpleDateFormat inputDateFormat = new SimpleDateFormat("dd/MM/yyyy");
+    static SimpleDateFormat inputDateFormat = new SimpleDateFormat("d/M/y");
+    static SimpleDateFormat outputDateFormat = new SimpleDateFormat("dd/MM/yyyy");//"dd/MM/yyyy hh:mm a"
 
     
     public SalesManagerModule(){
@@ -180,7 +181,7 @@ public class SalesManagerModule {
         try {
             Rates rateEntity = ratesEntitySessionBeanRemote.retrievesRatesByRateID(rateId);
             System.out.printf("%s%30s%30s%20s%20s%20s\n", "Rate ID", "Rate Type", "Room Type", "Price", "Start Date", "End Date");
-            System.out.printf("%s%30s%30s%20s%20s%20s\n", rateEntity.getRateID(), rateEntity.getRateType(), rateEntity.getRoomType().getRoomTypeName(), rateEntity.getPrice(), rateEntity.getStartDate(), rateEntity.getEndDate());
+            System.out.printf("%s%30s%30s%20s%20s%20s\n", rateEntity.getRateID(), rateEntity.getRateType(), rateEntity.getRoomType().getRoomTypeName(), rateEntity.getPrice(), outputDateFormat.format(rateEntity.getStartDate()), outputDateFormat.format(rateEntity.getEndDate()));
             
             System.out.println("------------------------");
             System.out.println("1: Update Room Type");
