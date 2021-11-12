@@ -19,6 +19,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import javax.ejb.EJB;
+import javax.ejb.Schedule;
+import javax.ejb.Schedules;
 import javax.ejb.Stateless;
 import util.exception.AllocationException;
 
@@ -38,11 +40,23 @@ public class AllocationSessionBean implements AllocationSessionBeanRemote, Alloc
 
     @EJB
     private ReservationsEntitySessionBeanLocal reservationsEntitySessionBeanLocal;
-        List<Allocation> allocationReport = new ArrayList<>();
-        List<HotelRooms> hotelRooms = new ArrayList<>();
-        List<Reservations> reservations = new ArrayList<>();
-        List<RoomTypes> roomTypes = new ArrayList<>();
-        List<AllocationException> allocationExceptions = new ArrayList<>();
+    List<Allocation> allocationReport = new ArrayList<>();
+    List<HotelRooms> hotelRooms = new ArrayList<>();
+    List<Reservations> reservations = new ArrayList<>();
+    List<RoomTypes> roomTypes = new ArrayList<>();
+    List<AllocationException> allocationExceptions = new ArrayList<>();
+
+    @Schedules({
+        @Schedule(dayOfWeek="*"),
+        @Schedule(hour="2")
+    })
+    private void autoAllocate() {
+        Calendar today = Calendar.getInstance();
+        today.set(Calendar.HOUR_OF_DAY, 0);
+        today.set(Calendar.MINUTE, 0);
+        today.set(Calendar.SECOND, 0);
+        allocateRooms(today.getTime());
+    }
 
     public List<AllocationException> viewAllocationException(Date date) {
 //        allocationExceptions.clear();
@@ -73,8 +87,7 @@ public class AllocationSessionBean implements AllocationSessionBeanRemote, Alloc
                     }
                     //r.setAllocatedRoom(null);
                     //need to set the hotel room allocated to this reservation to isAllocated = false;
-                }
-                //System.out.println(isWithinRange(date, r.getStartDate(), r.getEndDate()));
+                } //System.out.println(isWithinRange(date, r.getStartDate(), r.getEndDate()));
                 else if (r.getStartDate().equals(date) && r.getReservationRoomType().equals(a.getRoomType()) && r.getAllocatedRoom() == null) {
                     a.setNumReservations(a.getNumReservations() + 1);
                 }
@@ -85,7 +98,7 @@ public class AllocationSessionBean implements AllocationSessionBeanRemote, Alloc
                     a.setNumAvailable(a.getNumAvailable() + 1);
                 }
             }
-            
+
             System.out.println("AVAILABILITY: " + a.getRoomType() + " " + a.getNumReservations() + " " + a.getNumAvailable());
         }
 //next we generate the exceptions. i.e find the upgrades and stuff. need redo this part
@@ -119,9 +132,9 @@ public class AllocationSessionBean implements AllocationSessionBeanRemote, Alloc
                 } else {
                     //no upgradeÏ
                     Integer type2Count = allocationReport.get(i).numShortage();
-                    while(type2Count > 0){
-                            allocationExceptions.add(new AllocationException(allocationReport.get(i).getRoomType(), 2));
-                            type2Count -= 1;
+                    while (type2Count > 0) {
+                        allocationExceptions.add(new AllocationException(allocationReport.get(i).getRoomType(), 2));
+                        type2Count -= 1;
                     }
                 }
 
@@ -133,8 +146,6 @@ public class AllocationSessionBean implements AllocationSessionBeanRemote, Alloc
             System.out.println(a.getNumReservations() + " " + a.getNumAvailable());
         }
 
-
-
         System.out.println("EXCEPTION REPORT");
         for (AllocationException a : allocationExceptions) {
             System.out.println(a.getExceptionType() + " " + a.getRoomType());
@@ -143,17 +154,17 @@ public class AllocationSessionBean implements AllocationSessionBeanRemote, Alloc
         return allocationReport;
 
     }
-    
+
     @Override
-    public void allocateRooms(Date date){
+    public void allocateRooms(Date date) {
         generateReport(date);
-    //this the part where we actually allocate
+        //this the part where we actually allocate
         for (AllocationException a : allocationExceptions) {
             for (Reservations r : reservations) {
                 if (a.getExceptionType() == 1 && r.getStartDate().equals(date) && a.getRoomType().equals(r.getReservationRoomType())) {
-                  
-                        r.setReservationRoomType(a.getRoomType().getNextHigherRoomType());
-                    
+
+                    r.setReservationRoomType(a.getRoomType().getNextHigherRoomType());
+
                     reservationsEntitySessionBeanLocal.updateReservation(r);
                     break;
                 }
