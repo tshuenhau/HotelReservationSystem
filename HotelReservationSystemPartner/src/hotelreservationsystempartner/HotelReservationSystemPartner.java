@@ -112,7 +112,14 @@ public class HotelReservationSystemPartner {
                                     System.out.print("Please enter quantity> ");
                                     quantity = scanner.nextInt();
                                     scanner.nextLine();
-                                    service.getReservationWebServicePort().addReservation(currentCustomer.getPassportNum(), currentCustomer.getPassword(), checkInDate, checkOutDate, roomType, quantity);
+                                    try {
+                                        service.getReservationWebServicePort().addReservation(currentCustomer.getPassportNum(), currentCustomer.getPassword(), checkInDate, checkOutDate, roomType, quantity);
+                                    } catch (InvalidRoomTypeException_Exception ex) {
+                                        System.err.println(ex.getMessage());
+                                        response = 1;
+                                    } catch (InvalidRoomQuantityException_Exception ex) {
+                                        System.err.println(ex.getMessage());
+                                    }
                                     System.out.println("Reservation Successful!");
                                     response = 0;
                                 }
@@ -123,10 +130,6 @@ public class HotelReservationSystemPartner {
                     } catch (ParseException_Exception ex) {
                         System.err.println(ex.getMessage());
                     } catch (InvalidLoginCredentialException_Exception ex) {
-                        System.err.println(ex.getMessage());
-                    } catch (InvalidRoomQuantityException_Exception ex) {
-                        System.err.println(ex.getMessage());
-                    } catch (InvalidRoomTypeException_Exception ex) {
                         System.err.println(ex.getMessage());
                     }
 

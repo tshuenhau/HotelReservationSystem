@@ -88,6 +88,7 @@ public class ReservationWebService {
        
         if (c != null) {
             for (Reservations r : allReservations) {
+                r.setAllocatedRoom(null);
                 if (r.getReservedBy().equals(c)) {
                     relaventReservations.add(r);
                     r.getReservedBy().setReservations(null);
@@ -98,9 +99,12 @@ public class ReservationWebService {
         }
         for (Reservations r : relaventReservations){
             em.detach(r);
+            if(r.getAllocatedRoom() != null){
+                r.getAllocatedRoom().setRmType(null);
+            }
             r.setAllocatedRoom(null);
                 r.getReservationRoomType().setRoomRates(null);
-                r.getReservationRoomType().setRoomRates(null);
+                r.getReservationRoomType().setHotelRooms(null);
             r.getReservationRoomType().setReservations(null);
             r.getReservationRoomType().setNextHigherRoomType(null);
             
