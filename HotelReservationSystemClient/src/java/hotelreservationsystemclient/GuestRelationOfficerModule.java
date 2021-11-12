@@ -9,9 +9,9 @@ import ejb.session.stateless.HotelRoomsEntitySessionBeanRemote;
 import ejb.session.stateless.RatesEntitySessionBeanRemote;
 import ejb.session.stateless.ReservationsEntitySessionBeanRemote;
 import ejb.session.stateless.RoomTypesEntitySessionBeanRemote;
+import entity.HotelRooms;
 import entity.Reservations;
 import entity.RoomTypes;
-import java.text.SimpleDateFormat;
 import java.util.List;
 import util.exception.InvalidAccessRightException;
 import java.text.ParseException;
@@ -205,7 +205,12 @@ public class GuestRelationOfficerModule {
                             System.out.print("> ");
                             if (reserveResponse == 1) {
 
-                                hotelReservationSessionBeanRemote.confirmReservations();
+                                List<Reservations> reserved = hotelReservationSessionBeanRemote.confirmReservations();
+                                
+                                System.out.printf("%s%30s\n", "Rservation ID", "Room Type");
+                                for (Reservations reserve : reserved) {
+                                    System.out.printf("%s%30s\n", reserve.getReservationID(), reserve.getReservationRoomType().getRoomTypeName());
+                                }
                                 System.out.println("Confirmed\n");
                                 System.out.println("Same day check-in (and after 2am)?");
                                 System.out.println("1: Yes");
@@ -228,11 +233,8 @@ public class GuestRelationOfficerModule {
                             System.out.println("Exited Reservation Function\n");
                             break;
                         }
-
                     }
-
                 }
-
             }
         } catch (InvalidRoomTypeException | InvalidRoomQuantityException ex) {
             System.out.println(ex.getMessage());
@@ -258,13 +260,24 @@ public class GuestRelationOfficerModule {
             }
         }
     }
-    /*
+    
     private void doCheckIn() {
+        Scanner scanner = new Scanner(System.in);
         System.out.println("*** Hotel Reservation System Management Client :: Check-in Guest ***\n");
         
-        reservationsEntitySessionBeanRemote.retrieveReservation
+        System.out.print("Enter reservation ID> ");
+        Long reservationID = scanner.nextLong();
+        scanner.nextLine();
+        
+        Reservations reservation = reservationsEntitySessionBeanRemote.retrieveReservation(reservationID);
+        
+        HotelRooms allocatedRoom = reservation.getAllocatedRoom();
+        
+        if (allocatedRoom.getIsAllocated()) {
+            System.out.print("You have been allocated to Room " + allocatedRoom.getHotelRoomID() + " at " + allocatedRoom.getRmType().getRoomTypeName());
+        }
     }
-    
+    /*
     private void doCheckOut() {
         System.out.println("*** Hotel Reservation System Management Client :: Check-out Guest ***\n");
     }

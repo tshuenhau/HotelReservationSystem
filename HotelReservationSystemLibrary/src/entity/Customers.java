@@ -21,10 +21,14 @@ import javax.persistence.OneToMany;
  */
 @Entity
 public class Customers implements Serializable {
+
     
     private static final long serialVersionUID = 1L;
     @Id
     private Long passportNum;
+    
+    @Column(nullable = false)
+    private String name = "";
     
     @Column(nullable = false)
     private String password;
@@ -41,20 +45,21 @@ public class Customers implements Serializable {
     }
        
 
-    public Customers(Long passportNum, String password, Boolean isPartner) {
+    public Customers(Long passportNum, String password, String name, Boolean isPartner) {
         this();
         this.passportNum = passportNum;
         this.password = password;
         this.isPartner = isPartner;
+        this.name = name;
     }
 
-    public Customers(Long passportNum, String password) {
+    public Customers(Long passportNum, String name, String password) {
         this();
         this.passportNum = passportNum;
         this.password = password;
+        this.name = name;
         this.isPartner = false;
     }
-
 
     public Long getPassportNum() {
         return passportNum;
@@ -131,4 +136,18 @@ public class Customers implements Serializable {
         this.reservations = reservations;
     }
     
+    
+    /**
+     * @return the name
+     */
+    public String getName() {
+        return name;
+    }
+
+    /**
+     * @param name the name to set
+     */
+    public void setName(String name) {
+        this.name = name;
+    }
 }

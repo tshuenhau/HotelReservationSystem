@@ -68,10 +68,12 @@ public class OperationManagerModule {
             System.out.println("-----------------------");
             System.out.println("8: View Room Allocation Exception Report");
             System.out.println("-----------------------");
-            System.out.println("9: Back\n");
+            System.out.println("9: Allocate Room for Reservations");
+            System.out.println("-----------------------");
+            System.out.println("10: Back\n");
             response = 0;
             
-            while(response < 1 || response > 9){
+            while(response < 1 || response > 10){
                 System.out.print("> ");
 
                 response = scanner.nextInt();
@@ -101,6 +103,9 @@ public class OperationManagerModule {
                     doViewAllocationExceptionReport();
                 }
                 else if (response == 9){
+                    //allocateRoom();
+                }
+                else if (response == 10){
                     break;
                 }
                 else {
@@ -108,7 +113,7 @@ public class OperationManagerModule {
                 }
             }
             
-            if(response == 9){
+            if(response == 10){
                 break;
             }
         }
