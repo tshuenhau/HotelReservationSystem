@@ -8,8 +8,11 @@ import ejb.session.stateless.RoomTypesEntitySessionBeanRemote;
 import entity.HotelRooms;
 import entity.RoomTypes;
 import java.util.List;
+import util.exception.DeleteRoomException;
 import util.exception.DeleteRoomTypeException;
 import util.exception.InvalidAccessRightException;
+import util.exception.RoomAlreadyExistException;
+import util.exception.RoomNotFoundException;
 import util.exception.RoomTypeAlreadyExistException;
 import util.exception.RoomTypeNotFoundException;
 
@@ -50,7 +53,7 @@ public class OperationManagerModule {
             System.out.println("3: View All Room Types");
             System.out.println("-----------------------");
             System.out.println("4: Create New Room");
-            System.out.println("5: Update Room");
+            System.out.println("5: Update Room Status");
             System.out.println("6: Delete Room");
             System.out.println("7: View All Rooms");
             System.out.println("-----------------------");
@@ -77,10 +80,10 @@ public class OperationManagerModule {
                     doCreateNewHotelRoom();
                 }
                 else if (response == 5){
-                   // doUpdateNewHotelRoom();
+                    doUpdateRoomStatus();
                 }
                 else if (response == 6){
-                    //doViewAllHotelRooms();
+                    doDeleteRoom();
                 }
                 else if (response == 7){
                     doViewAllHotelRooms();
@@ -188,7 +191,7 @@ public class OperationManagerModule {
             roomTypesEntitySessionBeanRemote.updateRoomType(roomTypeEntity, newRoomTypeName);
             System.out.println("Room Type Name " + roomTypeEntity.getRoomTypeName() + " has been successfully updated to " + newRoomTypeName + " !");
         } catch (RoomTypeNotFoundException ex) {
-            System.out.println("An error has occurred while updating the staff: " + ex.getMessage() + "\n");
+            System.out.println("An error has occurred while updating the room type: " + ex.getMessage() + "\n");
         }
     }
     
@@ -207,7 +210,7 @@ public class OperationManagerModule {
                 System.out.println("Room Type deleted successfully!\n");
             }
             catch (RoomTypeNotFoundException | DeleteRoomTypeException ex) {
-                System.out.println("An error has occurred while deleting the staff: " + ex.getMessage() + "\n");
+                System.out.println("An error has occurred while deleting the room type: " + ex.getMessage() + "\n");
             }
         }
         else {
@@ -240,19 +243,17 @@ public class OperationManagerModule {
     private void doCreateNewHotelRoom(){
         Scanner scanner = new Scanner(System.in);
         
-        String newHotelRoomNumber = "";
-        
         System.out.println("*** Hotel Reservation System Management Client :: Operation Manager :: Create New Hotel Room ***\n");
         
         System.out.print("Enter New Room Number: ");
-        newHotelRoomNumber = scanner.nextLine().trim();
+        String newHotelRoomNumber = scanner.nextLine().trim();
         System.out.print("Enter Room Type: ");
         String roomTypeEntered = scanner.nextLine().trim();
         
         try {
             String createdHotelRoomID = hotelRoomsEntitySessionBeanRemote.createNewHotelRoom(new HotelRooms(newHotelRoomNumber, roomTypesEntitySessionBeanRemote.retrievesRoomTypeByRoomTypeName(roomTypeEntered)));
             System.out.println("New Room created successfully!: " + createdHotelRoomID + "\n");
-        } catch (RoomTypeNotFoundException ex) {
+        } catch (RoomAlreadyExistException | RoomTypeNotFoundException ex) {
             System.out.println("An error has occurred while creating new hotel room\n");
         }
     }
@@ -273,6 +274,44 @@ public class OperationManagerModule {
         scanner.nextLine();
     }
     
+    private void doUpdateRoomStatus() {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("*** Hotel Reservation Management Client System :: Operation Manager :: Update Room Status ***\n");
+        System.out.print("Enter room number to be updated: ");
+        try {
+            String roomNumber = scanner.nextLine().trim();
+            HotelRooms hotelRoom = hotelRoomsEntitySessionBeanRemote.retrievesHotelRoomByRoomNumber(roomNumber);
+            hotelRoomsEntitySessionBeanRemote.updateHotelRoom(hotelRoom);
+            System.out.println("Room Number " + hotelRoom.getHotelRoomID() + " status has been successfully updated to not available!");
+        } catch (RoomNotFoundException ex) {
+            System.out.println("An error has occurred while updating the room: " + ex.getMessage() + "\n");
+        }
+    }
+    
+    
+    private void doDeleteRoom(){
+        Scanner scanner = new Scanner(System.in);        
+        String input;
+        
+        System.out.println("*** Hotel Reservation Management Client System :: Operation Manager :: Delete Room ***\n");
+        System.out.print("Enter room number to be deleted: ");
+        String roomNumber = scanner.nextLine().trim();
+        System.out.printf("Confirm Delete Room Type %s (Enter 'Y' to Delete)> ", roomNumber);
+        input = scanner.nextLine().trim();
+        
+        if(input.equals("Y")) {
+            try {
+                hotelRoomsEntitySessionBeanRemote.deleteRoom(roomNumber);
+                System.out.println("Room deleted successfully!\n");
+            }
+            catch (RoomNotFoundException | DeleteRoomException ex) {
+                System.out.println("An error has occurred while deleting the room: " + ex.getMessage() + "\n");
+            }
+        }
+        else {
+            System.out.println("Room NOT deleted!\n");
+        }
+    }
     
     private void doViewAllHotelRooms(){
         Scanner scanner = new Scanner(System.in);
@@ -283,7 +322,7 @@ public class OperationManagerModule {
         System.out.printf("%s%30s%20s%20s\n", "Room Number", "Allocated Status", "Availability", "Room Type");
 
         for (HotelRooms hotelRoom : hotelRooms) {
-            System.out.printf("%s%30s%20s%20s\n", hotelRoom.getHotelRoomID(), hotelRoom.getIsAllocated(), hotelRoom.getStatus(), hotelRoom.getRmType().getRoomTypeName());
+            System.out.printf("%s%30s%20s%30s\n", hotelRoom.getHotelRoomID(), hotelRoom.getIsAllocated(), hotelRoom.getStatus(), hotelRoom.getRmType().getRoomTypeName());
         }
         
         System.out.print("Press any key to continue...> ");
