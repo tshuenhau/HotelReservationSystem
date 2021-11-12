@@ -41,6 +41,9 @@ import util.exception.NotLoggedInException;
 public class HotelReservationSessionBean implements HotelReservationSessionBeanRemote {
 
     @EJB
+    private AllocationSessionBeanLocal allocationSessionBeanLocal;
+
+    @EJB
     private RoomTypesEntitySessionBeanLocal roomTypesEntitySessionBeanLocal;
 
     @EJB
@@ -97,6 +100,7 @@ public class HotelReservationSessionBean implements HotelReservationSessionBeanR
         doCalculateCost();
         return rooms;
     }
+    
     
     @Override
     public Map<RoomTypes, List<Integer>> walkInSearchHotelRooms(Date checkInDate, Date checkOutDate) {

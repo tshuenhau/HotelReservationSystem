@@ -5,6 +5,7 @@
  */
 package hotelreservationsystemclient;
 
+import ejb.session.stateful.AllocationSessionBeanRemote;
 import ejb.session.stateful.HotelReservationSessionBeanRemote;
 import ejb.session.stateless.CustomersEntitySessionBeanRemote;
 import ejb.session.stateless.HotelRoomsEntitySessionBeanRemote;
@@ -21,6 +22,9 @@ import java.util.Scanner;
  * @author chenx
  */
 public class Main {
+
+    @EJB
+    private static AllocationSessionBeanRemote allocationSessionBeanRemote;
 
     @EJB
     private static RoomTypesEntitySessionBeanRemote roomTypesEntitySessionBeanRemote;
@@ -51,7 +55,7 @@ public class Main {
     public static void main(String[] args) {
         // TODO code application logic here
         ManagementClient managementClient = new ManagementClient(reservationsEntitySessionBeanRemote, customersEntitySessionBeanRemote, ratesEntitySessionBeanRemote, hotelRoomsEntitySessionBeanRemote, employeeEntitySessionBeanRemote, roomTypesEntitySessionBeanRemote);
-        ReservationClient reservationClient = new ReservationClient(hotelReservationSessionBeanRemote, customersEntitySessionBeanRemote, reservationsEntitySessionBeanRemote);
+        ReservationClient reservationClient = new ReservationClient(hotelReservationSessionBeanRemote, customersEntitySessionBeanRemote, reservationsEntitySessionBeanRemote, allocationSessionBeanRemote);
 
         Scanner scanner = new Scanner(System.in);
         Integer response = 0;

@@ -5,6 +5,7 @@
  */
 package hotelreservationsystemclient;
 
+import ejb.session.stateful.AllocationSessionBeanRemote;
 import ejb.session.stateful.HotelReservationSessionBeanRemote;
 import ejb.session.stateless.CustomersEntitySessionBeanRemote;
 import ejb.session.stateless.ReservationsEntitySessionBeanRemote;
@@ -36,6 +37,7 @@ public class ReservationClient {
     private HotelReservationSessionBeanRemote hotelReservationSessionBeanRemote;
     private CustomersEntitySessionBeanRemote customersEntitySessionBeanRemote;
     private ReservationsEntitySessionBeanRemote reservationsEntitySessionBeanRemote;
+    private AllocationSessionBeanRemote allocationSessionBeanRemote;
 
     SimpleDateFormat inputDateFormat = new SimpleDateFormat("d/M/y");
     SimpleDateFormat outputDateFormat = new SimpleDateFormat("dd/MM/yyyy");//"dd/MM/yyyy hh:mm a"
@@ -43,10 +45,11 @@ public class ReservationClient {
     public ReservationClient() {
     }
 
-    public ReservationClient(HotelReservationSessionBeanRemote hotelReservationSessionBeanRemote, CustomersEntitySessionBeanRemote customersEntitySessionBeanRemote, ReservationsEntitySessionBeanRemote reservationsEntitySessionBeanRemote) {
+    public ReservationClient(HotelReservationSessionBeanRemote hotelReservationSessionBeanRemote, CustomersEntitySessionBeanRemote customersEntitySessionBeanRemote, ReservationsEntitySessionBeanRemote reservationsEntitySessionBeanRemote, AllocationSessionBeanRemote allocationSessionBeanRemote) {
         this.hotelReservationSessionBeanRemote = hotelReservationSessionBeanRemote;
         this.customersEntitySessionBeanRemote = customersEntitySessionBeanRemote;
         this.reservationsEntitySessionBeanRemote = reservationsEntitySessionBeanRemote;
+        this.allocationSessionBeanRemote = allocationSessionBeanRemote;
     }
 
     public void runApp() {
@@ -167,7 +170,7 @@ public class ReservationClient {
 
     }
 
-    private void doReserveRoom() {
+    private void doReserveRoom(Date checkInDate) {
         try {
             hotelReservationSessionBeanRemote.checkLoggedIn();
             //MAYBE DO TYPE IN ROOM NAME + QUANTITY
@@ -228,7 +231,16 @@ public class ReservationClient {
 
                                 hotelReservationSessionBeanRemote.confirmReservations();
                                 System.out.println("Confirmed\n");
-
+                                System.out.println("Same day check-in (and aftter 2am)?");
+                                System.out.println("1: Yes");
+                                System.out.println("2: No");
+                                reserveResponse = scanner.nextInt();
+                                scanner.nextLine();
+                                if(reserveResponse ==1 ){
+                                    allocationSessionBeanRemote.allocateRooms(checkInDate);
+                                    break;
+                                }
+                                
                             } else if (reserveResponse == 2) {
                                 System.out.println("Cancelled\n");
                                 break;
@@ -247,14 +259,14 @@ public class ReservationClient {
             }
         } catch (InvalidRoomTypeException | InvalidRoomQuantityException ex) {
             System.out.println(ex.getMessage());
-            handleReservationExceptions();
+            handleReservationExceptions(checkInDate);
         } catch (NotLoggedInException ex) {
             System.err.println(ex.getMessage());
         }
 
     }
 
-    private void handleReservationExceptions() {
+    private void handleReservationExceptions(Date checkInDate) {
         //MAYBE DO TYPE IN ROOM NAME + QUANTITY
         Scanner scanner = new Scanner(System.in);
 
@@ -265,7 +277,7 @@ public class ReservationClient {
             System.out.print("> ");
             response = scanner.nextInt();
             if (response == 1) {
-                doReserveRoom();
+                doReserveRoom(checkInDate);
             }
         }
 
@@ -325,7 +337,7 @@ public class ReservationClient {
                 System.out.print("> ");
                 response = scanner.nextInt();
                 if (response == 1) {
-                    doReserveRoom();
+                    doReserveRoom(checkInDate);
 
                 }
             }
