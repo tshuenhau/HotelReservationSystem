@@ -93,6 +93,11 @@ public class HotelReservationSessionBean implements HotelReservationSessionBeanR
     public void login(Customers customer) {
         this.setCurrentCustomer(customer);
     }
+    
+    @Override
+    public void walkInLogin(){
+        this.setCurrentCustomer(new Customers());
+    }
 
     @Override
     public Map<RoomTypes, List<Integer>> searchHotelRooms(Date checkInDate, Date checkOutDate) {
@@ -302,23 +307,19 @@ public class HotelReservationSessionBean implements HotelReservationSessionBeanR
     public boolean isWithinRange(Date date, Date startDate, Date endDate) {
         return !(date.before(startDate) || date.after(endDate));
     }
-
+   
     @Override
     public List<Reservations> addReservation(String inputRoomType, Integer quantity) throws InvalidRoomTypeException, InvalidRoomQuantityException, NotLoggedInException {
-//        if(checkLoggedIn() == null){
-//            throw new NotLoggedInException();
-//        }
         List<RoomTypes> roomTypeResults = em.createQuery("SELECT r FROM RoomTypes r WHERE r.roomTypeName = :value").setParameter("value", inputRoomType).getResultList();
         if(roomTypeResults.size() < 1){
             throw new InvalidRoomTypeException("Invalid Room Type: " + roomTypeResults.get(0));
-
         }
         if (rooms.containsKey(roomTypeResults.get(0))) {
             if (rooms.get(roomTypeResults.get(0)).get(0) >= quantity) {
                 List<Integer> newList = new ArrayList<>();
                 Integer qty = rooms.get(roomTypeResults.get(0)).get(0);
                 for (int i = 0; i < quantity; i++) {
-                    Reservations newReservation = new Reservations(checkLoggedIn(), roomTypeResults.get(0), checkInDate, checkOutDate, (Integer) rooms.get(roomTypeResults.get(0)).get(1));
+                    Reservations newReservation = new Reservations(checkLoggedIn().getPassword() != null ? checkLoggedIn():null, roomTypeResults.get(0), checkInDate, checkOutDate, (Integer) rooms.get(roomTypeResults.get(0)).get(1));
                     reservations.add(newReservation);
                     qty -= 1;
                 }
