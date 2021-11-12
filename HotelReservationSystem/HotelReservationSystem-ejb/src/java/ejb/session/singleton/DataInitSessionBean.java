@@ -125,19 +125,10 @@ public class DataInitSessionBean {
                 hotelRoomsEntitySessionBeanLocal.createNewHotelRoom(new HotelRooms("0305", GrandSuite));
                 hotelRoomsEntitySessionBeanLocal.createNewHotelRoom(new HotelRooms("0405", GrandSuite));
                 hotelRoomsEntitySessionBeanLocal.createNewHotelRoom(new HotelRooms("0505", GrandSuite));
-            } catch (UserAlreadyExistException | RoomTypeAlreadyExistException | RateAlreadyExistException ex) {
-                Logger.getLogger(DataInitSessionBean.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (RoomAlreadyExistException ex) {
+            } catch (UserAlreadyExistException | RoomTypeAlreadyExistException | RateAlreadyExistException | RoomAlreadyExistException ex) {
                 Logger.getLogger(DataInitSessionBean.class.getName()).log(Level.SEVERE, null, ex);
             }
 
-        }
-
-        try {
-            //allocationSessionBeanLocal.generateReport(inputDateFormat.parse("11/11/1111"));
-            allocationSessionBeanLocal.allocateRooms(inputDateFormat.parse("25/11/1111"));
-        } catch (ParseException ex) {
-            Logger.getLogger(DataInitSessionBean.class.getName()).log(Level.SEVERE, null, ex);
         }
 
     }
