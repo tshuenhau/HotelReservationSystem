@@ -144,12 +144,13 @@ public class ReservationClient {
                     System.out.print("Please enter reservation ID> ");
                     reservationID = scanner.nextLong();
                     scanner.nextLine();
-                    System.out.printf("%14s%16s      %s\n", "Reservation ID", "Room Type", "Cost");
+                    System.out.printf("%14s%16s      %s%26s\n", "Reservation ID", "Room Type", "Cost", "Date");
 
                     for (Reservations r : reservations) {
                         if (r.getReservationID().equals(reservationID)) {
-                            System.out.printf("%14s%16s      %s\n", r.getReservationID().toString(), r.getReservationRoomType().getRoomTypeName(), r.getCost());
+                            System.out.printf("%14s%16s       %s%26s\n", r.getReservationID().toString(), r.getReservationRoomType().getRoomTypeName(), r.getCost(), outputDateFormat.format(r.getStartDate()) + "-" + outputDateFormat.format(r.getEndDate()));
                             //System.out.println(r.getReservationID() + " " + r.getRoomType() + " " + r.getCost());
+                            break;
                         }
                     }
                     System.out.println("1: View Reservation");

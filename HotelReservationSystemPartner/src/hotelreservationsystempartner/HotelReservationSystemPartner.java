@@ -179,8 +179,11 @@ public class HotelReservationSystemPartner {
                         scanner.nextLine();
                         try {
                             Reservations r = service.getReservationWebServicePort().viewReservation(currentCustomer.getPassportNum(), currentCustomer.getPassword(), reservationID);
-                            System.out.printf("%14s%16s      %s\n", "Reservation ID", "Room Type", "Cost");
-                            System.out.printf("%14s%16s      %s\n", r.getReservationID().toString(), r.getReservationRoomType().getRoomTypeName(), r.getCost());
+                                     Date startDate = r.getStartDate().toGregorianCalendar().getTime();
+                                Date endDate = r.getEndDate().toGregorianCalendar().getTime();
+                            System.out.printf("%14s%16s      %s%26s\n", "Reservation ID", "Room Type", "Cost", "Date");
+                            //System.out.printf("%14s%16s      %s\n", r.getReservationID().toString(), r.getReservationRoomType().getRoomTypeName(), r.getCost());
+                            System.out.printf("%14s%16s       %s%26s\n", r.getReservationID().toString(), r.getReservationRoomType().getRoomTypeName(), r.getCost(), outputDateFormat.format(startDate) + "-" + outputDateFormat.format(endDate));
 
                         } catch (InvalidLoginCredentialException_Exception ex) {
                             System.err.println(ex.getMessage());
