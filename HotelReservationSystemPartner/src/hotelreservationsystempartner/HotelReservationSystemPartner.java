@@ -46,7 +46,7 @@ public class HotelReservationSystemPartner {
 
         Integer response = 0;
         while (true) {
-            System.out.println("*** Welcome to Holiday Reservation Client ***\n");
+            System.out.println("*** Welcome to Holiday Reservation Partner Client ***\n");
 
             response = 0;
             System.out.println("1: Login");
@@ -70,7 +70,9 @@ public class HotelReservationSystemPartner {
                         System.out.print("Enter password> ");
                         password = scanner.nextLine().trim();
                         currentCustomer = service.getReservationWebServicePort().login(username, password);
+                        System.out.println();
                         System.out.println("Logged in successfully as: " + currentCustomer.getName());
+                        System.out.println();
 
                         
 
