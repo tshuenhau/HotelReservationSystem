@@ -148,7 +148,7 @@ public class ReservationClient {
 
                     for (Reservations r : reservations) {
                         if (r.getReservationID().equals(reservationID)) {
-                            System.out.printf("%14s%16s       %s%26s\n", r.getReservationID().toString(), r.getReservationRoomType().getRoomTypeName(), r.getCost(), outputDateFormat.format(r.getStartDate()) + "-" + outputDateFormat.format(r.getEndDate()));
+                            System.out.printf("%14s%26s       %s%26s\n", r.getReservationID().toString(), r.getCost(), outputDateFormat.format(r.getStartDate()) + "-" + outputDateFormat.format(r.getEndDate()) , r.getReservationRoomType().getRoomTypeName());
                             //System.out.println(r.getReservationID() + " " + r.getRoomType() + " " + r.getCost());
                             break;
                         }
@@ -234,10 +234,10 @@ public class ReservationClient {
                             if (reserveResponse == 1) {
 
                                 List<Reservations> confirmedReservations = hotelReservationSessionBeanRemote.confirmReservations();
-                                System.out.printf("%14s%16s      %s%26s\n", "Reservation ID", "Room Type", "Cost", "Date");
+                                System.out.printf("%14s%16s%26s%26s\n", "Reservation ID", "Cost", "Date", "Room Type");
 
                                 for(Reservations r: confirmedReservations){
-                            System.out.printf("%14s%16s       %s%26s\n", r.getReservationID().toString(), r.getReservationRoomType().getRoomTypeName(), r.getCost(), outputDateFormat.format(r.getStartDate()) + "-" + outputDateFormat.format(r.getEndDate()));
+                            System.out.printf("%14s%16s%26s%26s\n", r.getReservationID().toString(), r.getCost(), outputDateFormat.format(r.getStartDate()) + "-" + outputDateFormat.format(r.getEndDate()), r.getReservationRoomType().getRoomTypeName());
                                 }
                                 System.out.println("");
                                 System.out.println("Reservation(s) Confirmed!\n");
@@ -332,11 +332,11 @@ public class ReservationClient {
 
             System.out.println("*** Showing available rooms for: " + outputDateFormat.format(checkInDate) + " to " + outputDateFormat.format(checkOutDate) + "***\n");
 
-            System.out.printf("%12s%16s%9s\n", "Room Type", "Availability", "Price");
+            System.out.printf("%12s%9s%16s\n", "Availability", "Price" , "Room Type");
             Map<RoomTypes, List<Integer>> availability = hotelReservationSessionBeanRemote.searchHotelRooms(checkInDate, checkOutDate);
 
             availability.entrySet().forEach(rooms -> {
-                System.out.printf("%12s%16s%9s\n", rooms.getKey().getRoomTypeName(), rooms.getValue().get(0), rooms.getValue().get(1));
+                System.out.printf("%12s%9s%16s\n", rooms.getValue().get(0), rooms.getValue().get(1), rooms.getKey().getRoomTypeName());
 
                 //System.out.println(rooms.getKey() + "      " + rooms.getValue().get(0) + "    " + rooms.getValue().get(1));
             });
