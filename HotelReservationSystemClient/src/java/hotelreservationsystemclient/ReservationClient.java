@@ -60,7 +60,6 @@ public class ReservationClient {
         while (true) {
 
             System.out.println("*** Welcome to Holiday Reservation Client ***\n");
-
             response = 0;
             System.out.println("1: Login");
             System.out.println("2: Register");
@@ -80,8 +79,8 @@ public class ReservationClient {
                                 System.out.println("Login successful as " + hotelReservationSessionBeanRemote.getCurrentCustomer().getPassportNum() + "!\n");
 
                             } catch (InvalidLoginCredentialException ex) {
-                                System.err.println("Invalid login credential: " + ex.getMessage() + "\n");
-
+                                System.err.println("Invalid login credential: " + ex.getMessage());
+                                break;
                             }
                         } else {
                             System.out.println("You are already login as " + hotelReservationSessionBeanRemote.getCurrentCustomer().getPassportNum() + "\n");
