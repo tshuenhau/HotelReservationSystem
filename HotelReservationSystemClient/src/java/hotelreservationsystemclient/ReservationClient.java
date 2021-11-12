@@ -228,13 +228,17 @@ public class ReservationClient {
                             System.out.println("1: Confirm");
                             System.out.println("2: Cancel");
                             reserveResponse = scanner.nextInt();
+                                                System.out.print("> ");
+
                             if (reserveResponse == 1) {
 
                                 hotelReservationSessionBeanRemote.confirmReservations();
                                 System.out.println("Confirmed\n");
-                                System.out.println("Same day check-in (and aftter 2am)?");
+                                System.out.println("Same day check-in (and after 2am)?");
                                 System.out.println("1: Yes");
                                 System.out.println("2: No");
+                                                    System.out.print("> ");
+
                                 reserveResponse = scanner.nextInt();
                                 scanner.nextLine();
                                 if(reserveResponse ==1 ){
