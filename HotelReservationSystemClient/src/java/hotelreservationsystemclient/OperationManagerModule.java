@@ -204,7 +204,7 @@ public class OperationManagerModule {
         if(input.equals("Y")) {
             try {
                 roomTypesEntitySessionBeanRemote.deleteRoomType(roomTypeEntity.getRoomTypeName());
-                System.out.println("Staff deleted successfully!\n");
+                System.out.println("Room Type deleted successfully!\n");
             }
             catch (RoomTypeNotFoundException | DeleteRoomTypeException ex) {
                 System.out.println("An error has occurred while deleting the staff: " + ex.getMessage() + "\n");

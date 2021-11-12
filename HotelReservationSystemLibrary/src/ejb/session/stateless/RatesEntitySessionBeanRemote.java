@@ -8,6 +8,8 @@ package ejb.session.stateless;
 import entity.Rates;
 import java.util.List;
 import javax.ejb.Remote;
+import util.exception.RateAlreadyExistException;
+import util.exception.RatesNotFoundException;
 
 /**
  *
@@ -18,5 +20,7 @@ public interface RatesEntitySessionBeanRemote {
     
     public List<Rates> retrieveAllRates();
 
-    public Rates createNewRate(Rates rate);
+    public Rates createNewRate(Rates rate) throws RateAlreadyExistException;
+    
+    public Rates retrievesRatesByRateID(Long rateID) throws RatesNotFoundException;
 }
