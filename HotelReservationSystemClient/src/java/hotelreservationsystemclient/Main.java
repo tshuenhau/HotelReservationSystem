@@ -55,7 +55,6 @@ public class Main {
     public static void main(String[] args) {
         // TODO code application logic here
         ManagementClient managementClient = new ManagementClient(hotelReservationSessionBeanRemote, allocationSessionBeanRemote, reservationsEntitySessionBeanRemote, customersEntitySessionBeanRemote, ratesEntitySessionBeanRemote, hotelRoomsEntitySessionBeanRemote, employeeEntitySessionBeanRemote, roomTypesEntitySessionBeanRemote);
-        ReservationClient reservationClient = new ReservationClient(hotelReservationSessionBeanRemote, customersEntitySessionBeanRemote, reservationsEntitySessionBeanRemote, allocationSessionBeanRemote);
 
         Scanner scanner = new Scanner(System.in);
         Integer response = 0;
@@ -64,26 +63,23 @@ public class Main {
             System.out.println("*** Welcome to Holiday Reservation System ***\n");
 
             System.out.println("1: Management Client");
-            System.out.println("2: Reservation Client");
-            System.out.println("3: Exit\n");
+            System.out.println("2: Exit\n");
 
             response = 0;
 
-            while (response < 1 || response > 3) {
+            while (response < 1 || response > 2) {
                 try {
                     System.out.print("> ");
                     response = scanner.nextInt();
                     if (response == 1) {
                         managementClient.runApp();
                     } else if (response == 2) {
-                        reservationClient.runApp();
-                    } else if (response == 3) {
                         break;
                     } else {
                         System.out.println("Invalid option, please try again!\n");
                     }
 
-                    if (response == 3) {
+                    if (response == 2) {
                         System.out.println("Thanks for using our services!");
                         break;
                     }
@@ -94,7 +90,7 @@ public class Main {
 
                 }
             }
-            if (response == 3) {
+            if (response == 2) {
             break;
             }
         }
