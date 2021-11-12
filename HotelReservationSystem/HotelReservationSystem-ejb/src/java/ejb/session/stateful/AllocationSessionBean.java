@@ -65,7 +65,7 @@ public class AllocationSessionBean implements AllocationSessionBeanRemote, Alloc
 
         for (Allocation a : allocationReport) {
             for (Reservations r : reservations) {
-                if (r.getEndDate().before(date)) {
+                if (r.getEndDate().before(date) || r.getEndDate().equals(date)) {
                     if (r.getAllocatedRoom() != null) {
                         r.getAllocatedRoom().setIsAllocated(false);
                         reservationsEntitySessionBeanLocal.updateReservation(r);
