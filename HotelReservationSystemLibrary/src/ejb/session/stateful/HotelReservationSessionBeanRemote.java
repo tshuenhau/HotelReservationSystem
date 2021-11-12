@@ -46,5 +46,7 @@ public interface HotelReservationSessionBeanRemote {
     public void setCurrentCustomer(Customers currentCustomer);
 
     public Customers getCurrentCustomer();
+
+    public Boolean isLoggedIn();
     
 }

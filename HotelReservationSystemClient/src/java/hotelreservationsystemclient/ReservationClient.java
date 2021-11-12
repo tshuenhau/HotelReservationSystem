@@ -71,7 +71,7 @@ public class ReservationClient {
                     System.out.print("> ");
                     response = scanner.nextInt();
                     if (response == 1) {
-                        if (hotelReservationSessionBeanRemote.getCurrentCustomer() == null) {
+                        if (1==1) {
                             try {
                                 doLogin();
                                 System.out.println("Login successful as " + hotelReservationSessionBeanRemote.getCurrentCustomer().getPassportNum() + "!\n");

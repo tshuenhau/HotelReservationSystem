@@ -51,7 +51,7 @@ public class HotelReservationSessionBean implements HotelReservationSessionBeanR
 
     @EJB
     private HotelRoomsEntitySessionBeanLocal hotelRoomsEntitySessionBeanLocal;
-    private Customers currentCustomer;
+    private Customers currentCustomer = null;
     SimpleDateFormat outputDateFormat = new SimpleDateFormat("dd/MM/yyyy");//"dd/MM/yyyy hh:mm a"
     Date checkInDate;
     Date checkOutDate;
@@ -304,26 +304,28 @@ public class HotelReservationSessionBean implements HotelReservationSessionBeanR
 //        if(checkLoggedIn() == null){
 //            throw new NotLoggedInException();
 //        }
-        RoomTypes roomType = em.find(RoomTypes.class, inputRoomType);
-        if (rooms.containsKey(roomType)) {
-            if (rooms.get(roomType).get(0) >= quantity) {
+        List<RoomTypes> roomTypeResults = em.createQuery("SELECT r FROM RoomTypes r WHERE r.roomTypeName = :value").setParameter("value", inputRoomType).getResultList();
+        if(roomTypeResults.size() < 1){
+            throw new InvalidRoomTypeException("Invalid Room Type: " + roomTypeResults.get(0));
+
+        }
+        if (rooms.containsKey(roomTypeResults.get(0))) {
+            if (rooms.get(roomTypeResults.get(0)).get(0) >= quantity) {
                 List<Integer> newList = new ArrayList<>();
-                Integer qty = rooms.get(roomType).get(0);
+                Integer qty = rooms.get(roomTypeResults.get(0)).get(0);
                 for (int i = 0; i < quantity; i++) {
-                    Reservations newReservation = new Reservations(checkLoggedIn(), roomType, checkInDate, checkOutDate, (Integer) rooms.get(roomType).get(1));
+                    Reservations newReservation = new Reservations(checkLoggedIn(), roomTypeResults.get(0), checkInDate, checkOutDate, (Integer) rooms.get(roomTypeResults.get(0)).get(1));
                     reservations.add(newReservation);
                     qty -= 1;
                 }
                 newList.add(qty);
-                newList.add(rooms.get(roomType).get(1));
-                rooms.put(roomType, newList);
+                newList.add(rooms.get(roomTypeResults.get(0)).get(1));
+                rooms.put(roomTypeResults.get(0), newList);
 
             } else {
-                throw new InvalidRoomQuantityException("Invalid Quantity for " + roomType.getRoomTypeName() + " Only " + rooms.get(roomType).get(0) + " room(s) available");
+                throw new InvalidRoomQuantityException("Invalid Quantity for " + roomTypeResults.get(0).getRoomTypeName() + " Only " + rooms.get(roomTypeResults.get(0)).get(0) + " room(s) available");
             }
-        } else {
-            throw new InvalidRoomTypeException("Invalid Room Type: " + roomType);
-        }
+        } 
         return reservations;
     }
 
@@ -366,6 +368,14 @@ public class HotelReservationSessionBean implements HotelReservationSessionBeanR
             throw new NotLoggedInException("Please Login to use this feature.");
         }
         return getCurrentCustomer();
+    }
+    
+    @Override
+    public Boolean isLoggedIn(){
+        if(getCurrentCustomer() == null){
+            return false;
+        }
+        return true;
     }
 
     /**

@@ -296,11 +296,12 @@ public class ReservationWebService {
         Date checkInDate = inputDateFormat.parse(inputCheckInDate);
         Date checkOutDate = inputDateFormat.parse(inputCheckOutDate);
         List<Reservations> reservations = new ArrayList<>();
-        RoomTypes roomType = em.find(RoomTypes.class, inputRoomType);
+        //RoomTypes roomType = em.find(RoomTypes.class, inputRoomType);
+        List<RoomTypes> roomTypeResults = em.createQuery("SELECT r FROM RoomTypes r WHERE r.roomTypeName = :value").setParameter("value", inputRoomType).getResultList();
         Customers c = Login(passportNum, password);
-        if (c != null) {
+        if (c != null && roomTypeResults.size() > 0) {
             for (int i = 0; i < quantity; i++) {
-                Reservations newReservation = new Reservations(c, roomType, checkInDate, checkOutDate, cost);
+                Reservations newReservation = new Reservations(c, roomTypeResults.get(0), checkInDate, checkOutDate, cost);
                 reservationsEntitySessionBeanLocal.createNewReservation(newReservation);
                 reservations.add(newReservation);
 
