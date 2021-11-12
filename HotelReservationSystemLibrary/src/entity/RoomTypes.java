@@ -8,6 +8,7 @@ package entity;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -27,16 +28,7 @@ public class RoomTypes implements Serializable {
     /**
      * @return the roomTypeId
      */
-    public Long getRoomTypeId() {
-        return roomTypeId;
-    }
 
-    /**
-     * @param roomTypeId the roomTypeId to set
-     */
-    public void setRoomTypeId(Long roomTypeId) {
-        this.roomTypeId = roomTypeId;
-    }
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -64,7 +56,7 @@ public class RoomTypes implements Serializable {
     @Column(nullable = false)
     private String amenities;
     
-    @OneToMany(mappedBy = "rmType")
+    @OneToMany(mappedBy = "rmType", cascade= {CascadeType.PERSIST, CascadeType.REMOVE})
     private List<HotelRooms> hotelRooms;
     
     @OneToMany(mappedBy = "roomType")
@@ -72,7 +64,16 @@ public class RoomTypes implements Serializable {
     
     @OneToMany(mappedBy = "reservationRoomType")
     private List<Reservations> reservations;
+    public Long getRoomTypeId() {
+        return roomTypeId;
+    }
 
+    /**
+     * @param roomTypeId the roomTypeId to set
+     */
+    public void setRoomTypeId(Long roomTypeId) {
+        this.roomTypeId = roomTypeId;
+    }
     public RoomTypes() {
         hotelRooms = new ArrayList<>();
         roomRates = new ArrayList<>();

@@ -39,7 +39,7 @@ public class HotelRooms implements Serializable {
     @Id
     private String hotelRoomID;
     
-    @ManyToOne(cascade = CascadeType.REMOVE)
+    @ManyToOne()
     @JoinColumn(nullable = false)
     private RoomTypes rmType;
     

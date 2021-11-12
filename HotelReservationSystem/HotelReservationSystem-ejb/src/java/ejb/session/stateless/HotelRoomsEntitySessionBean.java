@@ -7,6 +7,7 @@ package ejb.session.stateless;
 
 import entity.HotelRooms;
 import entity.RoomTypes;
+import java.util.ArrayList;
 import java.util.List;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -101,16 +102,10 @@ public class HotelRoomsEntitySessionBean implements HotelRoomsEntitySessionBeanR
         
         RoomTypes roomType = roomEntityToRemove.getRmType();
         List<HotelRooms> hotelRoomsLinked = roomType.getHotelRooms();
-        
+        List<HotelRooms> hotels = new ArrayList<>();        
         
         if(roomEntityToRemove.getIsAllocated() == false){
-            for (HotelRooms hotelroom : hotelRoomsLinked) {
-                if (hotelroom.equals(roomEntityToRemove)) {
-                    hotelRoomsLinked.remove(hotelroom);
-                    roomType.setHotelRooms(hotelRoomsLinked);
-                    break;
-                }
-            }
+         
             em.remove(roomEntityToRemove);
         }
         else {
