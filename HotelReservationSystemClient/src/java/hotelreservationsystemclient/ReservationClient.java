@@ -74,7 +74,7 @@ public class ReservationClient {
                     System.out.print("> ");
                     response = scanner.nextInt();
                     if (response == 1) {
-                        if (1==1) {
+                        if (hotelReservationSessionBeanRemote.isLoggedIn() == false) {
                             try {
                                 doLogin();
                                 System.out.println("Login successful as " + hotelReservationSessionBeanRemote.getCurrentCustomer().getPassportNum() + "!\n");
@@ -101,17 +101,18 @@ public class ReservationClient {
 
                     }
 
-                    if (response == 5) {
-                        hotelReservationSessionBeanRemote.setCurrentCustomer(null);
-                        System.out.println("Exited Reservation Client\n");
-                        break;
-                    }
+                    
                 } catch (InputMismatchException ex) {
                     System.err.println("Input type mismatch.");
                     scanner.nextLine();
                     break;
                 }
             }
+            if (response == 5) {
+                        hotelReservationSessionBeanRemote.setCurrentCustomer(null);
+                        System.out.println("Exited Reservation Client\n");
+                        break;
+                    }
 
         }
 
