@@ -275,13 +275,9 @@ public class GuestRelationOfficerModule {
         scanner.nextLine();
         
         Reservations reservation = reservationsEntitySessionBeanRemote.retrieveReservation(reservationID);
-        
-        
         HotelRooms allocatedRoom = reservation.getAllocatedRoom();
         if (allocatedRoom != null) {
-            if (allocatedRoom.getIsAllocated()) {
-                System.out.println("You have been allocated to Room " + allocatedRoom.getHotelRoomID() + " at " + allocatedRoom.getRmType().getRoomTypeName());
-            }
+            System.out.println("You have been allocated to Room " + allocatedRoom.getHotelRoomID() + " at " + allocatedRoom.getRmType().getRoomTypeName());
         } else {
             throw new UnableToAllocateException();
         }
