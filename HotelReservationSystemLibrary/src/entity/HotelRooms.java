@@ -6,6 +6,7 @@
 package entity;
 
 import java.io.Serializable;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -38,7 +39,7 @@ public class HotelRooms implements Serializable {
     @Id
     private String hotelRoomID;
     
-    @ManyToOne()
+    @ManyToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(nullable = false)
     private RoomTypes rmType;
     

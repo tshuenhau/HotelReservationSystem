@@ -7,6 +7,7 @@ package entity;
 
 import java.io.Serializable;
 import java.util.Date;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -28,7 +29,7 @@ public class Rates implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long rateID;
     
-    @ManyToOne()
+    @ManyToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(nullable = false)
     private RoomTypes roomType;
     

@@ -95,18 +95,19 @@ public class RoomTypesEntitySessionBean implements RoomTypesEntitySessionBeanRem
         
         
         if(roomTypeEntityToRemove.getHotelRooms().isEmpty() && roomTypeEntityToRemove.getReservations().isEmpty() && roomTypeEntityToRemove.getRoomRates().isEmpty()){
-            for (RoomTypes roomTypes : roomTypesEntities) {
-                if (roomTypes.getNextHigherRoomType().getRoomTypeName().equals(roomTypeName)) {
-                    roomTypes.setNextHigherRoomType(null);
-                } else if (roomTypes.getNextHigherRoomType() == null){
-                    //do nothing
+            for (RoomTypes roomType : roomTypesEntities) {
+                if (roomType.getNextHigherRoomType().equals(roomTypeEntityToRemove)) {
+                    roomType.setNextHigherRoomType(null);
+                    em.merge(roomType);
+                    em.flush();
                 }
             }
-            em.remove(roomTypeEntityToRemove);
-            System.out.println("Room Type successfully removed!");
+            RoomTypes roomTypeToRemove = em.find(RoomTypes.class, roomTypeEntityToRemove.getRoomTypeId());
+            em.getTransaction().begin();
+            em.remove(roomTypeToRemove);
+            em.getTransaction().commit();
         }
-        else
-        {
+        else {
             throw new DeleteRoomTypeException("Room Type " + roomTypeName + " is associated with existing hotel rooms and/or reservations and/or room rates and cannot be deleted!");
         }
     }
