@@ -9,6 +9,7 @@ import classes.Allocation;
 import java.util.Date;
 import java.util.List;
 import javax.ejb.Remote;
+import util.exception.AllocationException;
 
 /**
  *
@@ -18,5 +19,6 @@ import javax.ejb.Remote;
 public interface AllocationSessionBeanRemote {
     public List<Allocation> generateReport(Date date);
     public void allocateRooms(Date date);
+    public List<AllocationException> viewAllocationException(Date date);
 
 }

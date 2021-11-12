@@ -1,5 +1,7 @@
 package hotelreservationsystemclient;
 
+import static com.sun.org.apache.xalan.internal.lib.ExsltDatetime.date;
+import ejb.session.stateful.AllocationSessionBeanRemote;
 import entity.Employees;
 import java.util.Scanner;
 import ejb.session.stateless.EmployeesEntitySessionBeanRemote;
@@ -7,7 +9,11 @@ import ejb.session.stateless.HotelRoomsEntitySessionBeanRemote;
 import ejb.session.stateless.RoomTypesEntitySessionBeanRemote;
 import entity.HotelRooms;
 import entity.RoomTypes;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import util.exception.AllocationException;
 import util.exception.DeleteRoomException;
 import util.exception.DeleteRoomTypeException;
 import util.exception.InvalidAccessRightException;
@@ -22,17 +28,20 @@ public class OperationManagerModule {
     private EmployeesEntitySessionBeanRemote employeesEntitySessionBeanRemote;
     private RoomTypesEntitySessionBeanRemote roomTypesEntitySessionBeanRemote;
     private HotelRoomsEntitySessionBeanRemote hotelRoomsEntitySessionBeanRemote;
+    private AllocationSessionBeanRemote allocationSessionBeanRemote;
     
     private Employees currentEmployee;
-
+    
+    SimpleDateFormat inputDateFormat = new SimpleDateFormat("dd/MM/yyyy");
     
     public OperationManagerModule(){
     }
 
-    public OperationManagerModule(EmployeesEntitySessionBeanRemote employeesEntitySessionBeanRemote, Employees currentEmployee, RoomTypesEntitySessionBeanRemote roomTypesEntitySessionBeanRemote, HotelRoomsEntitySessionBeanRemote hotelRoomsEntitySessionBeanRemote) {
+    public OperationManagerModule(EmployeesEntitySessionBeanRemote employeesEntitySessionBeanRemote, Employees currentEmployee, RoomTypesEntitySessionBeanRemote roomTypesEntitySessionBeanRemote, HotelRoomsEntitySessionBeanRemote hotelRoomsEntitySessionBeanRemote, AllocationSessionBeanRemote allocationSessionBeanRemote) {
         this.employeesEntitySessionBeanRemote = employeesEntitySessionBeanRemote;
         this.roomTypesEntitySessionBeanRemote = roomTypesEntitySessionBeanRemote;
         this.hotelRoomsEntitySessionBeanRemote = hotelRoomsEntitySessionBeanRemote;
+        this.allocationSessionBeanRemote = allocationSessionBeanRemote;
         this.currentEmployee = currentEmployee;
     }
     
@@ -89,7 +98,7 @@ public class OperationManagerModule {
                     doViewAllHotelRooms();
                 }
                 else if (response == 8){
-                    doViewAllocationReport();
+                    doViewAllocationExceptionReport();
                 }
                 else if (response == 9){
                     break;
@@ -258,20 +267,29 @@ public class OperationManagerModule {
         }
     }
     
-    private void doViewAllocationReport(){
+    private void doViewAllocationExceptionReport(){
         Scanner scanner = new Scanner(System.in);
         
         System.out.println("*** Hotel Reservation Management Client System :: Operation Manager :: View Room Allocation Exception Report ***\n");
+        Date date;
         
-        List<HotelRooms> hotelRooms = hotelRoomsEntitySessionBeanRemote.retrieveAllHotelRooms();
-        System.out.printf("%s%30s%20s%20s\n", "Room Number", "Allocated Status", "Availability", "Room Type");
+        try {
+            System.out.print("Enter date (dd/mm/yyyy)> ");
+            date = inputDateFormat.parse(scanner.nextLine().trim());
+        
+            allocationSessionBeanRemote.allocateRooms(date);
+            List<AllocationException> allocationExceptions = allocationSessionBeanRemote.viewAllocationException(date);
+            System.out.printf("%s%30s\n", "Room Type", "Exception Type");
 
-        for (HotelRooms hotelRoom : hotelRooms) {
-            System.out.printf("%s%30s%20s%20s\n", hotelRoom.getHotelRoomID(), hotelRoom.getIsAllocated(), hotelRoom.getStatus(), hotelRoom.getRmType().getRoomTypeName());
+            for (AllocationException allocationException : allocationExceptions) {
+                System.out.printf("%s%30s\n", allocationException.getRoomType().getRoomTypeName(), allocationException.getExceptionType());
+            }
+
+            System.out.print("Press any key to continue...> ");
+            scanner.nextLine();
+        } catch (ParseException ex) {
+            System.err.println("Invalid date input!\n");
         }
-        
-        System.out.print("Press any key to continue...> ");
-        scanner.nextLine();
     }
     
     private void doUpdateRoomStatus() {

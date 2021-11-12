@@ -24,5 +24,7 @@ public interface ReservationsEntitySessionBeanLocal {
     public List<Reservations> retrieveReserationsOfCustomer(Customers customer);
 
     public Reservations updateReservation(Reservations reservation);
+
+    public Reservations retrieveReservation(Long reservationID);
     
 }

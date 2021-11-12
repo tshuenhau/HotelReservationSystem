@@ -7,15 +7,13 @@ import java.util.Scanner;
 import ejb.session.stateless.EmployeesEntitySessionBeanRemote;
 import ejb.session.stateless.HotelRoomsEntitySessionBeanRemote;
 import ejb.session.stateless.RatesEntitySessionBeanRemote;
+import ejb.session.stateless.ReservationsEntitySessionBeanRemote;
 import ejb.session.stateless.RoomTypesEntitySessionBeanRemote;
-import entity.Rates;
 import entity.Reservations;
 import entity.RoomTypes;
 import java.text.SimpleDateFormat;
 import java.util.List;
-import util.exception.DeleteRoomTypeException;
 import util.exception.InvalidAccessRightException;
-import util.exception.RoomTypeNotFoundException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -34,6 +32,7 @@ public class GuestRelationOfficerModule {
     private RatesEntitySessionBeanRemote ratesEntitySessionBeanRemote;
     private HotelReservationSessionBeanRemote hotelReservationSessionBeanRemote;
     private AllocationSessionBeanRemote allocationSessionBeanRemote;
+    private ReservationsEntitySessionBeanRemote reservationsEntitySessionBeanRemote;
     
     private Employees currentEmployee;
     
@@ -43,7 +42,7 @@ public class GuestRelationOfficerModule {
     public GuestRelationOfficerModule(){
     }
 
-    public GuestRelationOfficerModule(AllocationSessionBeanRemote allocationSessionBeanRemote, EmployeesEntitySessionBeanRemote employeesEntitySessionBeanRemote, Employees currentEmployee, RoomTypesEntitySessionBeanRemote roomTypesEntitySessionBeanRemote, HotelRoomsEntitySessionBeanRemote hotelRoomsEntitySessionBeanRemote, RatesEntitySessionBeanRemote ratesEntitySessionBeanRemote, HotelReservationSessionBeanRemote hotelReservationSessionBeanRemote) {
+    public GuestRelationOfficerModule(AllocationSessionBeanRemote allocationSessionBeanRemote, EmployeesEntitySessionBeanRemote employeesEntitySessionBeanRemote, Employees currentEmployee, RoomTypesEntitySessionBeanRemote roomTypesEntitySessionBeanRemote, HotelRoomsEntitySessionBeanRemote hotelRoomsEntitySessionBeanRemote, RatesEntitySessionBeanRemote ratesEntitySessionBeanRemote, HotelReservationSessionBeanRemote hotelReservationSessionBeanRemote, ReservationsEntitySessionBeanRemote reservationsEntitySessionBeanRemote) {
         this.employeesEntitySessionBeanRemote = employeesEntitySessionBeanRemote;
         this.allocationSessionBeanRemote = allocationSessionBeanRemote;
         this.roomTypesEntitySessionBeanRemote = roomTypesEntitySessionBeanRemote;
@@ -51,6 +50,7 @@ public class GuestRelationOfficerModule {
         this.ratesEntitySessionBeanRemote = ratesEntitySessionBeanRemote;
         this.currentEmployee = currentEmployee;
         this.hotelReservationSessionBeanRemote = hotelReservationSessionBeanRemote;
+        this.reservationsEntitySessionBeanRemote = reservationsEntitySessionBeanRemote;
     }
     
     
@@ -81,10 +81,10 @@ public class GuestRelationOfficerModule {
                     doWalkInSearch();
                 }
                 else if(response == 2){
-                    //doViewRoomRateDetails();
+                    //doCheckIn();
                 }
                 else if(response == 3){
-                    //doViewAllRoomRates();
+                    //doCheckOut();
                 }
                 else if (response == 4){
                     break;
@@ -135,15 +135,14 @@ public class GuestRelationOfficerModule {
                 System.out.print("> ");
                 response = scanner.nextInt();
                 if (response == 1) {
+                    hotelReservationSessionBeanRemote.walkInLogin();
                     doReserveRoom(checkInDate);
-
                 }
             }
 
         } catch (ParseException ex) {
             System.err.println("Invalid date input!\n");
         }
-
     }
     
     private void doReserveRoom(Date checkInDate) {
@@ -203,13 +202,15 @@ public class GuestRelationOfficerModule {
                             System.out.println("1: Confirm");
                             System.out.println("2: Cancel");
                             reserveResponse = scanner.nextInt();
+                            System.out.print("> ");
                             if (reserveResponse == 1) {
 
                                 hotelReservationSessionBeanRemote.confirmReservations();
                                 System.out.println("Confirmed\n");
-                                System.out.println("Same day check-in (and aftter 2am)?");
+                                System.out.println("Same day check-in (and after 2am)?");
                                 System.out.println("1: Yes");
                                 System.out.println("2: No");
+                                System.out.print("> ");
                                 reserveResponse = scanner.nextInt();
                                 scanner.nextLine();
                                 if(reserveResponse ==1 ){
@@ -256,7 +257,17 @@ public class GuestRelationOfficerModule {
                 doReserveRoom(checkInDate);
             }
         }
-
     }
+    /*
+    private void doCheckIn() {
+        System.out.println("*** Hotel Reservation System Management Client :: Check-in Guest ***\n");
+        
+        reservationsEntitySessionBeanRemote.retrieveReservation
+    }
+    
+    private void doCheckOut() {
+        System.out.println("*** Hotel Reservation System Management Client :: Check-out Guest ***\n");
+    }
+*/
 
 }

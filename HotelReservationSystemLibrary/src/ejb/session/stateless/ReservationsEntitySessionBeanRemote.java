@@ -20,5 +20,6 @@ public interface ReservationsEntitySessionBeanRemote {
     public List<Reservations> retrieveReserationsOfCustomer(Customers customer);
     public Reservations updateReservation(Reservations reservation);
 
-    public Long createNewReservation(Reservations newReservation);  
+    public Long createNewReservation(Reservations newReservation);
+    public Reservations retrieveReservation(Long reservationID);
 }

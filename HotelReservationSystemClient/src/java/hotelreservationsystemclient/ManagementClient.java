@@ -96,7 +96,7 @@ public class ManagementClient {
                                 menuMainSystemAdmin();
                             }
                             else if (currentEmployee.getEmployeeType().equals("Operation Manager")){
-                                operationManagerModule = new OperationManagerModule(employeesEntitySessionBeanRemote, currentEmployee, roomTypesEntitySessionBeanRemote, hotelRoomsEntitySessionBeanRemote);
+                                operationManagerModule = new OperationManagerModule(employeesEntitySessionBeanRemote, currentEmployee, roomTypesEntitySessionBeanRemote, hotelRoomsEntitySessionBeanRemote, allocationSessionBeanRemote);
                                 menuMainOperationManager();
                             }
                             else if (currentEmployee.getEmployeeType().equals("Sales Manager")){
@@ -104,7 +104,7 @@ public class ManagementClient {
                                 menuMainSalesManager();
                             }
                             else if (currentEmployee.getEmployeeType().equals("Guest Relation Officer")){
-                                guestRelationOfficerModule = new GuestRelationOfficerModule(allocationSessionBeanRemote, employeesEntitySessionBeanRemote, currentEmployee, roomTypesEntitySessionBeanRemote, hotelRoomsEntitySessionBeanRemote, ratesEntitySessionBeanRemote, hotelReservationSessionBeanRemote);
+                                guestRelationOfficerModule = new GuestRelationOfficerModule(allocationSessionBeanRemote, employeesEntitySessionBeanRemote, currentEmployee, roomTypesEntitySessionBeanRemote, hotelRoomsEntitySessionBeanRemote, ratesEntitySessionBeanRemote, hotelReservationSessionBeanRemote, reservationsEntitySessionBeanRemote);
                                 menuMainGuestRelationOfficer();
                             }
                         }

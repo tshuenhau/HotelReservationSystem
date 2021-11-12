@@ -24,8 +24,6 @@ public class ReservationsEntitySessionBean implements ReservationsEntitySessionB
 
     @PersistenceContext(unitName = "HotelReservationSystem-ejbPU")
     private EntityManager em;
-    
-
 
     @Override
     public List<Reservations> retrieveAllReservations() {
@@ -37,6 +35,12 @@ public class ReservationsEntitySessionBean implements ReservationsEntitySessionB
     public List<Reservations> retrieveReserationsOfCustomer(Customers customer){
         Query query = em.createQuery("Select e FROM Reservations e WHERE e.reservedBy = :value", Reservations.class).setParameter("value", customer);
         return query.getResultList();
+    }
+    
+    @Override
+    public Reservations retrieveReservation(Long reservationID){
+        Query query = em.createQuery("Select e FROM Reservations e WHERE e.reservationID = :value", Reservations.class).setParameter("value", reservationID);
+        return (Reservations) query.getResultList().get(0);
     }
     
     @Override

@@ -9,6 +9,7 @@ import classes.Allocation;
 import java.util.Date;
 import java.util.List;
 import javax.ejb.Local;
+import util.exception.AllocationException;
 
 /**
  *
@@ -21,5 +22,7 @@ public interface AllocationSessionBeanLocal {
     public List<Allocation> generateReport(Date date);
 
     public void allocateRooms(Date date);
+
+    public List<AllocationException> viewAllocationException(Date date);
     
 }
