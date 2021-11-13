@@ -138,10 +138,10 @@ public class SystemAdministrationModule {
         System.out.println("*** Hotel Reservation Management Client System :: System Administration :: View All Employees ***\n");
         
         List<Employees> employees = employeesEntitySessionBeanRemote.retrieveAllEmployees();
-        System.out.printf("%s%30s%20s\n", "Username", "Employee Type", "Password");
+        System.out.printf("%s%40s%20s\n", "Username", "Employee Type", "Password");
 
         for (Employees employee : employees) {
-            System.out.printf("%s%30s%20s\n", employee.getUsername(), employee.getEmployeeType(), employee.getPassword());
+            System.out.printf("%s%40s%20s\n", employee.getUsername(), employee.getEmployeeType(), employee.getPassword());
         }
         
         System.out.print("Press any key to continue...> ");
@@ -173,10 +173,10 @@ public class SystemAdministrationModule {
         System.out.println("*** Hotel Reservation Management Client System :: System Administration :: View All Partners ***\n");
         
         List<Customers> partners = customersEntitySessionBeanRemote.retrieveAllPartners();
-        System.out.printf("%s%30s\n", "Passport Number", "Password");
+        System.out.printf("%s%30s%30s\n", "Name", "Passport Number", "Password");
 
         for (Customers partner : partners) {
-            System.out.printf("%s%30s\n", partner.getPassportNum(), partner.getPassword());
+            System.out.printf("%s%30s%30s\n", partner.getName(), partner.getPassportNum(), partner.getPassword());
         }
         
         System.out.print("Press any key to continue...> ");
