@@ -92,11 +92,11 @@ public class ManagementClient {
                             doLogin();
                             System.out.println("Login successful as " + currentEmployee.getUsername() + "!\n");
                             if (currentEmployee.getEmployeeType().equals("System Administrator")){
-                                systemAdministrationModule = new SystemAdministrationModule(employeesEntitySessionBeanRemote, currentEmployee, customersEntitySessionBeanRemote);
+                                systemAdministrationModule = new SystemAdministrationModule(employeesEntitySessionBeanRemote, currentEmployee, customersEntitySessionBeanRemote, allocationSessionBeanRemote);
                                 menuMainSystemAdmin();
                             }
                             else if (currentEmployee.getEmployeeType().equals("Operation Manager")){
-                                operationManagerModule = new OperationManagerModule(employeesEntitySessionBeanRemote, currentEmployee, roomTypesEntitySessionBeanRemote, hotelRoomsEntitySessionBeanRemote, allocationSessionBeanRemote);
+                                operationManagerModule = new OperationManagerModule(employeesEntitySessionBeanRemote, currentEmployee, roomTypesEntitySessionBeanRemote, hotelRoomsEntitySessionBeanRemote);
                                 menuMainOperationManager();
                             }
                             else if (currentEmployee.getEmployeeType().equals("Sales Manager")){

@@ -1,11 +1,16 @@
 package hotelreservationsystemclient;
 
+import ejb.session.stateful.AllocationSessionBeanRemote;
 import entity.Employees;
 import java.util.Scanner;
 import ejb.session.stateless.EmployeesEntitySessionBeanRemote;
 import ejb.session.stateless.CustomersEntitySessionBeanRemote;
 import entity.Customers;
+import static hotelreservationsystemclient.SalesManagerModule.inputDateFormat;
+import java.text.ParseException;
+import java.util.Date;
 import java.util.List;
+import util.exception.AllocationException;
 import util.exception.InvalidAccessRightException;
 import util.exception.UserAlreadyExistException;
 
@@ -14,6 +19,7 @@ import util.exception.UserAlreadyExistException;
 public class SystemAdministrationModule {
     private EmployeesEntitySessionBeanRemote employeesEntitySessionBeanRemote;
     private CustomersEntitySessionBeanRemote customersEntitySessionBeanRemote;
+    private AllocationSessionBeanRemote allocationSessionBeanRemote;
     
     private Employees currentEmployee;
 
@@ -21,9 +27,10 @@ public class SystemAdministrationModule {
     public SystemAdministrationModule(){
     }
 
-    public SystemAdministrationModule(EmployeesEntitySessionBeanRemote employeesEntitySessionBeanRemote, Employees currentEmployee, CustomersEntitySessionBeanRemote customersEntitySessionBeanRemote) {
+    public SystemAdministrationModule(EmployeesEntitySessionBeanRemote employeesEntitySessionBeanRemote, Employees currentEmployee, CustomersEntitySessionBeanRemote customersEntitySessionBeanRemote, AllocationSessionBeanRemote allocationSessionBeanRemote) {
         this.employeesEntitySessionBeanRemote = employeesEntitySessionBeanRemote;
         this.customersEntitySessionBeanRemote = customersEntitySessionBeanRemote;
+        this.allocationSessionBeanRemote = allocationSessionBeanRemote;
         this.currentEmployee = currentEmployee;
     }
     
@@ -45,10 +52,11 @@ public class SystemAdministrationModule {
             System.out.println("3: Create New Partner");
             System.out.println("4: View All Partners");
             System.out.println("-----------------------");
-            System.out.println("5: Back\n");
+            System.out.println("5: Allocate Rooms");
+            System.out.println("6: Back\n");
             response = 0;
             
-            while(response < 1 || response > 5){
+            while(response < 1 || response > 6){
                 System.out.print("> ");
 
                 response = scanner.nextInt();
@@ -76,6 +84,9 @@ public class SystemAdministrationModule {
                     doViewAllPartners();
                 }
                 else if (response == 5){
+                    doAllocateRoom();
+                }
+                else if (response == 6){
                     break;
                 }
                 else {
@@ -83,7 +94,7 @@ public class SystemAdministrationModule {
                 }
             }
             
-            if(response == 5){
+            if(response == 6){
                 break;
             }
         }
@@ -179,6 +190,51 @@ public class SystemAdministrationModule {
             System.out.printf("%s%30s%30s\n", partner.getName(), partner.getPassportNum(), partner.getPassword());
         }
         
+        System.out.print("Press any key to continue...> ");
+        scanner.nextLine();
+    }
+    
+    private void doAllocateRoom(){
+        Scanner scanner = new Scanner(System.in);
+        Integer response = 0;
+        Date date;
+        
+        System.out.println("*** Hotel Reservation Management Client System :: Operation Manager :: Allocate Room ***\n");
+        
+        
+        try {
+            System.out.print("Enter date (dd/mm/yyyy)> ");
+            date = inputDateFormat.parse(scanner.nextLine().trim());
+            allocationSessionBeanRemote.allocateRooms(date);
+            
+            System.out.println("------------------------");
+            System.out.println("1: View Room Allocation Exception Report");
+            System.out.println("2: Back\n");
+            System.out.print("> ");
+            response = scanner.nextInt();
+
+            if(response == 1) {
+                doViewAllocationExceptionReport(date);
+            }
+        }
+        catch(ParseException ex) {
+            System.out.println("An error has occurred while allocation rooms: " + ex.getMessage() + "\n");
+        }
+    }
+    
+    
+    private void doViewAllocationExceptionReport(Date date){
+        Scanner scanner = new Scanner(System.in);
+        
+        System.out.println("*** Hotel Reservation Management Client System :: Operation Manager :: View Room Allocation Exception Report ***\n");
+        
+        List<AllocationException> allocationExceptions = allocationSessionBeanRemote.viewAllocationException(date);
+        System.out.printf("%s%30s\n", "Room Type", "Exception Type");
+
+        for (AllocationException allocationException : allocationExceptions) {
+            System.out.printf("%s%30s\n", allocationException.getRoomType().getRoomTypeName(), allocationException.getExceptionType());
+        }
+
         System.out.print("Press any key to continue...> ");
         scanner.nextLine();
     }
