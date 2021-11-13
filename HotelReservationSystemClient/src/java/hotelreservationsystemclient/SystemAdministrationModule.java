@@ -9,6 +9,7 @@ import entity.Customers;
 import static hotelreservationsystemclient.SalesManagerModule.inputDateFormat;
 import java.text.ParseException;
 import java.util.Date;
+import java.util.InputMismatchException;
 import java.util.List;
 import util.exception.AllocationException;
 import util.exception.InvalidAccessRightException;
@@ -44,59 +45,64 @@ public class SystemAdministrationModule {
         Scanner scanner = new Scanner(System.in);
         Integer response = 0;
         
-        while(true){
-            System.out.println("*** Hotel Reservation System Management Client :: System Administration ***\n");
-            System.out.println("1: Create New Employee");
-            System.out.println("2: View All Employees");
-            System.out.println("-----------------------");
-            System.out.println("3: Create New Partner");
-            System.out.println("4: View All Partners");
-            System.out.println("-----------------------");
-            System.out.println("5: Allocate Rooms");
-            System.out.println("6: Back\n");
-            response = 0;
-            
-            while(response < 1 || response > 6){
-                System.out.print("> ");
+        try {
+            while(true){
+                System.out.println("*** Hotel Reservation System Management Client :: System Administration ***\n");
+                System.out.println("1: Create New Employee");
+                System.out.println("2: View All Employees");
+                System.out.println("-----------------------");
+                System.out.println("3: Create New Partner");
+                System.out.println("4: View All Partners");
+                System.out.println("-----------------------");
+                System.out.println("5: Allocate Rooms");
+                System.out.println("6: Back\n");
+                response = 0;
 
-                response = scanner.nextInt();
+                while(response < 1 || response > 6){
+                    System.out.print("> ");
 
-                if(response == 1){
-                    try {
-                        doCreateNewEmployee();
+                    response = scanner.nextInt();
+
+                    if(response == 1){
+                        try {
+                            doCreateNewEmployee();
+                        }
+                        catch(UserAlreadyExistException ex){
+                            System.out.println("User Already Exists!\n");
+                        }
                     }
-                    catch(UserAlreadyExistException ex){
-                        System.out.println("User Already Exists!\n");
+                    else if(response == 2){
+                        doViewAllEmployees();
+                    }
+                    else if(response == 3){
+                        try {
+                            doCreateNewPartner();
+                        }
+                        catch(UserAlreadyExistException ex){
+                            System.out.println("User Already Exists!\n");
+                        }
+                    }
+                    else if(response == 4){
+                        doViewAllPartners();
+                    }
+                    else if (response == 5){
+                        doAllocateRoom();
+                    }
+                    else if (response == 6){
+                        break;
+                    }
+                    else {
+                        System.out.println("Invalid option, please try again!\n");                
                     }
                 }
-                else if(response == 2){
-                    doViewAllEmployees();
-                }
-                else if(response == 3){
-                    try {
-                        doCreateNewPartner();
-                    }
-                    catch(UserAlreadyExistException ex){
-                        System.out.println("User Already Exists!\n");
-                    }
-                }
-                else if(response == 4){
-                    doViewAllPartners();
-                }
-                else if (response == 5){
-                    doAllocateRoom();
-                }
-                else if (response == 6){
+
+                if(response == 6){
                     break;
                 }
-                else {
-                    System.out.println("Invalid option, please try again!\n");                
-                }
             }
-            
-            if(response == 6){
-                break;
-            }
+        } catch (InputMismatchException ex) {
+                scanner.nextLine();
+                System.err.println("Input Mismatch.");
         }
     }
     
@@ -108,29 +114,30 @@ public class SystemAdministrationModule {
         
         System.out.println("*** Hotel Reservation System Management Client :: System Administration :: Create New Employee ***\n");
         
-        while(true){
-            System.out.print("Select Employee Type (1: System Administrator, 2: Operation Manager, 3: Sales Manager, 4: Guest Relation Officer)> ");
-            Integer employeeTypeChosen = scanner.nextInt();
-            
-            if(employeeTypeChosen == 1){
-                newEmployee.setEmployeeType("System Administrator");
-                break;
+        try {
+            while (true) {
+                System.out.print("Select Employee Type (1: System Administrator, 2: Operation Manager, 3: Sales Manager, 4: Guest Relation Officer)> ");
+                Integer employeeTypeChosen = scanner.nextInt();
+
+                if (employeeTypeChosen == 1) {
+                    newEmployee.setEmployeeType("System Administrator");
+                    break;
+                } else if (employeeTypeChosen == 2) {
+                    newEmployee.setEmployeeType("Operation Manager");
+                    break;
+                } else if (employeeTypeChosen == 3) {
+                    newEmployee.setEmployeeType("Sales Manager");
+                    break;
+                } else if (employeeTypeChosen == 4) {
+                    newEmployee.setEmployeeType("Guest Relation Officer");
+                    break;
+                } else {
+                    System.out.println("Invalid option, please try again!\n");
+                }
             }
-            else if (employeeTypeChosen == 2){
-                newEmployee.setEmployeeType("Operation Manager");
-                break;
-            }
-            else if (employeeTypeChosen == 3){
-                newEmployee.setEmployeeType("Sales Manager");
-                break;
-            }
-            else if (employeeTypeChosen == 4){
-                newEmployee.setEmployeeType("Guest Relation Officer");
-                break;
-            }
-            else{
-                System.out.println("Invalid option, please try again!\n");
-            }
+        } catch (InputMismatchException ex) {
+                scanner.nextLine();
+                System.err.println("Input Mismatch.");
         }
         
         scanner.nextLine();

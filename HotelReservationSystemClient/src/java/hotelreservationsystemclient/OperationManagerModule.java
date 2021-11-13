@@ -8,6 +8,7 @@ import ejb.session.stateless.RoomTypesEntitySessionBeanRemote;
 import entity.HotelRooms;
 import entity.RoomTypes;
 import java.text.SimpleDateFormat;
+import java.util.InputMismatchException;
 import java.util.List;
 import util.exception.DeleteRoomException;
 import util.exception.DeleteRoomTypeException;
@@ -47,58 +48,62 @@ public class OperationManagerModule {
         
         Scanner scanner = new Scanner(System.in);
         Integer response = 0;
-        
-        while(true){
-            System.out.println("*** Hotel Reservation System Management Client :: Operation Manager ***\n");
-            System.out.println("1: Create New Room Type");
-            System.out.println("2: View Room Type Details");
-            System.out.println("3: View All Room Types");
-            System.out.println("-----------------------");
-            System.out.println("4: Create New Room");
-            System.out.println("5: Update Room Status");
-            System.out.println("6: Delete Room");
-            System.out.println("7: View All Rooms");
-            System.out.println("-----------------------");
-            System.out.println("8: Back\n");
-            response = 0;
-            
-            while(response < 1 || response > 8){
-                System.out.print("> ");
+        try {
+            while(true){
+                System.out.println("*** Hotel Reservation System Management Client :: Operation Manager ***\n");
+                System.out.println("1: Create New Room Type");
+                System.out.println("2: View Room Type Details");
+                System.out.println("3: View All Room Types");
+                System.out.println("-----------------------");
+                System.out.println("4: Create New Room");
+                System.out.println("5: Update Room Status");
+                System.out.println("6: Delete Room");
+                System.out.println("7: View All Rooms");
+                System.out.println("-----------------------");
+                System.out.println("8: Back\n");
+                response = 0;
 
-                response = scanner.nextInt();
+                while(response < 1 || response > 8){
+                    System.out.print("> ");
 
-                if(response == 1){
-                    doCreateNewRoomType();
+                    response = scanner.nextInt();
+
+                    if(response == 1){
+                        doCreateNewRoomType();
+                    }
+                    else if(response == 2){
+                        doViewRoomTypeDetails();
+                    }
+                    else if(response == 3){
+                        doViewAllRoomTypes();
+                    }
+                    else if (response == 4){
+                        doCreateNewHotelRoom();
+                    }
+                    else if (response == 5){
+                        doUpdateRoomStatus();
+                    }
+                    else if (response == 6){
+                        doDeleteRoom();
+                    }
+                    else if (response == 7){
+                        doViewAllHotelRooms();
+                    }
+                    else if (response == 8){
+                        break;
+                    }
+                    else {
+                        System.out.println("Invalid option, please try again!\n");                
+                    }
                 }
-                else if(response == 2){
-                    doViewRoomTypeDetails();
-                }
-                else if(response == 3){
-                    doViewAllRoomTypes();
-                }
-                else if (response == 4){
-                    doCreateNewHotelRoom();
-                }
-                else if (response == 5){
-                    doUpdateRoomStatus();
-                }
-                else if (response == 6){
-                    doDeleteRoom();
-                }
-                else if (response == 7){
-                    doViewAllHotelRooms();
-                }
-                else if (response == 8){
+
+                if(response == 8){
                     break;
                 }
-                else {
-                    System.out.println("Invalid option, please try again!\n");                
-                }
             }
-            
-            if(response == 8){
-                break;
-            }
+        } catch (InputMismatchException ex) {
+                scanner.nextLine();
+                System.err.println("Input Mismatch.");
         }
     }
     

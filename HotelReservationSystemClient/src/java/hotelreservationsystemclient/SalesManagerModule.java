@@ -13,6 +13,7 @@ import util.exception.InvalidAccessRightException;
 import util.exception.RoomTypeNotFoundException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.InputMismatchException;
 import util.exception.RateAlreadyExistException;
 import util.exception.RatesNotFoundException;
 
@@ -51,40 +52,45 @@ public class SalesManagerModule {
         Scanner scanner = new Scanner(System.in);
         Integer response = 0;
         
-        while(true){
-            System.out.println("*** Hotel Reservation System Management Client :: Sales Manager ***\n");
-            System.out.println("1: Create New Room Rate");
-            System.out.println("2: View Room Rate Details");
-            System.out.println("3: View All Room Rates");
-            System.out.println("-----------------------");
-            System.out.println("4: Back\n");
-            response = 0;
-            
-            while(response < 1 || response > 4){
-                System.out.print("> ");
+        try {
+            while(true){
+                System.out.println("*** Hotel Reservation System Management Client :: Sales Manager ***\n");
+                System.out.println("1: Create New Room Rate");
+                System.out.println("2: View Room Rate Details");
+                System.out.println("3: View All Room Rates");
+                System.out.println("-----------------------");
+                System.out.println("4: Back\n");
+                response = 0;
 
-                response = scanner.nextInt();
+                while(response < 1 || response > 4){
+                    System.out.print("> ");
 
-                if(response == 1){
-                    doCreateNewRoomRate();
+                    response = scanner.nextInt();
+
+                    if(response == 1){
+                        doCreateNewRoomRate();
+                    }
+                    else if(response == 2){
+                        doViewRoomRateDetails();
+                    }
+                    else if(response == 3){
+                        doViewAllRoomRates();
+                    }
+                    else if (response == 4){
+                        break;
+                    }
+                    else {
+                        System.out.println("Invalid option, please try again!\n");                
+                    }
                 }
-                else if(response == 2){
-                    doViewRoomRateDetails();
-                }
-                else if(response == 3){
-                    doViewAllRoomRates();
-                }
-                else if (response == 4){
+
+                if(response == 4){
                     break;
                 }
-                else {
-                    System.out.println("Invalid option, please try again!\n");                
-                }
             }
-            
-            if(response == 4){
-                break;
-            }
+        } catch (InputMismatchException ex) {
+                scanner.nextLine();
+                System.err.println("Input Mismatch.");
         }
     }
     
@@ -97,52 +103,57 @@ public class SalesManagerModule {
         String newRateType = "";
         
         System.out.println("*** Hotel Reservation System Management Client :: Sales Manager :: Create New Room Rate ***\n");
+        
+        try {
+            while (true) {
+                System.out.print("Enter New Rate Type Name (Published / Normal / Peak / Promo): ");
+                newRateType = scanner.nextLine().trim();
+                if (newRateType.equals("Published")) {
+                    newRate.setRateType(newRateType);
+                    break;
+                } else if (newRateType.equals("Normal")) {
+                    newRate.setRateType(newRateType);
+                    break;
+                } else if (newRateType.equals("Peak")) {
+                    newRate.setRateType(newRateType);
+                    try {
+                        System.out.print("Enter Peak rate type validity period start date (DD/MM/YYYY): ");
+                        newRate.setStartDate(inputDateFormat.parse(scanner.nextLine().trim()));
+                    } catch (ParseException ex) {
+                        System.out.println("Parse Exception");
+                    }
 
-        while (true) {
-            System.out.print("Enter New Rate Type Name (Published / Normal / Peak / Promo): ");
-            newRateType = scanner.nextLine().trim();
-            if (newRateType.equals("Published")) {
-                newRate.setRateType(newRateType);
-                break;
-            } else if (newRateType.equals("Normal")) {
-                newRate.setRateType(newRateType);
-                break;
-            } else if (newRateType.equals("Peak")) {
-                newRate.setRateType(newRateType);
-                try {
-                    System.out.print("Enter Peak rate type validity period start date (DD/MM/YYYY): ");
-                    newRate.setStartDate(inputDateFormat.parse(scanner.nextLine().trim()));
-                } catch (ParseException ex) {
-                    System.out.println("Parse Exception");
+                    try {
+                        System.out.print("Enter Peak rate type validity period end date (DD/MM/YYYY): ");
+                        newRate.setEndDate(inputDateFormat.parse(scanner.nextLine().trim()));
+                    } catch (ParseException ex) {
+                        System.out.println("Parse Exception");
+                    }
+                    break;
+                } else if (newRateType.equals("Promo")) {
+                    newRate.setRateType(newRateType);
+
+                    try {
+                        System.out.print("Enter Peak rate type validity period start date (DD/MM/YYYY): ");
+                        newRate.setStartDate(inputDateFormat.parse(scanner.nextLine().trim()));
+                    } catch (ParseException ex) {
+                        System.out.println("Parse Exception");
+                    }
+
+                    try {
+                        System.out.print("Enter Peak rate type validity period end date (DD/MM/YYYY): ");
+                        newRate.setEndDate(inputDateFormat.parse(scanner.nextLine().trim()));
+                    } catch (ParseException ex) {
+                        System.out.println("Parse Exception");
+                    }
+                    break;
+                } else {
+                    System.out.println("Invalid option, please ensure it is one of the four rate types!\n");
                 }
-                
-                try {
-                    System.out.print("Enter Peak rate type validity period end date (DD/MM/YYYY): ");
-                    newRate.setEndDate(inputDateFormat.parse(scanner.nextLine().trim()));
-                } catch (ParseException ex) {
-                    System.out.println("Parse Exception");
-                }
-                break;
-            } else if (newRateType.equals("Promo")) {
-                newRate.setRateType(newRateType);
-                
-                try {
-                    System.out.print("Enter Peak rate type validity period start date (DD/MM/YYYY): ");
-                    newRate.setStartDate(inputDateFormat.parse(scanner.nextLine().trim()));
-                } catch (ParseException ex) {
-                    System.out.println("Parse Exception");
-                }
-                
-                try {
-                    System.out.print("Enter Peak rate type validity period end date (DD/MM/YYYY): ");
-                    newRate.setEndDate(inputDateFormat.parse(scanner.nextLine().trim()));
-                } catch (ParseException ex) {
-                    System.out.println("Parse Exception");
-                }
-                break;
-            } else {
-                System.out.println("Invalid option, please ensure it is one of the four rate types!\n");
             }
+        } catch (InputMismatchException ex) {
+                scanner.nextLine();
+                System.err.println("Input Mismatch.");
         }
         
         System.out.print("Enter New Rate Room Type: ");

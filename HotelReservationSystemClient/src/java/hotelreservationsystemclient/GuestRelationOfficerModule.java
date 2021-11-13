@@ -18,6 +18,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.InputMismatchException;
 import java.util.Map;
 import util.exception.InvalidRoomQuantityException;
 import util.exception.InvalidRoomTypeException;
@@ -63,45 +64,49 @@ public class GuestRelationOfficerModule {
         
         Scanner scanner = new Scanner(System.in);
         Integer response = 0;
-        
-        while(true){
-            System.out.println("*** Hotel Reservation System Management Client :: Guest Relation Officer ***\n");
-            System.out.println("1: Walk-in Search Room");
-            System.out.println("2: Check-in Guest");
-            System.out.println("3: Check-out Guest");
-            System.out.println("-----------------------");
-            System.out.println("4: Back\n");
-            response = 0;
-            
-            while(response < 1 || response > 4){
-                System.out.print("> ");
+        try {
+            while(true){
+                System.out.println("*** Hotel Reservation System Management Client :: Guest Relation Officer ***\n");
+                System.out.println("1: Walk-in Search Room");
+                System.out.println("2: Check-in Guest");
+                System.out.println("3: Check-out Guest");
+                System.out.println("-----------------------");
+                System.out.println("4: Back\n");
+                response = 0;
 
-                response = scanner.nextInt();
+                while(response < 1 || response > 4){
+                    System.out.print("> ");
 
-                if(response == 1){
-                    doWalkInSearch();
-                }
-                else if(response == 2){
-                    try {
-                        doCheckIn();
-                    } catch (UnableToAllocateException ex) {
-                        System.out.println("Unable to allocate room. No available room");
+                    response = scanner.nextInt();
+
+                    if(response == 1){
+                        doWalkInSearch();
+                    }
+                    else if(response == 2){
+                        try {
+                            doCheckIn();
+                        } catch (UnableToAllocateException ex) {
+                            System.out.println("Unable to allocate room. No available room");
+                        }
+                    }
+                    else if(response == 3){
+                        //doCheckOut();
+                    }
+                    else if (response == 4){
+                        break;
+                    }
+                    else {
+                        System.out.println("Invalid option, please try again!\n");                
                     }
                 }
-                else if(response == 3){
-                    //doCheckOut();
-                }
-                else if (response == 4){
+
+                if(response == 4){
                     break;
                 }
-                else {
-                    System.out.println("Invalid option, please try again!\n");                
-                }
             }
-            
-            if(response == 4){
-                break;
-            }
+        } catch (InputMismatchException ex) {
+                scanner.nextLine();
+                System.err.println("Input Mismatch.");
         }
     }
     
@@ -136,13 +141,18 @@ public class GuestRelationOfficerModule {
             System.out.println("Reserve Room?\n");
             System.out.println("1: Reserve Room");
             System.out.println("2: Exit");
-            while (response < 1 || response > 2) {
-                System.out.print("> ");
-                response = scanner.nextInt();
-                if (response == 1) {
-                    hotelReservationSessionBeanRemote.walkInLogin();
-                    doReserveRoom(checkInDate);
+            try {
+                while (response < 1 || response > 2) {
+                    System.out.print("> ");
+                    response = scanner.nextInt();
+                    if (response == 1) {
+                        hotelReservationSessionBeanRemote.walkInLogin();
+                        doReserveRoom(checkInDate);
+                    }
                 }
+            } catch (InputMismatchException ex) {
+                scanner.nextLine();
+                System.err.println("Input Mismatch.");
             }
 
         } catch (ParseException ex) {
@@ -257,12 +267,17 @@ public class GuestRelationOfficerModule {
         Integer response = 0;
         System.out.println("1: Try Again");
         System.out.println("2: Exit");
-        while (response < 1 || response > 2) {
-            System.out.print("> ");
-            response = scanner.nextInt();
-            if (response == 1) {
-                doReserveRoom(checkInDate);
+        try {
+            while (response < 1 || response > 2) {
+                System.out.print("> ");
+                response = scanner.nextInt();
+                if (response == 1) {
+                    doReserveRoom(checkInDate);
+                }
             }
+        } catch (InputMismatchException ex) {
+                scanner.nextLine();
+                System.err.println("Input Mismatch.");
         }
     }
     

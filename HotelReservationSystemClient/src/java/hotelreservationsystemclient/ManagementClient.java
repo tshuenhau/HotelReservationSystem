@@ -14,6 +14,7 @@ import ejb.session.stateless.RatesEntitySessionBeanRemote;
 import ejb.session.stateless.ReservationsEntitySessionBeanRemote;
 import ejb.session.stateless.RoomTypesEntitySessionBeanRemote;
 import entity.Employees;
+import java.util.InputMismatchException;
 import java.util.Scanner;
 import util.exception.InvalidAccessRightException;
 import util.exception.InvalidLoginCredentialException;
@@ -68,60 +69,59 @@ public class ManagementClient {
         Scanner scanner = new Scanner(System.in);
 
         Integer response = 0;
+        
+        try {
+            while (true) {
+                System.out.println("*** Welcome to Holiday Reservation System Management Client ***\n");
 
-        while(true){
-            System.out.println("*** Welcome to Holiday Reservation System Management Client ***\n");
-                        
-            if(currentEmployee != null){
-                System.out.println("You are currently logged in as " + currentEmployee.getUsername() + "\n");
-            }
-            else {            
-                System.out.println("1: Login");
-            }
-            
-            System.out.println("2: Exit\n");
-            
-            response = 0;
+                if (currentEmployee != null) {
+                    System.out.println("You are currently logged in as " + currentEmployee.getUsername() + "\n");
+                } else {
+                    System.out.println("1: Login");
+                }
 
-            while(response < 1 || response > 2){                
-                System.out.print("> ");
-                response = scanner.nextInt();
-                if(response == 1 ){
-                    if(currentEmployee == null){
-                        try {
-                            doLogin();
-                            System.out.println("Login successful as " + currentEmployee.getUsername() + "!\n");
-                            if (currentEmployee.getEmployeeType().equals("System Administrator")){
-                                systemAdministrationModule = new SystemAdministrationModule(employeesEntitySessionBeanRemote, currentEmployee, customersEntitySessionBeanRemote, allocationSessionBeanRemote);
-                                menuMainSystemAdmin();
+                System.out.println("2: Exit\n");
+
+                response = 0;
+
+                while (response < 1 || response > 2) {
+                    System.out.print("> ");
+                    response = scanner.nextInt();
+                    if (response == 1) {
+                        if (currentEmployee == null) {
+                            try {
+                                doLogin();
+                                System.out.println("Login successful as " + currentEmployee.getUsername() + "!\n");
+                                if (currentEmployee.getEmployeeType().equals("System Administrator")) {
+                                    systemAdministrationModule = new SystemAdministrationModule(employeesEntitySessionBeanRemote, currentEmployee, customersEntitySessionBeanRemote, allocationSessionBeanRemote);
+                                    menuMainSystemAdmin();
+                                } else if (currentEmployee.getEmployeeType().equals("Operation Manager")) {
+                                    operationManagerModule = new OperationManagerModule(employeesEntitySessionBeanRemote, currentEmployee, roomTypesEntitySessionBeanRemote, hotelRoomsEntitySessionBeanRemote);
+                                    menuMainOperationManager();
+                                } else if (currentEmployee.getEmployeeType().equals("Sales Manager")) {
+                                    salesManagerModule = new SalesManagerModule(employeesEntitySessionBeanRemote, currentEmployee, roomTypesEntitySessionBeanRemote, hotelRoomsEntitySessionBeanRemote, ratesEntitySessionBeanRemote);
+                                    menuMainSalesManager();
+                                } else if (currentEmployee.getEmployeeType().equals("Guest Relation Officer")) {
+                                    guestRelationOfficerModule = new GuestRelationOfficerModule(allocationSessionBeanRemote, employeesEntitySessionBeanRemote, currentEmployee, roomTypesEntitySessionBeanRemote, hotelRoomsEntitySessionBeanRemote, ratesEntitySessionBeanRemote, hotelReservationSessionBeanRemote, reservationsEntitySessionBeanRemote);
+                                    menuMainGuestRelationOfficer();
+                                }
+                            } catch (InvalidLoginCredentialException ex) {
+                                System.out.println("Invalid login credential: " + ex.getMessage() + "\n");
                             }
-                            else if (currentEmployee.getEmployeeType().equals("Operation Manager")){
-                                operationManagerModule = new OperationManagerModule(employeesEntitySessionBeanRemote, currentEmployee, roomTypesEntitySessionBeanRemote, hotelRoomsEntitySessionBeanRemote);
-                                menuMainOperationManager();
-                            }
-                            else if (currentEmployee.getEmployeeType().equals("Sales Manager")){
-                                salesManagerModule = new SalesManagerModule(employeesEntitySessionBeanRemote, currentEmployee, roomTypesEntitySessionBeanRemote, hotelRoomsEntitySessionBeanRemote, ratesEntitySessionBeanRemote);
-                                menuMainSalesManager();
-                            }
-                            else if (currentEmployee.getEmployeeType().equals("Guest Relation Officer")){
-                                guestRelationOfficerModule = new GuestRelationOfficerModule(allocationSessionBeanRemote, employeesEntitySessionBeanRemote, currentEmployee, roomTypesEntitySessionBeanRemote, hotelRoomsEntitySessionBeanRemote, ratesEntitySessionBeanRemote, hotelReservationSessionBeanRemote, reservationsEntitySessionBeanRemote);
-                                menuMainGuestRelationOfficer();
-                            }
+                        } else {
+                            System.out.println("You are already login as " + currentEmployee.getUsername() + "\n");
                         }
-                        catch(InvalidLoginCredentialException ex){
-                            System.out.println("Invalid login credential: " + ex.getMessage() + "\n");
-                        }
-                    }
-                    else {
-                        System.out.println("You are already login as " + currentEmployee.getUsername() + "\n");
                     }
                 }
+
+                if (response == 2) {
+                    System.out.println("Exited Reservation Client\n");
+                    break;
+                }
             }
-            
-            if(response == 2){
-                System.out.println("Exited Reservation Client\n");
-                break;
-            }
+        } catch (InputMismatchException ex) {
+                scanner.nextLine();
+                System.err.println("Input Mismatch.");
         }
     }
     
@@ -148,38 +148,43 @@ public class ManagementClient {
         Scanner scanner = new Scanner(System.in);
         Integer response = 0;
         
-        while(true){
-            System.out.println("*** Hotel Reservation System Management Client ***\n");
-            System.out.println("You are login as " + currentEmployee.getUsername() + " with " + currentEmployee.getEmployeeType() + " rights\n");
-            System.out.println("1: System Administration");
-            System.out.println("2: Logout\n");
-            response = 0;
-            
-            while(response < 1 || response > 2){
-                System.out.print("> ");
+        try {
+            while(true){
+                System.out.println("*** Hotel Reservation System Management Client ***\n");
+                System.out.println("You are login as " + currentEmployee.getUsername() + " with " + currentEmployee.getEmployeeType() + " rights\n");
+                System.out.println("1: System Administration");
+                System.out.println("2: Logout\n");
+                response = 0;
 
-                response = scanner.nextInt();
-                
-                if(response == 1){
-                    try {
-                        systemAdministrationModule.menuSystemAdministration();
+                while(response < 1 || response > 2){
+                    System.out.print("> ");
+
+                    response = scanner.nextInt();
+
+                    if(response == 1){
+                        try {
+                            systemAdministrationModule.menuSystemAdministration();
+                        }
+                        catch (InvalidAccessRightException ex){
+                            System.out.println("Invalid option, please try again!: " + ex.getMessage() + "\n");
+                        }
                     }
-                    catch (InvalidAccessRightException ex){
-                        System.out.println("Invalid option, please try again!: " + ex.getMessage() + "\n");
+                    else if (response == 2){
+                        currentEmployee = null;
+                        break;
+                    }
+                    else {
+                        System.out.println("Invalid option, please try again!\n");                
                     }
                 }
-                else if (response == 2){
-                    currentEmployee = null;
+
+                if(response == 2){
                     break;
                 }
-                else {
-                    System.out.println("Invalid option, please try again!\n");                
-                }
             }
-            
-            if(response == 2){
-                break;
-            }
+        } catch (InputMismatchException ex) {
+                scanner.nextLine();
+                System.err.println("Input Mismatch.");
         }
     }
         
@@ -187,38 +192,43 @@ public class ManagementClient {
         Scanner scanner = new Scanner(System.in);
         Integer response = 0;
         
-        while(true){
-            System.out.println("*** Hotel Reservation System Management Client ***\n");
-            System.out.println("You are login as " + currentEmployee.getUsername() + " with " + currentEmployee.getEmployeeType() + " rights\n");
-            System.out.println("1: Operation Management");
-            System.out.println("2: Logout\n");
-            response = 0;
-            
-            while(response < 1 || response > 2){
-                System.out.print("> ");
+        try {
+            while(true){
+                System.out.println("*** Hotel Reservation System Management Client ***\n");
+                System.out.println("You are login as " + currentEmployee.getUsername() + " with " + currentEmployee.getEmployeeType() + " rights\n");
+                System.out.println("1: Operation Management");
+                System.out.println("2: Logout\n");
+                response = 0;
 
-                response = scanner.nextInt();
-                
-                if(response == 1){
-                    try {
-                        operationManagerModule.menuOperationManager();
+                while(response < 1 || response > 2){
+                    System.out.print("> ");
+
+                    response = scanner.nextInt();
+
+                    if(response == 1){
+                        try {
+                            operationManagerModule.menuOperationManager();
+                        }
+                        catch (InvalidAccessRightException ex){
+                            System.out.println("Invalid option, please try again!: " + ex.getMessage() + "\n");
+                        }
                     }
-                    catch (InvalidAccessRightException ex){
-                        System.out.println("Invalid option, please try again!: " + ex.getMessage() + "\n");
+                    else if (response == 2){
+                        currentEmployee = null;
+                        break;
+                    }
+                    else {
+                        System.out.println("Invalid option, please try again!\n");                
                     }
                 }
-                else if (response == 2){
-                    currentEmployee = null;
+
+                if(response == 2){
                     break;
                 }
-                else {
-                    System.out.println("Invalid option, please try again!\n");                
-                }
             }
-            
-            if(response == 2){
-                break;
-            }
+        } catch (InputMismatchException ex) {
+                scanner.nextLine();
+                System.err.println("Input Mismatch.");
         }
     }
     
@@ -227,38 +237,43 @@ public class ManagementClient {
         Scanner scanner = new Scanner(System.in);
         Integer response = 0;
         
-        while(true){
-            System.out.println("*** Hotel Reservation System Management Client ***\n");
-            System.out.println("You are login as " + currentEmployee.getUsername() + " with " + currentEmployee.getEmployeeType() + " rights\n");
-            System.out.println("1: Sales Manager");
-            System.out.println("2: Logout\n");
-            response = 0;
-            
-            while(response < 1 || response > 2){
-                System.out.print("> ");
+        try {
+            while(true){
+                System.out.println("*** Hotel Reservation System Management Client ***\n");
+                System.out.println("You are login as " + currentEmployee.getUsername() + " with " + currentEmployee.getEmployeeType() + " rights\n");
+                System.out.println("1: Sales Manager");
+                System.out.println("2: Logout\n");
+                response = 0;
 
-                response = scanner.nextInt();
-                
-                if(response == 1){
-                    try {
-                        salesManagerModule.menuSalesManager();
+                while(response < 1 || response > 2){
+                    System.out.print("> ");
+
+                    response = scanner.nextInt();
+
+                    if(response == 1){
+                        try {
+                            salesManagerModule.menuSalesManager();
+                        }
+                        catch (InvalidAccessRightException ex){
+                            System.out.println("Invalid option, please try again!: " + ex.getMessage() + "\n");
+                        }
                     }
-                    catch (InvalidAccessRightException ex){
-                        System.out.println("Invalid option, please try again!: " + ex.getMessage() + "\n");
+                    else if (response == 2){
+                        currentEmployee = null;
+                        break;
+                    }
+                    else {
+                        System.out.println("Invalid option, please try again!\n");                
                     }
                 }
-                else if (response == 2){
-                    currentEmployee = null;
+
+                if(response == 2){
                     break;
                 }
-                else {
-                    System.out.println("Invalid option, please try again!\n");                
-                }
             }
-            
-            if(response == 2){
-                break;
-            }
+        } catch (InputMismatchException ex) {
+                scanner.nextLine();
+                System.err.println("Input Mismatch.");
         }
     }
     
@@ -266,38 +281,43 @@ public class ManagementClient {
         Scanner scanner = new Scanner(System.in);
         Integer response = 0;
         
-        while(true){
-            System.out.println("*** Hotel Reservation System Management Client ***\n");
-            System.out.println("You are login as " + currentEmployee.getUsername() + " with " + currentEmployee.getEmployeeType() + " rights\n");
-            System.out.println("1: Guest Relation Officer");
-            System.out.println("2: Logout\n");
-            response = 0;
-            
-            while(response < 1 || response > 2){
-                System.out.print("> ");
+        try {
+            while(true){
+                System.out.println("*** Hotel Reservation System Management Client ***\n");
+                System.out.println("You are login as " + currentEmployee.getUsername() + " with " + currentEmployee.getEmployeeType() + " rights\n");
+                System.out.println("1: Guest Relation Officer");
+                System.out.println("2: Logout\n");
+                response = 0;
 
-                response = scanner.nextInt();
-                
-                if(response == 1){
-                    try {
-                        guestRelationOfficerModule.menuGuestRelationOfficer();
+                while(response < 1 || response > 2){
+                    System.out.print("> ");
+
+                    response = scanner.nextInt();
+
+                    if(response == 1){
+                        try {
+                            guestRelationOfficerModule.menuGuestRelationOfficer();
+                        }
+                        catch (InvalidAccessRightException ex){
+                            System.out.println("Invalid option, please try again!: " + ex.getMessage() + "\n");
+                        }
                     }
-                    catch (InvalidAccessRightException ex){
-                        System.out.println("Invalid option, please try again!: " + ex.getMessage() + "\n");
+                    else if (response == 2){
+                        currentEmployee = null;
+                        break;
+                    }
+                    else {
+                        System.out.println("Invalid option, please try again!\n");                
                     }
                 }
-                else if (response == 2){
-                    currentEmployee = null;
+
+                if(response == 2){
                     break;
                 }
-                else {
-                    System.out.println("Invalid option, please try again!\n");                
-                }
             }
-            
-            if(response == 2){
-                break;
-            }
+        } catch (InputMismatchException ex) {
+                scanner.nextLine();
+                System.err.println("Input Mismatch.");
         }
     }
 }
