@@ -102,20 +102,17 @@ public class AllocationSessionBean implements AllocationSessionBeanRemote, Alloc
                 }
             }
 
-            System.out.println("AVAILABILITY: " + a.getRoomType() + " " + a.getNumReservations() + " " + a.getNumAvailable());
         }
 //next we generate the exceptions. i.e find the upgrades and stuff. need redo this part
         for (int i = 0; i < allocationReport.size(); i++) {
             if (allocationReport.get(i).canFulfil() == false) {//current roomtype cannot allocate fully
                 Integer count = allocationReport.get(i).numShortage();
-                System.out.println("count: " + count);
                 //find the next upgrade
                 if (allocationReport.get(i).getRoomType().getNextHigherRoomType() != null) {
                     // there is an upgrade
                     for (Allocation al : allocationReport) {
                         if (al.getRoomType().equals(allocationReport.get(i).getRoomType().getNextHigherRoomType()) && al.canFulfil() == true) {
                             Integer numUpgrades = -al.numShortage();//number of upgrades possible
-                            System.out.println("numUpgrades: " + numUpgrades);
                             if (numUpgrades > 0) {
                                 al.setNumReservations(al.getNumReservations() + numUpgrades);
                                 allocationReport.get(i).setNumReservations(al.getNumReservations() - numUpgrades);
@@ -144,15 +141,6 @@ public class AllocationSessionBean implements AllocationSessionBeanRemote, Alloc
             }
         }
 
-        for (Allocation a : allocationReport) {
-
-            System.out.println(a.getNumReservations() + " " + a.getNumAvailable());
-        }
-
-        System.out.println("EXCEPTION REPORT");
-        for (AllocationException a : allocationExceptions) {
-            System.out.println(a.getExceptionType() + " " + a.getRoomType());
-        }
 
         return allocationReport;
 
@@ -178,11 +166,8 @@ public class AllocationSessionBean implements AllocationSessionBeanRemote, Alloc
             if (r.getStartDate().equals(date)) {
                 for (HotelRooms h : hotelRooms) {
                     if (r.getReservationRoomType().equals(h.getRmType()) && h.getIsAllocated() == false && h.getStatus() == true && r.getAllocatedRoom() == null) { // not allocating those updates
-                        System.out.println("ALLOCTE");
                         h.setIsAllocated(true);
                         r.setAllocatedRoom(h);
-                        System.out.println("allocating reservation id:" + r.getReservationID());
-
                         reservationsEntitySessionBeanLocal.updateReservation(r);
                         break;
                     }

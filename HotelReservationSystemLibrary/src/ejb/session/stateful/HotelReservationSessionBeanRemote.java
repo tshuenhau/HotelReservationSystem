@@ -12,6 +12,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import javax.ejb.Remote;
+import util.exception.InvalidDateRangeException;
 import util.exception.InvalidRoomQuantityException;
 import util.exception.InvalidRoomTypeException;
 import util.exception.NotLoggedInException;
@@ -25,7 +26,7 @@ public interface HotelReservationSessionBeanRemote {
 
     public void remove();
     
-    public Map<RoomTypes, List<Integer>> searchHotelRooms(Date checkInDate, Date checkOutDate);
+    public Map<RoomTypes, List<Integer>> searchHotelRooms(Date checkInDate, Date checkOutDate) throws InvalidDateRangeException;
 
     public List<Reservations> addReservation(String inputRoomType, Integer quantity) throws InvalidRoomTypeException, InvalidRoomQuantityException, NotLoggedInException;
 
@@ -39,7 +40,7 @@ public interface HotelReservationSessionBeanRemote {
 
     public void login(Customers customer);
 
-    public Map<RoomTypes, List<Integer>> walkInSearchHotelRooms(Date checkInDate, Date checkOutDate);
+    public Map<RoomTypes, List<Integer>> walkInSearchHotelRooms(Date checkInDate, Date checkOutDate) throws InvalidDateRangeException;
 
     public Customers checkLoggedIn() throws NotLoggedInException;
 

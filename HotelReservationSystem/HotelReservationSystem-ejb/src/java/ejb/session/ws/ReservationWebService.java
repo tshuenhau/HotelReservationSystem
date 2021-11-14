@@ -33,6 +33,7 @@ import javax.jws.WebParam;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import util.exception.InvalidDateRangeException;
 import util.exception.InvalidLoginCredentialException;
 import util.exception.InvalidRoomQuantityException;
 import util.exception.InvalidRoomTypeException;
@@ -152,11 +153,15 @@ public class ReservationWebService {
     }
 
     @WebMethod(operationName = "SearchRoom")
-    public String[][] searchHotelRooms(String inputCheckInDate, String inputCheckOutDate) throws ParseException {
+    public String[][] searchHotelRooms(String inputCheckInDate, String inputCheckOutDate) throws ParseException, InvalidDateRangeException {
         List<RoomTypes> roomTypes = roomTypesEntitySessionBeanLocal.retrieveAllRoomTypes();
         String[][] result = new String[roomTypes.size()][3];
         Date checkInDate = inputDateFormat.parse(inputCheckInDate);
         Date checkOutDate = inputDateFormat.parse(inputCheckOutDate);
+        
+        if(checkInDate.after(checkOutDate) || checkInDate.equals(checkOutDate)){
+            throw new InvalidDateRangeException("Invalid Date Range: Check-out Date must be at least 1 day after Check-In Date");
+        }
 
         //System.out.println(checkInDate);
         Map<RoomTypes, List<Integer>> rooms = doSearchRoom(checkInDate, checkOutDate);
@@ -287,7 +292,7 @@ public class ReservationWebService {
     }
 
     @WebMethod(operationName = "addReservation")
-    public List<Reservations> addReservation(Long passportNum, String password, String inputCheckInDate, String inputCheckOutDate, String inputRoomType, Integer quantity) throws InvalidRoomTypeException, InvalidRoomQuantityException, ParseException, InvalidLoginCredentialException {
+    public List<Reservations> addReservation(Long passportNum, String password, String inputCheckInDate, String inputCheckOutDate, String inputRoomType, Integer quantity) throws InvalidRoomTypeException, InvalidRoomQuantityException, ParseException, InvalidLoginCredentialException, InvalidDateRangeException {
         String[][] data = searchHotelRooms(inputCheckInDate, inputCheckOutDate);
         Integer cost = 0;
         Boolean found = false;

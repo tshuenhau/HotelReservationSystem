@@ -2,15 +2,15 @@ package util.exception;
 
 
 
-public class InvalidAccessRightException extends Exception
+public class InvalidDateRangeException extends Exception
 {
-    public InvalidAccessRightException()
+    public InvalidDateRangeException()
     {
     }
     
     
     
-    public InvalidAccessRightException(String msg)
+    public InvalidDateRangeException(String msg)
     {
         super(msg);
     }

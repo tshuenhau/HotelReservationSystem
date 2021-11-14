@@ -84,7 +84,7 @@ public class Main {
                         break;
                     }
                 } catch (InputMismatchException ex) {
-                    System.err.println("Input type mismatch.");
+                    System.err.println("\nInput type mismatch.\n");
                     scanner.nextLine();
                     break;
 

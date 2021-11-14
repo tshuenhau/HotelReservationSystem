@@ -22,6 +22,7 @@ import java.util.Map;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import util.exception.InvalidDateRangeException;
 import util.exception.InvalidLoginCredentialException;
 import util.exception.InvalidRoomQuantityException;
 import util.exception.InvalidRoomTypeException;
@@ -71,6 +72,8 @@ public class ReservationClient {
             while (response < 1 || response > 5) {
                 try {
                     System.out.print("> ");
+                                System.out.flush();
+
                     response = scanner.nextInt();
                     if (response == 1) {
                         if (hotelReservationSessionBeanRemote.isLoggedIn() == false) {
@@ -79,7 +82,7 @@ public class ReservationClient {
                                 System.out.println("Login successful as " + hotelReservationSessionBeanRemote.getCurrentCustomer().getName() + "!\n");
 
                             } catch (InvalidLoginCredentialException ex) {
-                                System.err.println("Invalid login credential: " + ex.getMessage());
+                                System.err.println("\n" + ex.getMessage());
                                 break;
                             }
                         } else {
@@ -102,7 +105,8 @@ public class ReservationClient {
 
                     
                 } catch (InputMismatchException ex) {
-                    System.err.println("Input type mismatch.");
+                    System.err.println("\nInput type mismatch.\n");
+                    System.err.flush();
                     scanner.nextLine();
                     break;
                 }
@@ -125,6 +129,8 @@ public class ReservationClient {
             Long reservationID = 0l;
             List<Reservations> reservations = new ArrayList<Reservations>();
             System.out.println("*** Holiday Reservation System :: View Reservations ***\n");
+                        System.out.flush();
+
             reservations = reservationsEntitySessionBeanRemote.retrieveReserationsOfCustomer(hotelReservationSessionBeanRemote.checkLoggedIn());
             System.out.printf("%14s%26s\n", "Reservation ID", "Date");
 
@@ -166,13 +172,15 @@ public class ReservationClient {
 
             }
         } catch (NotLoggedInException ex) {
-            System.err.println(ex.getMessage());
+            System.err.println(ex.getMessage() + "\n");
         }
 
     }
 
     private void doReserveRoom(Date checkInDate) {
         try {
+                        System.out.flush();
+
             hotelReservationSessionBeanRemote.checkLoggedIn();
             //MAYBE DO TYPE IN ROOM NAME + QUANTITY
             Scanner scanner = new Scanner(System.in);
@@ -192,6 +200,8 @@ public class ReservationClient {
                     quantity = scanner.nextInt();
                     scanner.nextLine();
                     try {
+                        System.out.flush();
+
                         reservations = hotelReservationSessionBeanRemote.addReservation(roomType, quantity);
                     } catch (NotLoggedInException ex) {
                         System.err.println(ex.getMessage());
@@ -228,6 +238,7 @@ public class ReservationClient {
                             System.out.println("1: Confirm");
                             System.out.println("2: Cancel");
                                                                             System.out.print("> ");
+            System.out.flush();
 
                             reserveResponse = scanner.nextInt();
 
@@ -281,7 +292,7 @@ public class ReservationClient {
     private void handleReservationExceptions(Date checkInDate) {
         //MAYBE DO TYPE IN ROOM NAME + QUANTITY
         Scanner scanner = new Scanner(System.in);
-
+        System.out.println("");
         Integer response = 0;
         System.out.println("1: Try Again");
         System.out.println("2: Exit");
@@ -306,6 +317,7 @@ public class ReservationClient {
         scanner.nextLine();
         System.out.print("Enter password> ");
         password = scanner.nextLine().trim();
+            System.out.flush();
 
         if (passportNumber > 0 && password.length() > 0) {
             Customers currentCustomer = customersEntitySessionBeanRemote.login(passportNumber, password);
@@ -329,11 +341,12 @@ public class ReservationClient {
             checkInDate = inputDateFormat.parse(scanner.nextLine().trim());
             System.out.print("Enter Check-Out Date (dd/mm/yyyy)> ");
             checkOutDate = inputDateFormat.parse(scanner.nextLine().trim());
+            System.out.flush();
 
+            Map<RoomTypes, List<Integer>> availability = hotelReservationSessionBeanRemote.searchHotelRooms(checkInDate, checkOutDate);
             System.out.println("*** Showing available rooms for: " + outputDateFormat.format(checkInDate) + " to " + outputDateFormat.format(checkOutDate) + "***\n");
 
             System.out.printf("%25s%16s%9s\n", "Room Type", "Availability", "Price" );
-            Map<RoomTypes, List<Integer>> availability = hotelReservationSessionBeanRemote.searchHotelRooms(checkInDate, checkOutDate);
 
             availability.entrySet().forEach(rooms -> {
                 System.out.printf("%25s%16s%9s\n", rooms.getKey().getRoomTypeName(), rooms.getValue().get(0), rooms.getValue().get(1));
@@ -355,7 +368,13 @@ public class ReservationClient {
             }
 
         } catch (ParseException ex) {
-            System.err.println("Invalid date input!\n");
+            System.err.println("\nInvalid date input!\n");
+            System.err.flush();
+
+        } catch (InvalidDateRangeException ex) {
+            System.err.println(ex.getMessage());
+            System.err.flush();
+
         }
 
     }
@@ -383,6 +402,8 @@ public class ReservationClient {
                 System.out.println("Successfully registered " + currentCustomer.getName()+  " with passport number "+ currentCustomer.getPassportNum() + "!\n");
                 System.out.println("Automatically loggin in...\n");
                 System.out.println("Login successful as " + currentCustomer.getName() + "!\n");
+                            System.out.flush();
+
                 hotelReservationSessionBeanRemote.login(currentCustomer);
 
             } catch (UserAlreadyExistException ex) {

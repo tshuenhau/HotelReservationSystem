@@ -20,6 +20,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.InputMismatchException;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import util.exception.InvalidDateRangeException;
 import util.exception.InvalidRoomQuantityException;
 import util.exception.InvalidRoomTypeException;
 import util.exception.NotLoggedInException;
@@ -128,8 +131,8 @@ public class GuestRelationOfficerModule {
 
             System.out.println("*** Showing available rooms for: " + outputDateFormat.format(checkInDate) + " to " + outputDateFormat.format(checkOutDate) + "***\n");
 
-            System.out.printf("%12s%16s%9s\n", "Room Type", "Availability", "Price");
             Map<RoomTypes, List<Integer>> availability = hotelReservationSessionBeanRemote.walkInSearchHotelRooms(checkInDate, checkOutDate);
+            System.out.printf("%12s%16s%9s\n", "Room Type", "Availability", "Price");
 
             availability.entrySet().forEach(rooms -> {
                 System.out.printf("%12s%16s%9s\n", rooms.getKey().getRoomTypeName(), rooms.getValue().get(0), rooms.getValue().get(1));
@@ -157,6 +160,8 @@ public class GuestRelationOfficerModule {
 
         } catch (ParseException ex) {
             System.err.println("Invalid date input!\n");
+        } catch (InvalidDateRangeException ex) {
+            System.err.println(ex.getMessage());
         }
     }
     

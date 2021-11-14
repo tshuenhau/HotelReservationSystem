@@ -15,6 +15,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.xml.datatype.XMLGregorianCalendar;
 import ws.client.Customers;
+import ws.client.InvalidDateRangeException_Exception;
 import ws.client.InvalidLoginCredentialException_Exception;
 import ws.client.InvalidRoomQuantityException_Exception;
 import ws.client.InvalidRoomTypeException_Exception;
@@ -74,8 +75,6 @@ public class HotelReservationSystemPartner {
                         System.out.println("Logged in successfully as: " + currentCustomer.getName());
                         System.out.println();
 
-                        
-
                     } else if (response == 2) {
                         try {
                             response = 0;
@@ -90,10 +89,10 @@ public class HotelReservationSystemPartner {
                             System.out.print("Enter Check-Out Date (dd/mm/yyyy)> ");
                             checkOutDate = scanner.nextLine().trim();
                             List<StringArray> rooms = service.getReservationWebServicePort().searchRoom(checkInDate, checkOutDate);
-                            System.out.printf("%35s%16s%9s\n", "Room Type", "Availability", "Price");
+                            System.out.printf("%25s%16s%9s\n", "Room Type", "Availability", "Price");
                             for (StringArray s : rooms) {
                                 //rooms.get(0)
-                                System.out.printf("%35s%16s%9s\n", s.getItem().get(0), s.getItem().get(1), s.getItem().get(2));
+                                System.out.printf("%25s%16s%9s\n", s.getItem().get(0), s.getItem().get(1), s.getItem().get(2));
                             }
                             System.out.println("");
 
@@ -127,7 +126,7 @@ public class HotelReservationSystemPartner {
                                         } catch (InvalidRoomQuantityException_Exception ex) {
                                             System.err.println(ex.getMessage());
                                             response = 1;
-                                                break;
+                                            break;
 
                                         }
                                         System.out.println("");
@@ -151,6 +150,10 @@ public class HotelReservationSystemPartner {
                         } catch (ParseException_Exception | InvalidLoginCredentialException_Exception ex) {
                             System.err.println(ex.getMessage());
                             break;
+                        } catch (InvalidDateRangeException_Exception ex) {
+                            System.err.println(ex.getMessage());
+                            break;
+
                         }
 
                     } else if (response == 3) {
@@ -183,11 +186,11 @@ public class HotelReservationSystemPartner {
                         scanner.nextLine();
                         try {
                             Reservations r = service.getReservationWebServicePort().viewReservation(currentCustomer.getPassportNum(), currentCustomer.getPassword(), reservationID);
-                                     Date startDate = r.getStartDate().toGregorianCalendar().getTime();
-                                Date endDate = r.getEndDate().toGregorianCalendar().getTime();
-                            System.out.printf("%14s%35s      %s%26s\n", "Reservation ID", "Room Type", "Cost", "Date");
+                            Date startDate = r.getStartDate().toGregorianCalendar().getTime();
+                            Date endDate = r.getEndDate().toGregorianCalendar().getTime();
+                            System.out.printf("%14s%25s      %s%26s\n", "Reservation ID", "Room Type", "Cost", "Date");
                             //System.out.printf("%14s%16s      %s\n", r.getReservationID().toString(), r.getReservationRoomType().getRoomTypeName(), r.getCost());
-                            System.out.printf("%14s%35s       %s%26s\n", r.getReservationID().toString(), r.getReservationRoomType().getRoomTypeName(), r.getCost(), outputDateFormat.format(startDate) + "-" + outputDateFormat.format(endDate));
+                            System.out.printf("%14s%25s       %s%26s\n", r.getReservationID().toString(), r.getReservationRoomType().getRoomTypeName(), r.getCost(), outputDateFormat.format(startDate) + "-" + outputDateFormat.format(endDate));
 
                         } catch (InvalidLoginCredentialException_Exception | ReservationNotFoundException_Exception ex) {
                             System.err.println(ex.getMessage());
@@ -202,7 +205,7 @@ public class HotelReservationSystemPartner {
                 } catch (InvalidLoginCredentialException_Exception ex) {
                     System.err.println("Invalid Login Credentials");
                     System.out.println();
-                } 
+                }
             }
             if (response == 5) {
                 break;

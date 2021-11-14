@@ -29,6 +29,7 @@ import javax.ejb.Remove;
 import javax.ejb.Stateful;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import util.exception.InvalidDateRangeException;
 import util.exception.InvalidRoomQuantityException;
 import util.exception.InvalidRoomTypeException;
 import util.exception.NotLoggedInException;
@@ -100,7 +101,7 @@ public class HotelReservationSessionBean implements HotelReservationSessionBeanR
     }
 
     @Override
-    public Map<RoomTypes, List<Integer>> searchHotelRooms(Date checkInDate, Date checkOutDate) {
+    public Map<RoomTypes, List<Integer>> searchHotelRooms(Date checkInDate, Date checkOutDate) throws InvalidDateRangeException {
         doSearchRoom(checkInDate, checkOutDate);
         doCalculateCost();
         return rooms;
@@ -108,13 +109,16 @@ public class HotelReservationSessionBean implements HotelReservationSessionBeanR
     
     
     @Override
-    public Map<RoomTypes, List<Integer>> walkInSearchHotelRooms(Date checkInDate, Date checkOutDate) {
+    public Map<RoomTypes, List<Integer>> walkInSearchHotelRooms(Date checkInDate, Date checkOutDate) throws InvalidDateRangeException{
         doSearchRoom(checkInDate, checkOutDate);
         doWalkInCalculateCost();
         return rooms;
     }
     
-    private void doSearchRoom(Date checkInDate, Date checkOutDate){
+    private void doSearchRoom(Date checkInDate, Date checkOutDate) throws InvalidDateRangeException{
+        if(checkInDate.after(checkOutDate) || checkInDate.equals(checkOutDate)){
+            throw new InvalidDateRangeException("Invalid Date Range: Check-out Date must be at least 1 day after Check-In Date");
+        }
     this.checkInDate = checkInDate;
     this.checkOutDate = checkOutDate;
         reservations.clear();
@@ -129,7 +133,7 @@ public class HotelReservationSessionBean implements HotelReservationSessionBeanR
 
         for (HotelRooms hotelRoom : allHotelRooms) {
             if (hotelRoom.getStatus() == false) {
-                System.out.println("False");
+
                 continue;
             }
             List<Integer> currList = new ArrayList<Integer>();
@@ -166,7 +170,7 @@ public class HotelReservationSessionBean implements HotelReservationSessionBeanR
     }
 
     private void doCalculateCost() {
-        System.out.println("Calculating Rates...");
+
         List<Rates> rates = ratesEntitySessionBeanLocal.retrieveAllRates();
         List<Rates> relaventRates = new ArrayList();
         for (Rates r : rates) { // get all rates within the date
@@ -176,9 +180,7 @@ public class HotelReservationSessionBean implements HotelReservationSessionBeanR
                 relaventRates.add(r);
             }
         }
-        for (Rates r : relaventRates) {
-            System.out.println(r);
-        }
+
         promoRates = new ArrayList<>();
         peakRates = new ArrayList<>();
         normalRates = new ArrayList<>();
@@ -202,8 +204,6 @@ public class HotelReservationSessionBean implements HotelReservationSessionBeanR
             if (d.equals(checkOutDate)) {
                 break;
             }
-            System.out.println(outputDateFormat.format(d));
-
             for (Map.Entry room : rooms.entrySet()) {
                 Boolean prioritySet = false;
                 for (Rates r : promoRates) {
@@ -211,9 +211,7 @@ public class HotelReservationSessionBean implements HotelReservationSessionBeanR
                         if (r.getRateType().equals("Promo") && r.getStartDate() != null && r.getEndDate() != null) { // also need to check if this date is within the range
                             if (isWithinRange(d, r.getStartDate(), r.getEndDate())) {
                                 List<Integer> temp = (List<Integer>) room.getValue();
-                                System.out.println(temp.toString());
                                 temp.set(1, temp.get(1) + r.getPrice());
-                                System.out.println("this date " + outputDateFormat.format(d) + " using rate " + r.toString());
                                 rooms.put(r.getRoomType(), temp);
                                 prioritySet = true;
                                 break;
@@ -229,9 +227,7 @@ public class HotelReservationSessionBean implements HotelReservationSessionBeanR
                             if (r.getRateType().equals("Peak") && r.getStartDate() != null && r.getEndDate() != null) { // also need to check if this date is within the range
                                 if (isWithinRange(d, r.getStartDate(), r.getEndDate())) {
                                     List<Integer> temp = (List<Integer>) room.getValue();
-                                    System.out.println(temp.toString());
                                     temp.set(1, temp.get(1) + r.getPrice());
-                                    System.out.println("this date " + outputDateFormat.format(d) + " using rate " + r.toString());
                                     rooms.put(r.getRoomType(), temp);
                                     prioritySet = true;
                                     break;
@@ -246,9 +242,7 @@ public class HotelReservationSessionBean implements HotelReservationSessionBeanR
                         if (room.getKey().equals(r.getRoomType())) {
                             if (r.getRateType().equals("Normal")) {
                                 List<Integer> temp = (List<Integer>) room.getValue();
-                                System.out.println(temp.toString());
                                 temp.set(1, temp.get(1) + r.getPrice());
-                                System.out.println("this date " + outputDateFormat.format(d) + " using rate " + r.toString());
                                 rooms.put(r.getRoomType(), temp);
                                 prioritySet = true;
                                 break;
@@ -265,7 +259,6 @@ public class HotelReservationSessionBean implements HotelReservationSessionBeanR
     }
 
     private void doWalkInCalculateCost() {
-        System.out.println("Calculating Rates...");
         List<Rates> rates = ratesEntitySessionBeanLocal.retrieveAllRates();
         publishedRates = new ArrayList<>();
         for (Rates r : rates) {
@@ -273,9 +266,7 @@ public class HotelReservationSessionBean implements HotelReservationSessionBeanR
                 publishedRates.add(r);
             }
         }
-        for (Rates r : publishedRates) {
-            System.out.println(r);
-        }
+
         GregorianCalendar gcal = new GregorianCalendar();
         gcal.setTime(checkInDate);
         while (!gcal.getTime().after(checkOutDate)) {
@@ -283,15 +274,12 @@ public class HotelReservationSessionBean implements HotelReservationSessionBeanR
             if (d.equals(checkOutDate)) {
                 break;
             }
-            System.out.println(outputDateFormat.format(d));
             for (Map.Entry room : rooms.entrySet()) {
                 for (Rates r : publishedRates) {
                     if (room.getKey().equals(r.getRoomType())) {
                         if (r.getRateType().equals("Published")) {
                             List<Integer> temp = (List<Integer>) room.getValue();
-                            System.out.println(temp.toString());
                             temp.set(1, temp.get(1) + r.getPrice());
-                            System.out.println("this date " + outputDateFormat.format(d) + " using rate " + r.toString());
                             rooms.put(r.getRoomType(), temp);
                             break;
                         }
@@ -333,7 +321,7 @@ public class HotelReservationSessionBean implements HotelReservationSessionBeanR
         } 
         return reservations;
     }
-
+    @Override
     public List<Reservations> confirmReservations() {
         for (Reservations r : reservations) {
             reservationsEntitySessionBeanLocal.createNewReservation(r);
@@ -342,6 +330,7 @@ public class HotelReservationSessionBean implements HotelReservationSessionBeanR
         return reservations;
     }
 
+    @Override
     public Integer getTotalCost() {
         int cost = 0;
         for (Reservations r : reservations) {
@@ -351,6 +340,7 @@ public class HotelReservationSessionBean implements HotelReservationSessionBeanR
         return cost;
     }
 
+    @Override
     public Map<RoomTypes, Integer> getRoomQuantities() { // ROom Type --- Quantity
         Map<RoomTypes, Integer> result = new HashMap<RoomTypes, Integer>();
         for (Reservations r : reservations) {

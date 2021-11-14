@@ -52,6 +52,9 @@
 <message name="InvalidRoomQuantityException">
 <part name="fault" element="tns:InvalidRoomQuantityException"/>
 </message>
+<message name="InvalidDateRangeException">
+<part name="fault" element="tns:InvalidDateRangeException"/>
+</message>
 <message name="SearchRoom">
 <part name="parameters" element="tns:SearchRoom"/>
 </message>
@@ -87,11 +90,13 @@
 <fault message="tns:InvalidRoomQuantityException" name="InvalidRoomQuantityException" wsam:Action="http://ws.session.ejb/ReservationWebService/addReservation/Fault/InvalidRoomQuantityException"/>
 <fault message="tns:ParseException" name="ParseException" wsam:Action="http://ws.session.ejb/ReservationWebService/addReservation/Fault/ParseException"/>
 <fault message="tns:InvalidLoginCredentialException" name="InvalidLoginCredentialException" wsam:Action="http://ws.session.ejb/ReservationWebService/addReservation/Fault/InvalidLoginCredentialException"/>
+<fault message="tns:InvalidDateRangeException" name="InvalidDateRangeException" wsam:Action="http://ws.session.ejb/ReservationWebService/addReservation/Fault/InvalidDateRangeException"/>
 </operation>
 <operation name="SearchRoom">
 <input wsam:Action="http://ws.session.ejb/ReservationWebService/SearchRoomRequest" message="tns:SearchRoom"/>
 <output wsam:Action="http://ws.session.ejb/ReservationWebService/SearchRoomResponse" message="tns:SearchRoomResponse"/>
 <fault message="tns:ParseException" name="ParseException" wsam:Action="http://ws.session.ejb/ReservationWebService/SearchRoom/Fault/ParseException"/>
+<fault message="tns:InvalidDateRangeException" name="InvalidDateRangeException" wsam:Action="http://ws.session.ejb/ReservationWebService/SearchRoom/Fault/InvalidDateRangeException"/>
 </operation>
 </portType>
 <binding name="ReservationWebServicePortBinding" type="tns:ReservationWebService">
@@ -167,6 +172,9 @@
 <fault name="InvalidLoginCredentialException">
 <soap:fault name="InvalidLoginCredentialException" use="literal"/>
 </fault>
+<fault name="InvalidDateRangeException">
+<soap:fault name="InvalidDateRangeException" use="literal"/>
+</fault>
 </operation>
 <operation name="SearchRoom">
 <soap:operation soapAction=""/>
@@ -178,6 +186,9 @@
 </output>
 <fault name="ParseException">
 <soap:fault name="ParseException" use="literal"/>
+</fault>
+<fault name="InvalidDateRangeException">
+<soap:fault name="InvalidDateRangeException" use="literal"/>
 </fault>
 </operation>
 </binding>
