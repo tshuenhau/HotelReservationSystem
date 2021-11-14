@@ -5,15 +5,18 @@
  */
 package ejb.session.stateless;
 
+import entity.HotelRooms;
 import entity.Rates;
+import entity.RoomTypes;
+import java.util.ArrayList;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import util.exception.DeleteRateException;
 import util.exception.RateAlreadyExistException;
 import util.exception.RatesNotFoundException;
-import util.exception.RoomTypeNotFoundException;
 
 /**
  *
@@ -71,6 +74,18 @@ public class RatesEntitySessionBean implements RatesEntitySessionBeanRemote, Rat
         }
         else {
             throw new RatesNotFoundException("Rate " + rateID + " does not exist!");
+        }
+    }
+    
+    @Override
+    public void deleteRate(Long rateID) throws RatesNotFoundException, DeleteRateException {
+        Rates rateEntityToRemove = retrievesRatesByRateID(rateID);
+        
+        if(rateEntityToRemove.getRoomType() != null){
+            em.remove(rateEntityToRemove);
+        }
+        else {
+            throw new DeleteRateException("Rate " + rateID + " cannot be deleted since it is already allocated to a room type!");
         }
     }
 

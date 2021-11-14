@@ -30,7 +30,7 @@ public class Reservations implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long reservationID;
     
-    @ManyToOne(optional = true)
+    @ManyToOne(cascade = CascadeType.REMOVE)
     private Customers reservedBy;
   
     @ManyToOne(cascade = CascadeType.REMOVE)

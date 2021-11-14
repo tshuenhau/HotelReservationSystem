@@ -9,6 +9,8 @@ import entity.Customers;
 import entity.Employees;
 import java.util.List;
 import javax.ejb.Local;
+import util.exception.CheckOutException;
+import util.exception.CustomerNotFoundException;
 import util.exception.InvalidLoginCredentialException;
 import util.exception.UserAlreadyExistException;
 
@@ -27,5 +29,9 @@ public interface CustomersEntitySessionBeanLocal {
     public Customers login(Long passportNumber, String password) throws InvalidLoginCredentialException;
 
     public List<Customers> retrieveAllPartners();
+
+    public Customers retrievesCustomerByPassportNum(Long passportNum) throws CustomerNotFoundException;
+
+    public void checkOut(Long passportNum, Long reservationID) throws CheckOutException, CustomerNotFoundException;
     
 }

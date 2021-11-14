@@ -102,7 +102,7 @@ public class ManagementClient {
                                     salesManagerModule = new SalesManagerModule(employeesEntitySessionBeanRemote, currentEmployee, roomTypesEntitySessionBeanRemote, hotelRoomsEntitySessionBeanRemote, ratesEntitySessionBeanRemote);
                                     menuMainSalesManager();
                                 } else if (currentEmployee.getEmployeeType().equals("Guest Relation Officer")) {
-                                    guestRelationOfficerModule = new GuestRelationOfficerModule(allocationSessionBeanRemote, employeesEntitySessionBeanRemote, currentEmployee, roomTypesEntitySessionBeanRemote, hotelRoomsEntitySessionBeanRemote, ratesEntitySessionBeanRemote, hotelReservationSessionBeanRemote, reservationsEntitySessionBeanRemote);
+                                    guestRelationOfficerModule = new GuestRelationOfficerModule(allocationSessionBeanRemote, employeesEntitySessionBeanRemote, currentEmployee, roomTypesEntitySessionBeanRemote, hotelRoomsEntitySessionBeanRemote, ratesEntitySessionBeanRemote, hotelReservationSessionBeanRemote, reservationsEntitySessionBeanRemote, customersEntitySessionBeanRemote);
                                     menuMainGuestRelationOfficer();
                                 }
                             } catch (InvalidLoginCredentialException ex) {

@@ -6,11 +6,14 @@
 package ejb.session.stateless;
 
 import entity.Customers;
+import entity.Reservations;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import util.exception.CheckOutException;
+import util.exception.CustomerNotFoundException;
 import util.exception.InvalidLoginCredentialException;
 import util.exception.UserAlreadyExistException;
 
@@ -62,6 +65,48 @@ public class CustomersEntitySessionBean implements CustomersEntitySessionBeanRem
         }
         
         throw new InvalidLoginCredentialException("Invalid login credential");
+    }
+    
+    @Override
+    public void checkOut(Long passportNum, Long reservationID) throws CheckOutException, CustomerNotFoundException {
+        Customers customerEntity = retrievesCustomerByPassportNum(passportNum);
+        List<Reservations> reservations = customerEntity.getReservations();
+        
+        Reservations reservationToCheckOut = new Reservations();
+        
+        if(customerEntity.getReservations() != null){
+            for (Reservations reservation : reservations) {
+                if (reservation.getReservationID() == reservationID) {
+                    reservationToCheckOut = reservation;
+                }
+            }
+            em.remove(reservationToCheckOut);
+        }
+        else {
+            throw new CheckOutException("Customer " + passportNum + " cannot be checked out!");
+        }
+    }
+    
+    @Override
+    public Customers retrievesCustomerByPassportNum(Long passportNum) throws CustomerNotFoundException {
+        List<Customers> customers = retrieveAllCustomers();
+        
+        Customers customerEntity = new Customers();
+        
+        if (passportNum != null) {
+            for (Customers customer : customers) {
+                if (customer.getPassportNum().equals(passportNum)) {
+                    customerEntity = customer;
+                }
+            }
+        }
+        
+        if(customerEntity != null){
+            return customerEntity;
+        }
+        else {
+            throw new CustomerNotFoundException("Customer " + passportNum + " does not exist!");
+        }
     }
 
 

@@ -8,6 +8,7 @@ package ejb.session.stateless;
 import entity.Rates;
 import java.util.List;
 import javax.ejb.Local;
+import util.exception.DeleteRateException;
 import util.exception.RateAlreadyExistException;
 import util.exception.RatesNotFoundException;
 
@@ -23,5 +24,7 @@ public interface RatesEntitySessionBeanLocal {
     public Rates createNewRate(Rates rate) throws RateAlreadyExistException;
 
     public Rates retrievesRatesByRateID(Long rateID) throws RatesNotFoundException;
+
+    public void deleteRate(Long rateID) throws RatesNotFoundException, DeleteRateException;
     
 }

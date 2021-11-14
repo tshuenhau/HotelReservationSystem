@@ -2,6 +2,7 @@ package hotelreservationsystemclient;
 
 import ejb.session.stateful.AllocationSessionBeanRemote;
 import ejb.session.stateful.HotelReservationSessionBeanRemote;
+import ejb.session.stateless.CustomersEntitySessionBeanRemote;
 import entity.Employees;
 import java.util.Scanner;
 import ejb.session.stateless.EmployeesEntitySessionBeanRemote;
@@ -20,8 +21,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.InputMismatchException;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import util.exception.CheckOutException;
+import util.exception.CustomerNotFoundException;
 import util.exception.InvalidDateRangeException;
 import util.exception.InvalidRoomQuantityException;
 import util.exception.InvalidRoomTypeException;
@@ -34,6 +35,7 @@ public class GuestRelationOfficerModule {
     private EmployeesEntitySessionBeanRemote employeesEntitySessionBeanRemote;
     private RoomTypesEntitySessionBeanRemote roomTypesEntitySessionBeanRemote;
     private HotelRoomsEntitySessionBeanRemote hotelRoomsEntitySessionBeanRemote;
+    private CustomersEntitySessionBeanRemote customersEntitySessionBeanRemote;
     private RatesEntitySessionBeanRemote ratesEntitySessionBeanRemote;
     private HotelReservationSessionBeanRemote hotelReservationSessionBeanRemote;
     private AllocationSessionBeanRemote allocationSessionBeanRemote;
@@ -47,7 +49,7 @@ public class GuestRelationOfficerModule {
     public GuestRelationOfficerModule(){
     }
 
-    public GuestRelationOfficerModule(AllocationSessionBeanRemote allocationSessionBeanRemote, EmployeesEntitySessionBeanRemote employeesEntitySessionBeanRemote, Employees currentEmployee, RoomTypesEntitySessionBeanRemote roomTypesEntitySessionBeanRemote, HotelRoomsEntitySessionBeanRemote hotelRoomsEntitySessionBeanRemote, RatesEntitySessionBeanRemote ratesEntitySessionBeanRemote, HotelReservationSessionBeanRemote hotelReservationSessionBeanRemote, ReservationsEntitySessionBeanRemote reservationsEntitySessionBeanRemote) {
+    public GuestRelationOfficerModule(AllocationSessionBeanRemote allocationSessionBeanRemote, EmployeesEntitySessionBeanRemote employeesEntitySessionBeanRemote, Employees currentEmployee, RoomTypesEntitySessionBeanRemote roomTypesEntitySessionBeanRemote, HotelRoomsEntitySessionBeanRemote hotelRoomsEntitySessionBeanRemote, RatesEntitySessionBeanRemote ratesEntitySessionBeanRemote, HotelReservationSessionBeanRemote hotelReservationSessionBeanRemote, ReservationsEntitySessionBeanRemote reservationsEntitySessionBeanRemote, CustomersEntitySessionBeanRemote customersEntitySessionBeanRemote) {
         this.employeesEntitySessionBeanRemote = employeesEntitySessionBeanRemote;
         this.allocationSessionBeanRemote = allocationSessionBeanRemote;
         this.roomTypesEntitySessionBeanRemote = roomTypesEntitySessionBeanRemote;
@@ -56,6 +58,7 @@ public class GuestRelationOfficerModule {
         this.currentEmployee = currentEmployee;
         this.hotelReservationSessionBeanRemote = hotelReservationSessionBeanRemote;
         this.reservationsEntitySessionBeanRemote = reservationsEntitySessionBeanRemote;
+        this.customersEntitySessionBeanRemote = customersEntitySessionBeanRemote;
     }
     
     
@@ -93,7 +96,7 @@ public class GuestRelationOfficerModule {
                         }
                     }
                     else if(response == 3){
-                        //doCheckOut();
+                        doCheckOut();
                     }
                     else if (response == 4){
                         break;
@@ -302,10 +305,29 @@ public class GuestRelationOfficerModule {
             throw new UnableToAllocateException();
         }
     }
-    /*
+    
     private void doCheckOut() {
+        Scanner scanner = new Scanner(System.in);
         System.out.println("*** Hotel Reservation System Management Client :: Check-out Guest ***\n");
+        
+        try {
+            System.out.print("Enter passportNum> ");
+            Long passportNum = scanner.nextLong();
+            scanner.nextLine();
+            System.out.print("Enter reservationID> ");
+            Long reservationID = scanner.nextLong();
+            scanner.nextLine();
+
+            customersEntitySessionBeanRemote.checkOut(passportNum, reservationID);
+            System.out.println("CheckOut for " + passportNum + reservationID + " successful!");
+        } catch (InputMismatchException ex){
+            scanner.nextLine();
+            System.err.println("Input Mismatch.");
+        } catch (CheckOutException ex) {
+            System.out.println("Customer cannot be checked out!");
+        } catch (CustomerNotFoundException ex) {
+            System.out.println("Customer cannot be found!");
+        }
     }
-*/
 
 }

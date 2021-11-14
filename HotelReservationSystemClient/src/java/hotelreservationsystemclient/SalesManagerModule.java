@@ -14,6 +14,7 @@ import util.exception.RoomTypeNotFoundException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.InputMismatchException;
+import util.exception.DeleteRateException;
 import util.exception.RateAlreadyExistException;
 import util.exception.RatesNotFoundException;
 
@@ -184,33 +185,37 @@ public class SalesManagerModule {
         Scanner scanner = new Scanner(System.in);
         Integer response = 0;
         
-        System.out.println("*** Hotel Reservation Management Client System :: Sales Manager :: View Room Rate Details ***\n");
-        System.out.print("Select Room Rate ID: > ");
-        Long rateId = scanner.nextLong();
-        scanner.nextLine();
-        
         try {
-            Rates rateEntity = ratesEntitySessionBeanRemote.retrievesRatesByRateID(rateId);
-            System.out.printf("%s%30s%40s%20s%20s%20s\n", "Rate ID", "Rate Type", "Room Type", "Price", "Start Date", "End Date");
-            System.out.printf("%s%30s%40s%20s%20s%20s\n", rateEntity.getRateID(), rateEntity.getRateType(), rateEntity.getRoomType().getRoomTypeName(), rateEntity.getPrice(), outputDateFormat.format(rateEntity.getStartDate()), outputDateFormat.format(rateEntity.getEndDate()));
-            
-            System.out.println("------------------------");
-            System.out.println("1: Update Room Type");
-            System.out.println("2: Delete Room Type");
-            System.out.println("3: Back\n");
-            System.out.print("> ");
-            response = scanner.nextInt();
+            System.out.println("*** Hotel Reservation Management Client System :: Sales Manager :: View Room Rate Details ***\n");
+            System.out.print("Select Room Rate ID: > ");
+            Long rateId = scanner.nextLong();
+            scanner.nextLine();
 
-            if(response == 1) {
-                //doUpdateRoomType(rateEntity);
+            try {
+                Rates rateEntity = ratesEntitySessionBeanRemote.retrievesRatesByRateID(rateId);
+                System.out.printf("%s%30s%40s%20s%20s%20s\n", "Rate ID", "Rate Type", "Room Type", "Price", "Start Date", "End Date");
+                System.out.printf("%s%30s%40s%20s%20s%20s\n", rateEntity.getRateID(), rateEntity.getRateType(), rateEntity.getRoomType().getRoomTypeName(), rateEntity.getPrice(), outputDateFormat.format(rateEntity.getStartDate()), outputDateFormat.format(rateEntity.getEndDate()));
+
+                System.out.println("------------------------");
+                System.out.println("1: Update Room Rate");
+                System.out.println("2: Delete Room Rate");
+                System.out.println("3: Back\n");
+                System.out.print("> ");
+                response = scanner.nextInt();
+
+                if(response == 1) {
+                    //doUpdateRoomType(rateEntity);
+                }
+                else if(response == 2) {
+                    doDeleteRate(rateEntity);
+                }
             }
-            else if(response == 2)
-            {
-                //doDeleteRoomType(rateEntity);
+            catch(RatesNotFoundException ex) {
+                System.out.println("An error has occurred while retrieving rates: " + ex.getMessage() + "\n");
             }
-        }
-        catch(RatesNotFoundException ex) {
-            System.out.println("An error has occurred while retrieving rates: " + ex.getMessage() + "\n");
+        } catch (InputMismatchException ex) {
+            scanner.nextLine();
+            System.err.println("Input Mismatch.");
         }
     }
     
@@ -228,29 +233,33 @@ public class SalesManagerModule {
         }
     }
     
-    
+    */
     private void doDeleteRate(Rates rateEntity){
         Scanner scanner = new Scanner(System.in);        
         String input;
         
-        System.out.println("*** Hotel Reservation Management Client System :: Operation Manager :: View Room Type Details :: Delete Room Type ***\n");
-        System.out.printf("Confirm Delete Room Type %s (Enter 'Y' to Delete)> ", roomTypeEntity.getRoomTypeName());
-        input = scanner.nextLine().trim();
-        
-        if(input.equals("Y")) {
-            try {
-                roomTypesEntitySessionBeanRemote.deleteRoomType(roomTypeEntity.getRoomTypeName());
-                System.out.println("Staff deleted successfully!\n");
+        try {
+            System.out.println("*** Hotel Reservation Management Client System :: Sales Manager :: View Rate Details :: Delete Rate ***\n");
+            System.out.printf("Confirm Delete Rate %s %s (Enter 'Y' to Delete)> ", rateEntity.getRateType(), rateEntity.getRoomType().getRoomTypeName());
+            input = scanner.nextLine().trim();
+
+            if(input.equals("Y")) {
+                try {
+                    ratesEntitySessionBeanRemote.deleteRate(rateEntity.getRateID());
+                    System.out.println("Rate deleted successfully!\n");
+                }
+                catch (RatesNotFoundException | DeleteRateException ex) {
+                    System.out.println("An error has occurred while deleting the rate: " + ex.getMessage() + "\n");
+                }
             }
-            catch (RoomTypeNotFoundException | DeleteRoomTypeException ex) {
-                System.out.println("An error has occurred while deleting the staff: " + ex.getMessage() + "\n");
+            else {
+                System.out.println("Rate NOT deleted!\n");
             }
-        }
-        else {
-            System.out.println("Room Type NOT deleted!\n");
+        } catch (InputMismatchException ex) {
+            scanner.nextLine();
+            System.err.println("Input Mismatch.");
         }
     }
-*/
     
     
     private void doViewAllRoomRates(){
